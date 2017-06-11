@@ -13,7 +13,7 @@ class CreateJournalsTable extends Migration
      */
     public function up()
     {
-        Schema::create('journals', function (Blueprint $table) {
+        Schema::create('publications', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
             $table->string('cover')->nullable();
@@ -23,13 +23,13 @@ class CreateJournalsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('journal_profile', function (Blueprint $table) {
+        Schema::create('publication_user', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('journal_id')->unsigned();
-            $table->integer('profile_id')->unsigned();
+            $table->integer('publication_id')->unsigned();
+            $table->integer('user_id')->unsigned();
 
-            $table->foreign('journal_id')->references('id')->on('journals')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('profile_id')->references('id')->on('profiles')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('publication_id')->references('id')->on('publications')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -40,7 +40,7 @@ class CreateJournalsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('journal_author');
-        Schema::dropIfExists('journals');
+        Schema::dropIfExists('publication_user');
+        Schema::dropIfExists('publications');
     }
 }

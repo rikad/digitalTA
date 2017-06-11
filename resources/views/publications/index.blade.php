@@ -10,7 +10,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Educations</h4>
+          <h4 class="modal-title">Key Publications & Presentations</h4>
         </div>
         <div class="modal-body">
           <p></p>
@@ -27,7 +27,7 @@
 	<ul class="breadcrumb">
 		<li><a href="{{ url('/home') }}">Dashboard</a></li>
 		<li>Settings</li>
-		<li class="active">Educations</li>
+		<li class="active">Key Publications & Presentations</li>
 	</ul>
 	<div class="row">
 		<div class="col-md-2">
@@ -37,7 +37,7 @@
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h2 class="panel-title">Update Educations Information</h2>
+					<h2 class="panel-title">Update Key Publications & Presentations Information</h2>
 				</div>
 				<div class="panel-body">
 @if (empty($data[0]))
@@ -49,11 +49,10 @@
 				    <thead>
 				      <tr>
 				        <th>#</th>
-				        <th>Program</th>
-				        <th>Institution</th>
-				        <th>Country</th>
-				        <th>Start</th>
-				        <th>End</th>
+				        <th>Title</th>
+				        <th style="display:none">desciption</th>
+				        <th>Published</th>
+				        <th style="display:none">file</th>
 				        <th style="display:none">Action</th>
 				      </tr>
 				    </thead>
@@ -67,12 +66,11 @@
 				        echo '<td>'.$i.'</td>';
 				    	$i++;
 						@endphp
-				        <td>{{ $value->program }}</td>
-				        <td>{{ $value->institution }}</td>
-				        <td>{{ $value->country }}</td>
-				        <td>{{ $value->start_date }}</td>
-				        <td>{{ $value->end_date }}</td>
-				        <td style="vertical-align: middle; display: none"><button class="btn btn-primary btn-xs" onclick="rikad.edit(this,{{ $value->id }})"><span class="glyphicon glyphicon-pencil"></span></button> <button class="btn btn-danger btn-xs" onclick="rikad.delete({{ $value->id }})"><span class="glyphicon glyphicon-remove"></span></button></td>
+				        <td>{{ $value->title }}</td>
+				        <td style="display:none">{{ $value->description }}</td>
+				        <td>{{ $value->published }}</td>
+				        <td style="display:none">{{ $value->file }}</td>
+				        <td style="vertical-align: middle; display: none"><button class="btn btn-xs" onclick="rikad.download('+value+')"><span class="glyphicon glyphicon-file"></span> Download</button>  <button class="btn btn-primary btn-xs" onclick="rikad.edit(this,{{ $value->id }})"><span class="glyphicon glyphicon-pencil"></span></button>  <button class="btn btn-danger btn-xs" onclick="rikad.delete({{ $value->id }})"><span class="glyphicon glyphicon-remove"></span></button></td>
 				      </tr>
 						@endforeach
 				    </tbody>
@@ -123,6 +121,11 @@
 				create:true,
 				sortField: 'text'
 			});
+			$('.js-multiselectize').selectize({
+				create:true,
+				sortField: 'text'
+			});
+
 		});
 	}
 
@@ -131,11 +134,11 @@
 		this.data = document.getElementById(table);
 		this.optionData = {};
 		this.inputName = {
-			program_id: {title:'Program',type:'select'},
-			institution_id: {title:'Institution',type:'select'},
-			country_id: {title:'Country',type:'select'},
-			start_date: {title:'Start Date',type:'date'},
-			end_date: {title:'End Date',type:'date'}
+			title: {title:'Title',type:'text'},
+			description: {title:'Short Description',type:'textarea'},
+			authors: {title:'add another authors',type:'multiselect'},
+			published: {title:'Published On',type:'date'},
+			file: {title:'Upload',type:'file'}
 		};
 		this.existsData = this.data.rows.length;
 
@@ -146,7 +149,7 @@
 		this.getSelect = function() {
 			var here = this;
 	        $.ajax({
-	            url: '/menu/educations/options',
+	            url: '/menu/publications/users',
 	            type: 'GET',
 	            dataType: 'json',
 	            error: function() {
@@ -159,7 +162,7 @@
         }
 
         this.buildOption = function(type,selected) {
-        	var data = this.optionData[type];
+        	var data = this.optionData;
         	var input = this.inputName[type];
         	var output = selected == '' ? '<option selected="selected" value="">Select '+input.title+'</option>' : '<option value="">Select '+input.title+'</option>';
         	for(var result in data) {
@@ -178,13 +181,21 @@
 			var output;
 
 			switch (type) {
-				case 'list': output =   '<input list="'+name+'" class="form-control" name="'+name+'">';
+				case 'multiselect': 
+					output = '<select class="js-selectize" name="'+name+'[]" multiple="multiple">';
+					output += this.buildOption(name,value); 
+					output +='</select>';
+				break;
+				case 'textarea': output =   '<textarea class="form-control" name="'+name+'">'+value+'</textarea>';
+				break;
+				case 'file': output='<input class="form-control" type="file" name="file">'; 
+						output+= value != '' ? '<br><button class="btn" onclick="rikad.download('+value+')"><span class="glyphicon glyphicon-file"></span> Download</button>' : '';
 				break;
 				case 'select':
 					output = '<select class="js-selectize" name="'+name+'">'+ this.buildOption(name,value) +'</select>';
 				break;
 				case 'date': 
-					output = '<div class="input-group date" id="date"><input type="text" class="form-control" name="'+ name +'" value="'+ value +'" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>';
+					output = '<div class="input-group date" id="date"><input type="text" class="form-control" name="'+ name +'" value="'+ value +'" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></div>';
 				break;
 				default: output = '<input type="text" class="form-control" name="'+ name +'" value="'+ value +'" />';
 			}
@@ -193,7 +204,7 @@
 
 		this.showModal = function (data,id) {
 			$('#myModal').modal();
-			var form = '<form method="POST" action="/menu/educations"> {{ csrf_field() }} ';
+			var form = '<form method="POST" action="/menu/publications" enctype="multipart/form-data"> {{ csrf_field() }} ';
 			form += '<input type="hidden" value="'+id+'" name="id">';
 			var i=0;
 			for(var input in this.inputName) {
@@ -230,7 +241,7 @@
 
 		this.delete = function(id) {
 	        $.ajax({
-	            url: '/menu/educations/'+id,
+	            url: '/menu/publications/'+id,
 	            type: 'DELETE',
 	            data: { '_token': window.Laravel.csrfToken },
 	            dataType: 'json',
@@ -243,23 +254,9 @@
 	    	});
 		}
 
-		this.deleteRow = function (row) {
-			var index = row.parentNode.parentNode.rowIndex;			
-			this.data.deleteRow(index);
-		}
-		this.deleteAllRows = function () {
-			var n = this.data.rows.length;
-			if (this.existsData < n) {
-				for (var i = n - 1; i >= this.existsData; i--) {
-					this.data.deleteRow(i);
-				}
-			}
-		}
-
 		this.editMode = function(state) {
 			if(state) {
 				document.getElementById("addBtn").style.display = 'inline';
-				// document.getElementById("saveBtn").style.display = 'inline';
 				var editBtn = document.getElementById("editBtn");
 				editBtn.innerHTML = 'Cancel';
 				editBtn.onclick = function () { rikad.editMode(false) };
@@ -270,7 +267,6 @@
 			}
 			else {
 				document.getElementById("addBtn").style.display = 'none';
-				// document.getElementById("saveBtn").style.display = 'none';
 				var editBtn = document.getElementById("editBtn");
 				editBtn.innerHTML = 'Edit';
 				editBtn.onclick = function () { rikad.editMode(true) };
@@ -278,7 +274,6 @@
 				editBtn.classList.remove('btn-danger');
 
 				this.actionMode(false);
-				this.deleteAllRows();
 			}
 		}
 
@@ -289,11 +284,11 @@
 			for (var row=0; row < rows.length; row++) {
 				if(row == 0) {
 					var cells = rows[row].getElementsByTagName('th');
-					cells[6].style.display = mode;
+					cells[cells.length -1].style.display = mode;
 				}
 				else {
 					var cells = rows[row].getElementsByTagName('td');
-					cells[6].style.display = mode;					
+					cells[cells.length -1].style.display = mode;					
 				}
 			}
 		}
@@ -304,7 +299,7 @@
 	rikad.getSelect();
 
 	//for pagination
-  	var activeSidebar = 1;
+  	var activeSidebar = 7;
   </script>
 
 

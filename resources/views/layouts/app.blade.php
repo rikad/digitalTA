@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Data Journal & Profile</title>
 
     <!-- Styles -->
     <link href="/css/font-awesome.min.css" rel='stylesheet' type='text/css'>
@@ -39,7 +39,7 @@
                     </button>
 
                     <!-- Branding Image -->
-                    <a class="navbar-brand" href="{{ url('/') }}">Sistem Journal</a>
+                    <a class="navbar-brand" href="{{ url('/') }}">Data Journal & Profile</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
@@ -48,8 +48,6 @@
                         &nbsp;
                         @role('admin')
                 			<li><a href="{{ url('/home') }}">Dashboard</a></li>
-                            <li><a href="{{ route('authors.index') }}">Authors</a></li>
-                            <li><a href="{{ route('journals.index') }}">Journals</a></li>
                         @endrole
                     </ul>
 
@@ -58,7 +56,7 @@
                         <!-- Authentication Links -->
                         @if (Auth::guest())
                             <li><a href="{{ route('login') }}">Login</a></li>
-                            <li><a href="{{ route('register') }}">Register</a></li>
+                            <!-- <li><a href="{{ route('register') }}">Register</a></li> -->
                         @else
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">

@@ -10,7 +10,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Educations</h4>
+          <h4 class="modal-title">Experiences</h4>
         </div>
         <div class="modal-body">
           <p></p>
@@ -27,7 +27,7 @@
 	<ul class="breadcrumb">
 		<li><a href="{{ url('/home') }}">Dashboard</a></li>
 		<li>Settings</li>
-		<li class="active">Educations</li>
+		<li class="active">Experiences</li>
 	</ul>
 	<div class="row">
 		<div class="col-md-2">
@@ -37,9 +37,13 @@
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h2 class="panel-title">Update Educations Information</h2>
+					<h2 class="panel-title">Update Experiences Information</h2>
 				</div>
 				<div class="panel-body">
+
+				<h3>Academic Experiences</h3>
+				<hr>
+
 @if (empty($data[0]))
 	<p>No one record found, click add to add record.</p>
 				<table id="maintable" style="display: none" class="table table-striped">
@@ -49,9 +53,8 @@
 				    <thead>
 				      <tr>
 				        <th>#</th>
-				        <th>Program</th>
-				        <th>Institution</th>
-				        <th>Country</th>
+				        <th>Position</th>
+				        <th>Organization</th>
 				        <th>Start</th>
 				        <th>End</th>
 				        <th style="display:none">Action</th>
@@ -67,9 +70,47 @@
 				        echo '<td>'.$i.'</td>';
 				    	$i++;
 						@endphp
-				        <td>{{ $value->program }}</td>
-				        <td>{{ $value->institution }}</td>
-				        <td>{{ $value->country }}</td>
+				        <td>{{ $value->position }}</td>
+				        <td>{{ $value->organization }}</td>
+				        <td>{{ $value->start_date }}</td>
+				        <td>{{ $value->end_date }}</td>
+				        <td style="vertical-align: middle; display: none"><button class="btn btn-primary btn-xs" onclick="rikad.edit(this,{{ $value->id }})"><span class="glyphicon glyphicon-pencil"></span></button> <button class="btn btn-danger btn-xs" onclick="rikad.delete(this,{{ $value->id }})"><span class="glyphicon glyphicon-remove"></span></button></td>
+				      </tr>
+						@endforeach
+				    </tbody>
+				</table>
+
+				<br>
+				<h3>Non-Academic Experiences</h3>
+				<hr>
+@if (empty($data2[0]))
+	<p>No one record found, click add to add record.</p>
+				<table id="maintable2" style="display: none" class="table table-striped">
+@else
+				<table id="maintable2" class="table table-striped">
+@endif
+				    <thead>
+				      <tr>
+				        <th>#</th>
+				        <th>Position</th>
+				        <th>Organization</th>
+				        <th>Start</th>
+				        <th>End</th>
+				        <th style="display:none">Action</th>
+				      </tr>
+				    </thead>
+				    <tbody>
+				    	@php
+				    		$i=1;
+						@endphp
+						@foreach ($data2 as $value)
+				      <tr>
+				    	@php
+				        echo '<td>'.$i.'</td>';
+				    	$i++;
+						@endphp
+				        <td>{{ $value->position }}</td>
+				        <td>{{ $value->organization }}</td>
 				        <td>{{ $value->start_date }}</td>
 				        <td>{{ $value->end_date }}</td>
 				        <td style="vertical-align: middle; display: none"><button class="btn btn-primary btn-xs" onclick="rikad.edit(this,{{ $value->id }})"><span class="glyphicon glyphicon-pencil"></span></button> <button class="btn btn-danger btn-xs" onclick="rikad.delete({{ $value->id }})"><span class="glyphicon glyphicon-remove"></span></button></td>
@@ -77,6 +118,7 @@
 						@endforeach
 				    </tbody>
 				</table>
+
 
 				<hr>
 				<div id="controlBtn" align="right">
@@ -123,6 +165,7 @@
 				create:true,
 				sortField: 'text'
 			});
+
 		});
 	}
 
@@ -131,9 +174,9 @@
 		this.data = document.getElementById(table);
 		this.optionData = {};
 		this.inputName = {
-			program_id: {title:'Program',type:'select'},
-			institution_id: {title:'Institution',type:'select'},
-			country_id: {title:'Country',type:'select'},
+			position: {title:'Position',type:'text'},
+			organization_id: {title:'Organization',type:'select'},
+			type: {title:'Type',type:'boolean'},
 			start_date: {title:'Start Date',type:'date'},
 			end_date: {title:'End Date',type:'date'}
 		};
@@ -146,7 +189,7 @@
 		this.getSelect = function() {
 			var here = this;
 	        $.ajax({
-	            url: '/menu/educations/options',
+	            url: '/menu/experiences/organizations',
 	            type: 'GET',
 	            dataType: 'json',
 	            error: function() {
@@ -159,7 +202,7 @@
         }
 
         this.buildOption = function(type,selected) {
-        	var data = this.optionData[type];
+        	var data = this.optionData;
         	var input = this.inputName[type];
         	var output = selected == '' ? '<option selected="selected" value="">Select '+input.title+'</option>' : '<option value="">Select '+input.title+'</option>';
         	for(var result in data) {
@@ -180,6 +223,10 @@
 			switch (type) {
 				case 'list': output =   '<input list="'+name+'" class="form-control" name="'+name+'">';
 				break;
+				case 'boolean':
+					output = '<select class="form-control" name="'+name+'"><option value="1" selected="selected">Academic</option><option value="0">Non-Academic</option></select>';
+				break;
+
 				case 'select':
 					output = '<select class="js-selectize" name="'+name+'">'+ this.buildOption(name,value) +'</select>';
 				break;
@@ -193,16 +240,19 @@
 
 		this.showModal = function (data,id) {
 			$('#myModal').modal();
-			var form = '<form method="POST" action="/menu/educations"> {{ csrf_field() }} ';
+			var form = '<form method="POST" action="/menu/experiences"> {{ csrf_field() }} ';
 			form += '<input type="hidden" value="'+id+'" name="id">';
 			var i=0;
 			for(var input in this.inputName) {
+				if(this.inputName[input].type == 'boolean') { i++; }
+
 				form += this.inputName[input].title + '<br>'
 				form += data == null ? this.inputConstruct(input,this.inputName[input].type,'') : this.inputConstruct(input,this.inputName[input].type,data[i]);
 				form += '<br>';
 
 				i++;
 			}
+
 
 			form += '<div align="right"><button class="btn btn-primary btn-sm" onclick="rikad.sendSave(id)">Save</button></div>';
 
@@ -230,11 +280,12 @@
 
 		this.delete = function(id) {
 	        $.ajax({
-	            url: '/menu/educations/'+id,
+	            url: '/menu/experiences/'+id,
 	            type: 'DELETE',
 	            data: { '_token': window.Laravel.csrfToken },
 	            dataType: 'json',
-	            error: function() {
+	            error: function(er) {
+	            	alert(er)
 	            	location.reload();
 	            },
 	            success: function() {
@@ -259,7 +310,6 @@
 		this.editMode = function(state) {
 			if(state) {
 				document.getElementById("addBtn").style.display = 'inline';
-				// document.getElementById("saveBtn").style.display = 'inline';
 				var editBtn = document.getElementById("editBtn");
 				editBtn.innerHTML = 'Cancel';
 				editBtn.onclick = function () { rikad.editMode(false) };
@@ -267,10 +317,10 @@
 				editBtn.classList.remove('btn-primary');
 
 				this.actionMode(true);
+				nonAcademic.actionMode(true);
 			}
 			else {
 				document.getElementById("addBtn").style.display = 'none';
-				// document.getElementById("saveBtn").style.display = 'none';
 				var editBtn = document.getElementById("editBtn");
 				editBtn.innerHTML = 'Edit';
 				editBtn.onclick = function () { rikad.editMode(true) };
@@ -278,7 +328,7 @@
 				editBtn.classList.remove('btn-danger');
 
 				this.actionMode(false);
-				this.deleteAllRows();
+				nonAcademic.actionMode(false);
 			}
 		}
 
@@ -289,22 +339,23 @@
 			for (var row=0; row < rows.length; row++) {
 				if(row == 0) {
 					var cells = rows[row].getElementsByTagName('th');
-					cells[6].style.display = mode;
+					cells[cells.length -1].style.display = mode;
 				}
 				else {
 					var cells = rows[row].getElementsByTagName('td');
-					cells[6].style.display = mode;					
+					cells[cells.length -1].style.display = mode;					
 				}
 			}
 		}
 
 	}
 
+	var nonAcademic = new rikad("maintable2");
 	var rikad = new rikad("maintable");
 	rikad.getSelect();
 
 	//for pagination
-  	var activeSidebar = 1;
+  	var activeSidebar = 2;
   </script>
 
 

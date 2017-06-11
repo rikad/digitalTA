@@ -40,14 +40,13 @@ class CreateAuthorsTable extends Migration
 
         Schema::create('countries', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code', 2)->unique();
             $table->string('country', 60)->unique();
         });
 
         Schema::create('organizations', function (Blueprint $table) {
             $table->increments('id');
             $table->string('organization', 50);
-            $table->string('address');
+            $table->string('address')->nullable();
             $table->integer('parent_id')->unsigned()->nullable();
             $table->integer('form_id')->unsigned();
             $table->timestamps();
@@ -68,7 +67,7 @@ class CreateAuthorsTable extends Migration
             $table->foreign('program_id')->references('id')->on('organizations')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('institution_id')->references('id')->on('organizations')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('country_id')->references('id')->on('countries')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('profiles')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
         //end education parts
 
@@ -84,7 +83,7 @@ class CreateAuthorsTable extends Migration
             $table->timestamps();
 
             $table->foreign('organization_id')->references('id')->on('organizations')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('profiles')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
         //end academic or non-academin experience
 
@@ -94,10 +93,10 @@ class CreateAuthorsTable extends Migration
             $table->string('title');
             $table->integer('user_id')->unsigned();
             $table->date('start_date');
-            $table->date('end_date');
+            $table->date('end_date')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('profiles')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
         //end Membership in Professional Organizations
 
@@ -106,11 +105,23 @@ class CreateAuthorsTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->integer('user_id')->unsigned();
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('profiles')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+        });
+        //end certifications
+
+        //certifications
+        Schema::create('certifications', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('no');
+            $table->string('title');
+            $table->integer('user_id')->unsigned();
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
         //end certifications
 
@@ -118,10 +129,11 @@ class CreateAuthorsTable extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
+            $table->boolean('type'); //if 1 service if 0 professional
             $table->integer('user_id')->unsigned();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('profiles')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
         //end certifications
     }
@@ -133,16 +145,21 @@ class CreateAuthorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('profiles');
+        Schema::dropIfExists('publication_user');
+        Schema::dropIfExists('publications');
+
         Schema::dropIfExists('educations');
         Schema::dropIfExists('experiences');
         Schema::dropIfExists('memberships');
         Schema::dropIfExists('awards');
         Schema::dropIfExists('activities');
+        Schema::dropIfExists('certifications');
 
         Schema::dropIfExists('organizations');
         Schema::dropIfExists('countries');
         Schema::dropIfExists('forms');
+
+        Schema::dropIfExists('profiles');
 
     }
 }

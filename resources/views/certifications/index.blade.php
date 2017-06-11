@@ -10,7 +10,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Educations</h4>
+          <h4 class="modal-title">Certifications & Professional Registrations</h4>
         </div>
         <div class="modal-body">
           <p></p>
@@ -27,7 +27,7 @@
 	<ul class="breadcrumb">
 		<li><a href="{{ url('/home') }}">Dashboard</a></li>
 		<li>Settings</li>
-		<li class="active">Educations</li>
+		<li class="active">Certifications & Professional Registrations</li>
 	</ul>
 	<div class="row">
 		<div class="col-md-2">
@@ -37,7 +37,7 @@
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h2 class="panel-title">Update Educations Information</h2>
+					<h2 class="panel-title">Update Certifications & Professional Registrations Information</h2>
 				</div>
 				<div class="panel-body">
 @if (empty($data[0]))
@@ -49,11 +49,8 @@
 				    <thead>
 				      <tr>
 				        <th>#</th>
-				        <th>Program</th>
-				        <th>Institution</th>
-				        <th>Country</th>
-				        <th>Start</th>
-				        <th>End</th>
+				        <th>No</th>
+				        <th>Title</th>
 				        <th style="display:none">Action</th>
 				      </tr>
 				    </thead>
@@ -67,11 +64,8 @@
 				        echo '<td>'.$i.'</td>';
 				    	$i++;
 						@endphp
-				        <td>{{ $value->program }}</td>
-				        <td>{{ $value->institution }}</td>
-				        <td>{{ $value->country }}</td>
-				        <td>{{ $value->start_date }}</td>
-				        <td>{{ $value->end_date }}</td>
+				        <td>{{ $value->no }}</td>
+				        <td>{{ $value->title }}</td>
 				        <td style="vertical-align: middle; display: none"><button class="btn btn-primary btn-xs" onclick="rikad.edit(this,{{ $value->id }})"><span class="glyphicon glyphicon-pencil"></span></button> <button class="btn btn-danger btn-xs" onclick="rikad.delete({{ $value->id }})"><span class="glyphicon glyphicon-remove"></span></button></td>
 				      </tr>
 						@endforeach
@@ -131,11 +125,8 @@
 		this.data = document.getElementById(table);
 		this.optionData = {};
 		this.inputName = {
-			program_id: {title:'Program',type:'select'},
-			institution_id: {title:'Institution',type:'select'},
-			country_id: {title:'Country',type:'select'},
-			start_date: {title:'Start Date',type:'date'},
-			end_date: {title:'End Date',type:'date'}
+			no: {title:'No',type:'text'},
+			title: {title:'Title',type:'text'}
 		};
 		this.existsData = this.data.rows.length;
 
@@ -146,7 +137,7 @@
 		this.getSelect = function() {
 			var here = this;
 	        $.ajax({
-	            url: '/menu/educations/options',
+	            url: '/menu/certifications/options',
 	            type: 'GET',
 	            dataType: 'json',
 	            error: function() {
@@ -193,7 +184,7 @@
 
 		this.showModal = function (data,id) {
 			$('#myModal').modal();
-			var form = '<form method="POST" action="/menu/educations"> {{ csrf_field() }} ';
+			var form = '<form method="POST" action="/menu/certifications"> {{ csrf_field() }} ';
 			form += '<input type="hidden" value="'+id+'" name="id">';
 			var i=0;
 			for(var input in this.inputName) {
@@ -230,7 +221,7 @@
 
 		this.delete = function(id) {
 	        $.ajax({
-	            url: '/menu/educations/'+id,
+	            url: '/menu/certifications/'+id,
 	            type: 'DELETE',
 	            data: { '_token': window.Laravel.csrfToken },
 	            dataType: 'json',
@@ -243,23 +234,9 @@
 	    	});
 		}
 
-		this.deleteRow = function (row) {
-			var index = row.parentNode.parentNode.rowIndex;			
-			this.data.deleteRow(index);
-		}
-		this.deleteAllRows = function () {
-			var n = this.data.rows.length;
-			if (this.existsData < n) {
-				for (var i = n - 1; i >= this.existsData; i--) {
-					this.data.deleteRow(i);
-				}
-			}
-		}
-
 		this.editMode = function(state) {
 			if(state) {
 				document.getElementById("addBtn").style.display = 'inline';
-				// document.getElementById("saveBtn").style.display = 'inline';
 				var editBtn = document.getElementById("editBtn");
 				editBtn.innerHTML = 'Cancel';
 				editBtn.onclick = function () { rikad.editMode(false) };
@@ -270,7 +247,6 @@
 			}
 			else {
 				document.getElementById("addBtn").style.display = 'none';
-				// document.getElementById("saveBtn").style.display = 'none';
 				var editBtn = document.getElementById("editBtn");
 				editBtn.innerHTML = 'Edit';
 				editBtn.onclick = function () { rikad.editMode(true) };
@@ -278,7 +254,6 @@
 				editBtn.classList.remove('btn-danger');
 
 				this.actionMode(false);
-				this.deleteAllRows();
 			}
 		}
 
@@ -289,11 +264,11 @@
 			for (var row=0; row < rows.length; row++) {
 				if(row == 0) {
 					var cells = rows[row].getElementsByTagName('th');
-					cells[6].style.display = mode;
+					cells[cells.length -1].style.display = mode;
 				}
 				else {
 					var cells = rows[row].getElementsByTagName('td');
-					cells[6].style.display = mode;					
+					cells[cells.length -1].style.display = mode;					
 				}
 			}
 		}
@@ -301,10 +276,9 @@
 	}
 
 	var rikad = new rikad("maintable");
-	rikad.getSelect();
 
 	//for pagination
-  	var activeSidebar = 1;
+  	var activeSidebar = 3;
   </script>
 
 
