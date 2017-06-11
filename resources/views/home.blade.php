@@ -20,15 +20,7 @@
 
           <div class="col-md-3">
             <div class="panel panel-default">
-              <div class="panel-heading">Key Publications & Presentations</div>
-              <div class="panel-body">
-                isi data
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="panel panel-default">
-              <div class="panel-heading">Curriculum Vitae</div>
+              <div class="panel-heading">Print Curriculum Vitae</div>
               <div class="panel-body">
                 isi data
               </div>
@@ -49,10 +41,10 @@
         <div class="panel-heading"><h2 class="panel-title"><span class="glyphicon glyphicon-cog"></span> Settings</h2></div>
         <!-- Content -->
         <div class="panel-body">
-        <div class="progress progress-striped active">
+        <!-- <div class="progress progress-striped active">
           <div class="progress-bar" style="width: 45%"></div>
         </div>
-
+ -->
         <!-- Row 1 -->
         <div class="row">
 
@@ -120,8 +112,8 @@
             </div>
           </div>
           <div class="col-md-3">
-            <div class="panel panel-default">
-              <div class="panel-heading">Professional Development Activities</div>
+            <div class="panel panel-default" url="/menu/publications/update">
+              <div class="panel-heading">Key Publications & Presentations</div>
               <div class="panel-body">
                 isi data
               </div>

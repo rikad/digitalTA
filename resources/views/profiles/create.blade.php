@@ -24,7 +24,7 @@
 
 
 					<ul class="pager">
-					  <li class="previous disabled"><a href="#">&larr; Previous</a></li>
+					  <li class="previous"><a href="#">&larr; Previous</a></li>
 					  <li class="next"><a href="#">Next &rarr;</a></li>
 					</ul>
 				</div>
@@ -43,6 +43,10 @@
   <script src="/js/bootstrap-datetimepicker.min.js"></script>
 
   <script>
+  	var activeSidebar = 0;
     $('#date').datetimepicker({ format: 'Y-M-D' });
   </script>
+
+	@include('layouts._sidebarJS')
+
 @endsection
