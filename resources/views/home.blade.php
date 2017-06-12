@@ -15,6 +15,23 @@
         <!-- Content -->
         <div class="panel-body">
 
+        @role('admin')
+        <!-- Row 1 -->
+        <div class="row">
+
+          <div class="col-md-3">
+            <div class="panel panel-default">
+              <div class="panel-heading">Print Curriculum Vitae</div>
+              <div class="panel-body">
+                isi data
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- end Row 1 -->
+        @endrole
+
         <!-- Row 1 -->
         <div class="row">
 

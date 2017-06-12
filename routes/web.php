@@ -21,7 +21,9 @@ Route::get('/home', 'HomeController@index');
 //Route::get('/', 'HomeController@index');
 
 Route::group(['prefix'=>'admin', 'middleware'=>['auth', 'role:admin']], function () {
+	Route::get('users/roles', 'Admin\UsersController@roles');
 	Route::resource('users', 'Admin\UsersController');
+
 	// Route::resource('authors', 'AuthorsController');
 //	Route::resource('journals', 'JournalsController');
 //	Route::resource('profiles', 'JournalsController');
