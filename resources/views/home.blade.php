@@ -15,7 +15,6 @@
         <!-- Content -->
         <div class="panel-body">
 
-        @role('admin')
         <!-- Row 1 -->
         <div class="row">
 
@@ -23,23 +22,7 @@
             <div class="panel panel-default">
               <div class="panel-heading">Print Curriculum Vitae</div>
               <div class="panel-body">
-                isi data
-              </div>
-            </div>
-          </div>
-
-        </div>
-        <!-- end Row 1 -->
-        @endrole
-
-        <!-- Row 1 -->
-        <div class="row">
-
-          <div class="col-md-3">
-            <div class="panel panel-default">
-              <div class="panel-heading">Print Curriculum Vitae</div>
-              <div class="panel-body">
-                isi data
+                <span class="glyphicon glyphicon-file"></span>
               </div>
             </div>
           </div>
@@ -58,10 +41,7 @@
         <div class="panel-heading"><h2 class="panel-title"><span class="glyphicon glyphicon-cog"></span> Settings</h2></div>
         <!-- Content -->
         <div class="panel-body">
-        <!-- <div class="progress progress-striped active">
-          <div class="progress-bar" style="width: 45%"></div>
-        </div>
- -->
+
         <!-- Row 1 -->
         <div class="row">
 
@@ -69,7 +49,7 @@
             <div class="panel panel-default" url="/menu/profiles/update">
               <div class="panel-heading">Personal Information</div>
               <div class="panel-body">
-                isi data
+                <span class="glyphicon glyphicon-user"></span>
               </div>
             </div>
           </div>
@@ -77,7 +57,7 @@
             <div class="panel panel-default" url="/menu/educations/update">
               <div class="panel-heading">Educations</div>
               <div class="panel-body">
-                isi data
+                <span class="glyphicon glyphicon-education"></span>
               </div>
             </div>
           </div>
@@ -85,7 +65,7 @@
             <div class="panel panel-default" url="/menu/experiences/update">
               <div class="panel-heading">Experiences</div>
               <div class="panel-body">
-                isi data
+                <span class="glyphicon glyphicon-list-alt"></span>
               </div>
             </div>
           </div>
@@ -93,7 +73,7 @@
             <div class="panel panel-default" url="/menu/certifications/update">
               <div class="panel-heading">Certifications & Professional Registrations</div>
               <div class="panel-body">
-                isi data
+                <span class="glyphicon glyphicon-certificate"></span>
               </div>
             </div>
           </div>
@@ -108,7 +88,7 @@
             <div class="panel panel-default" url="/menu/memberships/update">
               <div class="panel-heading">Membership in Professional Organizations</div>
               <div class="panel-body">
-                isi data
+                <span class="glyphicon glyphicon-briefcase"></span>
               </div>
             </div>
           </div>
@@ -116,7 +96,7 @@
             <div class="panel panel-default" url="/menu/awards/update">
               <div class="panel-heading">Honors & Awards</div>
               <div class="panel-body">
-                isi data
+                <span class="glyphicon glyphicon-star"></span>
               </div>
             </div>
           </div>
@@ -124,7 +104,7 @@
             <div class="panel panel-default" url="/menu/activities/update">
               <div class="panel-heading">Service Activities</div>
               <div class="panel-body">
-                isi data
+                <span class="glyphicon glyphicon-random"></span>
               </div>
             </div>
           </div>
@@ -132,7 +112,7 @@
             <div class="panel panel-default" url="/menu/publications/update">
               <div class="panel-heading">Key Publications & Presentations</div>
               <div class="panel-body">
-                isi data
+                <span class="glyphicon glyphicon-duplicate"></span>
               </div>
             </div>
           </div>
@@ -149,6 +129,19 @@
   </div>
 </div>
 @endsection
+
+@section('css')
+<style type="text/css">
+  .panel-body span {
+    font-size: 100px
+  }
+  .panel-body {
+    text-align: center;
+  }
+
+</style>
+@endsection
+
 
 @section('scripts')
 <script type="text/javascript">

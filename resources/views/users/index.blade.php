@@ -172,7 +172,7 @@
 
 		this.delete = function(id) {
 	        $.ajax({
-	            url: '/menu/educations/'+id,
+	            url: '/admin/users/'+id,
 	            type: 'DELETE',
 	            data: { '_token': window.Laravel.csrfToken },
 	            dataType: 'json',

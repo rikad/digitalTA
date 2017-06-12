@@ -173,6 +173,14 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::where('id', $id)->first();
+        $user->delete();
+
+        Session::flash("flash_notification", [
+            "level"=>"danger",
+            "message"=>"User Deleted"
+        ]);
+
+        return 'ok';
     }
 }

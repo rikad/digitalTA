@@ -4,8 +4,6 @@ use Illuminate\Database\Seeder;
 
 use App\Role;
 use App\User;
-use App\Profile;
-use App\Country;
 
 class UsersSeeder extends Seeder
 {
@@ -67,6 +65,38 @@ class UsersSeeder extends Seeder
 		$member->password = bcrypt('rahasia');
 		$member->save();
 		$member->attachRole($profRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "dosen";
+		$member->email = 'dosen@gmail.com';
+		$member->password = bcrypt('rahasia');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "rikad";
+		$member->email = 'rikad@gmail.com';
+		$member->password = bcrypt('rahasia');
+		$member->save();
+		$member->attachRole($academicAssistantRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "rafa";
+		$member->email = 'rafa@gmail.com';
+		$member->password = bcrypt('rahasia');
+		$member->save();
+		$member->attachRole($profAssistantRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "reza";
+		$member->email = 'reza@gmail.com';
+		$member->password = bcrypt('rahasia');
+		$member->save();
+		$member->attachRole($associateProfRole);
 
     }
 }

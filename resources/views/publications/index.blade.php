@@ -50,8 +50,10 @@
 				      <tr>
 				        <th>#</th>
 				        <th>Title</th>
-				        <th style="display:none">desciption</th>
 				        <th>Published</th>
+				        <th style="display:none">desciption</th>
+				        <th style="display:none">users</th>
+				        <th style="display:none">authors</th>
 				        <th style="display:none">file</th>
 				        <th style="display:none">Action</th>
 				      </tr>
@@ -66,11 +68,13 @@
 				        echo '<td>'.$i.'</td>';
 				    	$i++;
 						@endphp
-				        <td>{{ $value->title }}</td>
-				        <td style="display:none">{{ $value->description }}</td>
-				        <td>{{ $value->published }}</td>
-				        <td style="display:none">{{ $value->file }}</td>
-				        <td style="vertical-align: middle; display: none"><button class="btn btn-xs" onclick="rikad.download('+value+')"><span class="glyphicon glyphicon-file"></span> Download</button>  <button class="btn btn-primary btn-xs" onclick="rikad.edit(this,{{ $value->id }})"><span class="glyphicon glyphicon-pencil"></span></button>  <button class="btn btn-danger btn-xs" onclick="rikad.delete({{ $value->id }})"><span class="glyphicon glyphicon-remove"></span></button></td>
+				        <td>{{ $value['title'] }}</td>
+				        <td>{{ $value['published'] }}</td>
+				        <td style="display:none">{{ $value['description'] }}</td>
+				        <td style="display:none">{!! $value['users'] !!}</td>
+				        <td style="display:none">{!! $value['authors'] !!}</td>
+				        <td style="display:none">{{ $value['file'] }}</td>
+				        <td style="vertical-align: middle; display: none"><button class="btn btn-xs" onclick="rikad.download('{{ $value['file'] }}')"><span class="glyphicon glyphicon-file"></span>Download</button>  <button class="btn btn-primary btn-xs" onclick="rikad.edit(this,{{ $value['id'] }})"><span class="glyphicon glyphicon-pencil"></span></button>  <button class="btn btn-danger btn-xs" onclick="rikad.delete({{ $value['id'] }})"><span class="glyphicon glyphicon-remove"></span></button></td>
 				      </tr>
 						@endforeach
 				    </tbody>
@@ -122,7 +126,7 @@
 				sortField: 'text'
 			});
 			$('.js-multiselectize').selectize({
-				create:true,
+				create:false,
 				sortField: 'text'
 			});
 
@@ -135,9 +139,10 @@
 		this.optionData = {};
 		this.inputName = {
 			title: {title:'Title',type:'text'},
-			description: {title:'Short Description',type:'textarea'},
-			authors: {title:'add another authors',type:'multiselect'},
 			published: {title:'Published On',type:'date'},
+			description: {title:'Short Description',type:'textarea'},
+			users: {title:'Select authors from users (* this publications will appear on their publications)',type:'multiselect'},
+			authors: {title:'Add another authors',type:'select'},
 			file: {title:'Upload',type:'file'}
 		};
 		this.existsData = this.data.rows.length;
@@ -164,9 +169,21 @@
         this.buildOption = function(type,selected) {
         	var data = this.optionData;
         	var input = this.inputName[type];
-        	var output = selected == '' ? '<option selected="selected" value="">Select '+input.title+'</option>' : '<option value="">Select '+input.title+'</option>';
+			var output;
+			var cari = [];
+
+        	if(selected != '' ) {
+        		output ='<option value=""></option>';
+	        	var selected = JSON.parse(selected);
+	        	cari = selected.data;
+        	}
+        	else {
+	        	output = '<option selected="selected" value=""></option>';    		
+        	}
+
         	for(var result in data) {
-        		if (selected == data[result]) {
+
+        		if ($.inArray(data[result], cari) > -1 ) {
 	        		output += '<option value="'+result+'" selected="selected">'+data[result]+'</option>';
         		}
         		else {
@@ -182,17 +199,23 @@
 
 			switch (type) {
 				case 'multiselect': 
-					output = '<select class="js-selectize" name="'+name+'[]" multiple="multiple">';
+					output = '<select class="js-multiselectize" name="'+name+'[]" multiple="multiple">';
 					output += this.buildOption(name,value); 
 					output +='</select>';
 				break;
 				case 'textarea': output =   '<textarea class="form-control" name="'+name+'">'+value+'</textarea>';
 				break;
-				case 'file': output='<input class="form-control" type="file" name="file">'; 
-						output+= value != '' ? '<br><button class="btn" onclick="rikad.download('+value+')"><span class="glyphicon glyphicon-file"></span> Download</button>' : '';
+				case 'file': output='<input class="form-control" type="file" name="file">';
 				break;
 				case 'select':
-					output = '<select class="js-selectize" name="'+name+'">'+ this.buildOption(name,value) +'</select>';
+					output = '<select class="js-selectize" name="'+name+'[]" multiple="multiple">';
+					if(value != '') {
+						var option = JSON.parse(value);
+						for(var v in option.data) {
+							output += '<option value="'+option.data[v]+'" selected="selected">'+option.data[v]+'</option>';
+						}
+					}
+					output += '</select>';
 				break;
 				case 'date': 
 					output = '<div class="input-group date" id="date"><input type="text" class="form-control" name="'+ name +'" value="'+ value +'" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></div>';
@@ -225,6 +248,10 @@
 			additional();
 		}
 
+		this.download = function(file) {
+			window.location = "/menu/publications/download/"+file;
+		}
+
 		this.addRow = function () {
 			this.showModal(null,null);
 		}
@@ -235,7 +262,6 @@
 			for (var i = 1, lt = row.length; i < lt-1; i++) {
 				data.push(row[i].innerHTML);
 			}
-
 			this.showModal(data,id);
 		}
 
