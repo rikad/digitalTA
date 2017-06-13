@@ -12,16 +12,23 @@
 */
 
 Route::get('/', function () {
+	if (!Auth::guest()) {
+		return redirect()->action('HomeController@index');
+	}
+
     return view('welcome');
 });
 
 Auth::routes();
 
+Route::get('/dashboard', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
 //Route::get('/', 'HomeController@index');
 
 Route::group(['prefix'=>'admin', 'middleware'=>['auth', 'role:admin']], function () {
+	Route::get('users/roles', 'Admin\UsersController@roles');
 	Route::resource('users', 'Admin\UsersController');
+
 	// Route::resource('authors', 'AuthorsController');
 //	Route::resource('journals', 'JournalsController');
 //	Route::resource('profiles', 'JournalsController');
@@ -59,8 +66,8 @@ Route::group(['prefix'=>'menu', 'middleware'=>['auth']], function () {
 
 	Route::get('publications/update', 'PublicationsController@index');
 	Route::get('publications/users', 'PublicationsController@users');
+	Route::get('publications/download/{file}', 'PublicationsController@download');
 	Route::post('publications', 'PublicationsController@store');
-	Route::get('publications/selectedUsers/{id}', 'PublicationsController@selectedUsers');
 	Route::delete('publications/{id}', 'PublicationsController@destroy');
 
 });

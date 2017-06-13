@@ -16,10 +16,10 @@ class CreateJournalsTable extends Migration
         Schema::create('publications', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
-            $table->string('cover')->nullable();
+            $table->string('authors')->nullable();
             $table->string('description')->nullable();
             $table->date('published');
-            $table->string('file');
+            $table->string('file')->nullable();
             $table->timestamps();
         });
 
