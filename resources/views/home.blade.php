@@ -6,7 +6,7 @@
     <div class="col-md-12">
 
       <ul class="breadcrumb">
-        <li><a href="{{ url('/home') }}"><span class="glyphicon glyphicon-home">Dashboard</a></li>
+        <li><a href="{{ url('/home') }}"><span class="glyphicon glyphicon-home"></span> Dashboard</a></li>
       </ul>
 
       <!-- Panel -->
@@ -19,8 +19,8 @@
         <div class="row">
 
           <div class="col-md-3">
-            <div class="panel panel-default">
-              <div class="panel-heading">Print Curriculum Vitae</div>
+            <div class="panel panel-default" url="/menu/cv">
+              <div class="panel-heading">My Curriculum Vitae</div>
               <div class="panel-body">
                 <span class="glyphicon glyphicon-file"></span>
               </div>
