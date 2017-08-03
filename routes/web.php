@@ -70,4 +70,6 @@ Route::group(['prefix'=>'menu', 'middleware'=>['auth']], function () {
 	Route::post('publications', 'PublicationsController@store');
 	Route::delete('publications/{id}', 'PublicationsController@destroy');
 
+	Route::get('cv', 'VitaeController@index');
+
 });
