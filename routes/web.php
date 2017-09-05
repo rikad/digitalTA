@@ -23,6 +23,9 @@ Auth::routes();
 
 Route::get('/dashboard', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
+Route::post('/changePassword', 'HomeController@changePassword');
+Route::get('/getUserInfo', 'HomeController@getUserInfo');
+Route::post('/updateUserInfo', 'HomeController@updateUserInfo');
 //Route::get('/', 'HomeController@index');
 
 Route::group(['prefix'=>'admin', 'middleware'=>['auth', 'role:admin']], function () {
@@ -30,46 +33,36 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth', 'role:admin']], function
 	Route::resource('users', 'Admin\UsersController');
 
 	// Route::resource('authors', 'AuthorsController');
-//	Route::resource('journals', 'JournalsController');
-//	Route::resource('profiles', 'JournalsController');
+	//	Route::resource('journals', 'JournalsController');
+	//	Route::resource('profiles', 'JournalsController');
 });
 
-Route::group(['prefix'=>'menu', 'middleware'=>['auth']], function () {
-	Route::get('profiles/update', 'ProfilesController@create');
-	Route::post('profiles/update', 'ProfilesController@store');
+Route::group(['prefix'=>'koordinator', 'middleware'=>['auth', 'role:koordinator']], function () {
+	Route::post('students/bulk', 'Koordinator\StudentsController@bulk');
+	Route::get('topics/dosen', 'Koordinator\TopicsController@dosen');
+	Route::get('students/period', 'Koordinator\StudentsController@period');
+	Route::resource('students', 'Koordinator\StudentsController');
+	Route::resource('topics', 'Koordinator\TopicsController');
+	// Route::resource('periods', 'Koordinator\PeriodsController');
+});
 
-	Route::get('educations/update', 'EducationsController@index');
-	Route::post('educations', 'EducationsController@store');
-	Route::delete('educations/{id}', 'EducationsController@destroy');
-	Route::get('educations/options', 'EducationsController@options');
+Route::group(['prefix'=>'dosen', 'middleware'=>['auth', 'role:dosen']], function () {
+	Route::post('topics/peminatRespond', 'Dosen\TopicsController@peminatRespond');
+	Route::get('topics/peminat/{id}', 'Dosen\TopicsController@peminat');
+ 	Route::resource('topics', 'Dosen\TopicsController');
+ 	Route::resource('students', 'Dosen\StudentsController');
+});
 
-	Route::get('experiences/update', 'ExperiencesController@index');
-	Route::get('experiences/organizations', 'ExperiencesController@organizations');
-	Route::post('experiences', 'ExperiencesController@store');
-	Route::delete('experiences/{id}', 'ExperiencesController@destroy');
+Route::group(['prefix'=>'student', 'middleware'=>['auth', 'role:student']], function () {
 
-	Route::get('certifications/update', 'CertificationsController@index');
-	Route::post('certifications', 'CertificationsController@store');
-	Route::delete('certifications/{id}', 'CertificationsController@destroy');
+	Route::resource('groups', 'Student\GroupsController');
 
-	Route::get('memberships/update', 'MembershipsController@index');
-	Route::post('memberships', 'MembershipsController@store');
-	Route::delete('memberships/{id}', 'MembershipsController@destroy');
+	Route::group(['middleware'=>['checkgroup']], function () {
+		Route::get('topics/dosen', 'Koordinator\TopicsController@dosen');
+		Route::get('bukubiru/getData', 'Student\BukuBiruController@getData');
 
-	Route::get('awards/update', 'AwardsController@index');
-	Route::post('awards', 'AwardsController@store');
-	Route::delete('awards/{id}', 'AwardsController@destroy');
-
-	Route::get('activities/update', 'ActivitiesController@index');
-	Route::post('activities', 'ActivitiesController@store');
-	Route::delete('activities/{id}', 'ActivitiesController@destroy');
-
-	Route::get('publications/update', 'PublicationsController@index');
-	Route::get('publications/users', 'PublicationsController@users');
-	Route::get('publications/download/{file}', 'PublicationsController@download');
-	Route::post('publications', 'PublicationsController@store');
-	Route::delete('publications/{id}', 'PublicationsController@destroy');
-
-	Route::get('cv', 'VitaeController@index');
-
+		Route::resource('topics', 'Student\TopicsController');
+		Route::resource('bukubiru', 'Student\BukuBiruController');
+		Route::resource('proposals', 'Student\ProposalsController');
+	});
 });

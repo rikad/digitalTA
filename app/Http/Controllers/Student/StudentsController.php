@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Koordinator;
 
 use App\Http\Controllers\Controller;
 
@@ -10,11 +10,10 @@ use App\Role;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Html\Builder;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Session;
 use Validator;
 
-class UsersController extends Controller
+class StudentsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -29,13 +28,13 @@ class UsersController extends Controller
     public function validation($id) {
 
         $data = [
+            'no_induk' => 'required:unique:users,no_induk',
             'name' => 'required:unique:users,name',
             'email' => 'required:unique:users,email',
-            'password' => 'nullable',
-            'role' => 'required|exists:roles,id',
         ];
 
         if($id != false ) {
+            $data['no_induk'] = $data['no_induk'].','.$id;
             $data['name'] = $data['name'].','.$id;
             $data['email'] = $data['email'].','.$id;
         }
@@ -48,7 +47,9 @@ class UsersController extends Controller
         if ($request->ajax()) {
             $data = User::select(['users.id','users.name','users.no_induk', 'users.email','roles.display_name'])
                     ->join('role_user','role_user.user_id','users.id')
-                    ->join('roles','role_user.role_id','roles.id');
+                    ->join('roles','role_user.role_id','roles.id')
+                    ->where('roles.name','student');
+
             return Datatables::of($data)
                     ->addColumn('action',function($data) { 
                         return '<button class="btn btn-primary btn-xs" onclick="rikad.edit(this,\''.$data->id.'\')"><span class="glyphicon glyphicon-pencil"></span></button> <button class="btn btn-danger btn-xs" onclick="rikad.delete(\''.$data->id.'\')"><span class="glyphicon glyphicon-remove"></span></button>';
@@ -56,13 +57,12 @@ class UsersController extends Controller
         }
 
         $html = $htmlBuilder
-          ->addColumn(['data' => 'name', 'name'=>'users.name', 'title'=>'Username'])
           ->addColumn(['data' => 'no_induk', 'name'=>'users.no_induk', 'title'=>'No Induk'])
+          ->addColumn(['data' => 'name', 'name'=>'users.name', 'title'=>'Username'])
           ->addColumn(['data' => 'email', 'name'=>'users.email', 'title'=>'Email'])
-          ->addColumn(['data' => 'display_name', 'name'=>'roles.display_name', 'title'=>'Role'])
           ->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'Action', 'orderable'=>false, 'searchable'=>false]);
 
-        return view('users.index')->with(compact('html'));
+        return view('koordinator.students.index')->with(compact('html'));
     }
 
     /**
@@ -88,48 +88,25 @@ class UsersController extends Controller
                     ->join('role_user','role_user.user_id','users.id')
                     ->find($data['id']);
 
-        if ($request->input('password') != null) {
-            $data['password'] = bcrypt($request->input('password'));
+        $validator = Validator::make($data, $this->validation($data['id']));
+
+        if ($validator->fails()) {
+            Session::flash("flash_notification", [
+                "level"=>"danger",
+                "message"=>$validator->messages()
+            ]);
+
+            return redirect('koordinator/students');
         }
 
-        //check if data exists update else create
-        if($user){
-            $validator = Validator::make($data, $this->validation($data['id']));
-            if ($validator->fails()) {
-                Session::flash("flash_notification", [
-                    "level"=>"danger",
-                    "message"=>$validator->messages()
-                ]);
-
-                return redirect()->route('users.index');
-            }
-
-            $user->update($data);
-
-            $user->detachRole($user->role_id);
-            $user->attachRole($data['role']);
-        } else {
-            $validator = Validator::make($data, $this->validation(false));
-            if ($validator->fails()) {
-                Session::flash("flash_notification", [
-                    "level"=>"danger",
-                    "message"=>$validator->messages()
-                ]);
-
-                return redirect()->route('users.index');
-            }
-
-            $data['user_id'] = Auth::id();
-            $user = User::create($data);
-            $user->attachRole($data['role']);
-        }
+        $user->update($data);
 
         Session::flash("flash_notification", [
             "level"=>"success",
             "message"=>"Users Information Updated"
         ]);
 
-        return redirect()->route('users.index');
+        return redirect('koordinator/students');
 
     }
 

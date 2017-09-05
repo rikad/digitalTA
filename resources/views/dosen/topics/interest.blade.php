@@ -10,7 +10,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Educations</h4>
+          <h4 class="modal-title">Kelola Peserta Tugas Akhir</h4>
         </div>
         <div class="modal-body">
           <p></p>
@@ -23,19 +23,59 @@
     </div>
   </div>
 
+  <!--Modal Bulk-->
+  <div class="modal fade" id="myModalAccept" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Setujui Pengajuan?</h4>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="/dosen/topics/peminatRespond"> {{ csrf_field() }}
+          <input type=hidden name=idtopic id="idTopic" value="m">
+          <input type=hidden name=id_topic id="id_topic" value="m">
+        	Catatan: <br>
+        	<textarea rows=5 class="form-control" name=note></textarea><br>
+			<div align=right>
+          <button type="submit" name="submitRespond" value="1" class="btn btn-success">Setujui</button>
+          <button type="submit" name="submitRespond" value="2"  class="btn btn-danger">Tolak</button>
+          </div>
+          </form>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <!---->
+
 	<div class="row">
 		<div class="col-md-12">
 			<ul class="breadcrumb">
 				<li><a href="{{ url('/home') }}">Dashboard</a></li>
-				<li class="active">Users Management</li>
+				<li class="active">Kelola Peserta Tugas Akhir</li>
 			</ul>
+
+			
+                <div class="alert alert-info">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <b>TIPS:</b> Pada halaman ini, dosen dapat menyetujui pengajuan tugas akhir dari para mahasiswa
+                </div>
+            
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h2 class="panel-title">Users Management</h2>
+					<h2 class="panel-title">Student Management</h2>
 				</div>
 				<div class="panel-body">
-					<div align="right"><button id="editBtn" class="btn btn-primary btn-sm" onclick="rikad.add(true)">Add</button></div><br>
+				<div align="right">
+					<!--<select><option>2017 Semester 1</option></select>-->
+					<!--<button id="editBtn" class="btn btn-primary btn-sm" 
+					data-toggle="modal" data-target="#myModalBulk">Tambahkan Peserta</button>-->
+					<!--<button id="editBtn" class="btn btn-primary btn-sm" onclick="rikad.add(true)">Add</button>-->
+				</div><br>
 					{!! $html->table(['class'=>'table-striped']) !!}
 				</div>
 			</div>
@@ -49,7 +89,7 @@
 <script src="/js/dataTables.bootstrap.min.js"></script>
 <script src="/js/selectize.min.js"></script>
 
-	{!! $html->scripts() !!}
+{!! $html->scripts() !!}
 
   <script>
 
@@ -64,33 +104,37 @@
 		});
 	}
 
+	function prepare(idTopic, id){
+		//alert('preparing....');
+		document.getElementById('idTopic').value=idTopic ; 
+		document.getElementById('id_topic').value=id ; 
+	}
+
 	function rikad() {
 
 		this.optionData = {};
 
 		this.inputName = {
-			name: {title:'Name',type:'text'},
 			no_induk: {title:'No. Induk',type:'text'},
-			email: {title:'Email',type:'email'},
-			role: {title:'Role',type:'select'},
-			password: {title:'Password',type:'password'}
+			name: {title:'Name',type:'text'},
+			email: {title:'Email',type:'email'}
 		};
 
 		this.removeBtn = function (id) {
 			return '<button class="btn btn-danger btn-xs" onclick="rikad.deleteRow(this)"><span class="glyphicon glyphicon-remove"></span></button>';
 		}
 
-		this.getSelect = function() {
+		this.getPeriod = function() {
 			var here = this;
 	        $.ajax({
-	            url: '/admin/users/roles',
+	            url: '/koordinator/students/period',
 	            type: 'GET',
 	            dataType: 'json',
 	            error: function() {
 	                alert('error fetch data, please refresh this page again');
 	            },
 	            success: function(res) {
-	            	here.optionData = res;
+	            	alert(res);
 	            }
 	    	});
         }
@@ -128,9 +172,9 @@
 			return output;
 		}
 
-		this.showModal = function (data,id) {
+		this.showModal = function (data, id) {
 			$('#myModal').modal();
-			var form = '<form method="POST" action="/admin/users"> {{ csrf_field() }} ';
+			/*var form = '<form method="POST" action="/koordinator/students"> {{ csrf_field() }} ';
 			form += '<input type="hidden" value="'+id+'" name="id">';
 			var i=0;
 			for(var input in this.inputName) {
@@ -148,32 +192,25 @@
 				i++;
 			}
 
-			form += '<div align="right"><input class="btn btn-primary btn-sm" type="submit" value="Save"></div></form>';
+			form += '<div align="right"><input class="btn btn-primary btn-sm" type="submit" value="Save"/></div></form>';*/
 
 			var content = $('#myModal').find('p')
 			content[0].innerHTML = form;
 
 			//add additional function of date
-			additional();
+			//additional();
 		}
 
 		this.add = function () {
 			this.showModal(null,null);
 		}
 		this.edit = function(row,id) {
-			var row = row.parentNode.parentNode.cells;
-
-			data = [];
-			for (var i = 0, lt = row.length; i < lt-1; i++) {
-				data.push(row[i].innerHTML);
-			}
-
 			this.showModal(data,id);
 		}
 
 		this.delete = function(id) {
 	        $.ajax({
-	            url: '/admin/users/'+id,
+	            url: '/koordinator/students/'+id,
 	            type: 'DELETE',
 	            data: { '_token': window.Laravel.csrfToken },
 	            dataType: 'json',
@@ -189,8 +226,7 @@
 	}
 
 	var rikad = new rikad();
-	rikad.getSelect();
-
+	//rikad.getPeriod();
   </script>
 
 @endsection

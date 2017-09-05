@@ -11,6 +11,7 @@ class LaratrustSetupTables extends Migration
      */
     public function up()
     {
+        /*
         // Create table for storing roles
         Schema::create('roles', function (Blueprint $table) {
             $table->increments('id');
@@ -65,7 +66,7 @@ class LaratrustSetupTables extends Migration
 
             $table->primary(['permission_id', 'user_id', 'user_type']);
         });
-
+    */
     }
 
     /**
@@ -75,10 +76,10 @@ class LaratrustSetupTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('permission_user');
+        /*Schema::dropIfExists('permission_user');
         Schema::dropIfExists('permission_role');
         Schema::dropIfExists('permissions');
         Schema::dropIfExists('role_user');
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('roles');*/
     }
 }

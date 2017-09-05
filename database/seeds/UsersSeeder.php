@@ -4,6 +4,8 @@ use Illuminate\Database\Seeder;
 
 use App\Role;
 use App\User;
+use App\Period;
+use App\Topic;
 
 class UsersSeeder extends Seeder
 {
@@ -22,34 +24,23 @@ class UsersSeeder extends Seeder
 
 		// Membuat role member
 		$profRole = new Role();
-		$profRole->name = "professor";
-		$profRole->display_name = "Professor";
+		$profRole->name = "koordinator";
+		$profRole->display_name = "Koordinator TA";
 		$profRole->save();
 
 		// Membuat role lecture
 		$lecturerRole = new Role();
-		$lecturerRole->name = "lecture";
-		$lecturerRole->display_name = "Lecture";
+		$lecturerRole->name = "dosen";
+		$lecturerRole->display_name = "Dosen";
 		$lecturerRole->save();
 
 		// Membuat role academic assistant
 		$academicAssistantRole = new Role();
-		$academicAssistantRole->name = "academic_assistant";
-		$academicAssistantRole->display_name = "Academic Assistant";
+		$academicAssistantRole->name = "student";
+		$academicAssistantRole->display_name = "Student";
 		$academicAssistantRole->save();
 
-		// Membuat role assistant proffesor
-		$profAssistantRole = new Role();
-		$profAssistantRole->name = "assistant_proffesor";
-		$profAssistantRole->display_name = "Assistant Professor";
-		$profAssistantRole->save();
-
-		// Membuat role asociate proffesor
-		$associateProfRole = new Role();
-		$associateProfRole->name = "associate_proffesor";
-		$associateProfRole->display_name = "Associate Professor";
-		$associateProfRole->save();
-
+		
 		// Membuat sample admin
 		$admin = new User();
 		$admin->name = 'admin';
@@ -60,43 +51,917 @@ class UsersSeeder extends Seeder
 
 		// Membuat sample member
 		$member = new User();
-		$member->name = "proffesor";
-		$member->email = 'prof@gmail.com';
-		$member->password = bcrypt('rahasia');
+		$member->name = "Eko Mursito Budi";
+		$member->email = 'emb@gmail.com';
+		$member->password = bcrypt('emb');
 		$member->save();
 		$member->attachRole($profRole);
 
 		// Membuat sample member
 		$member = new User();
-		$member->name = "dosen";
-		$member->email = 'dosen@gmail.com';
-		$member->password = bcrypt('rahasia');
+		$member->name = "AN";
+		$member->email = 'an@gmail.com';
+		$member->password = bcrypt('an');
 		$member->save();
 		$member->attachRole($lecturerRole);
 
 		// Membuat sample member
 		$member = new User();
-		$member->name = "rikad";
-		$member->email = 'rikad@gmail.com';
-		$member->password = bcrypt('rahasia');
+		$member->name = "AW";
+		$member->email = 'aw@gmail.com';
+		$member->password = bcrypt('aw');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "BY";
+		$member->email = 'by@gmail.com';
+		$member->password = bcrypt('by');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "DK";
+		$member->email = 'dk@gmail.com';
+		$member->password = bcrypt('dk');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "DR";
+		$member->email = 'dr@gmail.com';
+		$member->password = bcrypt('dr');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "EE";
+		$member->email = 'ee@gmail.com';
+		$member->password = bcrypt('ee');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "EJ";
+		$member->email = 'ej@gmail.com';
+		$member->password = bcrypt('ej');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "EM";
+		$member->email = 'em@gmail.com';
+		$member->password = bcrypt('em');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "EY";
+		$member->email = 'ey@gmail.com';
+		$member->password = bcrypt('ey');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "IM";
+		$member->email = 'im@gmail.com';
+		$member->password = bcrypt('im');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "IP";
+		$member->email = 'ip@gmail.com';
+		$member->password = bcrypt('ip');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "JS";
+		$member->email = 'js@gmail.com';
+		$member->password = bcrypt('js');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "MK";
+		$member->email = 'mk@gmail.com';
+		$member->password = bcrypt('mk');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "NG";
+		$member->email = 'ng@gmail.com';
+		$member->password = bcrypt('ng');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "PS";
+		$member->email = 'ps@gmail.com';
+		$member->password = bcrypt('ps');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "RA";
+		$member->email = 'ra@gmail.com';
+		$member->password = bcrypt('ra');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "RR";
+		$member->email = 'rr@gmail.com';
+		$member->password = bcrypt('rr');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "SP";
+		$member->email = 'sp@gmail.com';
+		$member->password = bcrypt('sp');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "YM";
+		$member->email = 'ym@gmail.com';
+		$member->password = bcrypt('ym');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "YY";
+		$member->email = 'yy@gmail.com';
+		$member->password = bcrypt('yy');
+		$member->save();
+		$member->attachRole($lecturerRole);// Membuat sample member
+
+		$member = new User();
+		$member->name = "WH";
+		$member->email = 'wh@gmail.com';
+		$member->password = bcrypt('wh');
+		$member->save();
+		$member->attachRole($lecturerRole);
+
+
+		// Membuat sample member
+		$member = new User();
+		$member->name = "Student 1";
+		$member->email = 'student1@gmail.com';
+		$member->password = bcrypt('student1');
 		$member->save();
 		$member->attachRole($academicAssistantRole);
 
 		// Membuat sample member
 		$member = new User();
-		$member->name = "rafa";
-		$member->email = 'rafa@gmail.com';
-		$member->password = bcrypt('rahasia');
+		$member->name = "Student 2";
+		$member->email = 'student2@gmail.com';
+		$member->password = bcrypt('student2');
 		$member->save();
-		$member->attachRole($profAssistantRole);
+		$member->attachRole($academicAssistantRole);
 
 		// Membuat sample member
 		$member = new User();
-		$member->name = "reza";
-		$member->email = 'reza@gmail.com';
-		$member->password = bcrypt('rahasia');
+		$member->name = "Student 3";
+		$member->email = 'student3@gmail.com';
+		$member->password = bcrypt('student3');
 		$member->save();
-		$member->attachRole($associateProfRole);
+		$member->attachRole($academicAssistantRole);
+		
+		// Membuat sample member
+		$member = new User();
+		$member->name = "Student 4";
+		$member->email = 'student4@gmail.com';
+		$member->password = bcrypt('student4');
+		$member->save();
+		$member->attachRole($academicAssistantRole);
 
+
+		// Membuat period baru
+		$period = new Period();
+		$period->year = "2017";
+		$period->semester = "1";
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 3;
+		$period->title = "Pembuatan lapisan pelindung gelombang elektromagnetic (electromagnetic field) / lapisan anti-radar";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 3;
+		$period->title = "Pembuatan lapisan superhidrofobik pada 'kaca' pelindung (visor) pada helm";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 4;
+		$period->title = "robot rehabilitasi";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 4;
+		$period->title = "autonomous truck trailer";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 4;
+		$period->title = "control of multiple robots";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 4;
+		$period->title = "optimasi operasi pelabuhan";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 5;
+		$period->title = "Synthesis & fabrikasi material struktur nano MOF sebagai sensor gas";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 3;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 5;
+		$period->title = "Fabrikasi material struktur nano sebagai bahan bio sensor";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 3;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 5;
+		$period->title = "Pengembangan sistem monitoring kualitas udara berbasis sensor semikonduktor";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 3;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 6;
+		$period->title = "Desain sistem uji tak merusak dengan ultrasonik untuk deteksi cacat pada rel kereta";
+		$period->bobot = 2;
+		$period->waktu = 1;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 6;
+		$period->title = "Desain sistem uji tak merusak dengan ultrasonik untuk pemeriksaan struktur beton";
+		$period->bobot = 2;
+		$period->waktu = 1;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 7;
+		$period->title = "Studi nanopartikel pada filter dan asap rokok menggunakan SEM dan TEM";
+		$period->bobot = 3;
+		$period->waktu = 1;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 7;
+		$period->title = "Pembuatan dan evaluasi performa Phase Change Material berbasis PEG";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 8;
+		$period->title = "Operator Training Simulator untuk DCS";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 8;
+		$period->title = "Sistem kontrol swarm robot BB8";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 8;
+		$period->title = "Sistem kontrol swarm robot quad rotor";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 8;
+		$period->title = "Pengendalian sistem penjernih air portabel";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 9;
+		$period->title = "Integrated Control for Speed Control of Electrical Vehicle";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 9;
+		$period->title = "Swarm Control of unmanned ground vehicle";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 9;
+		$period->title = "Railway Signalling and Automation";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 9;
+		$period->title = "Obstacle avoidance control of quad rotor";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 10;
+		$period->title = "Educational Control System";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 10;
+		$period->title = "Alat pengering kain batik dengan udara kering dingin";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 10;
+		$period->title = "Sistem perekam MIDI gambang carumba";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 10;
+		$period->title = "Interactive Multimedia in Public Space";
+		$period->bobot = 1;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 11;
+		$period->title = "Sistem detektor bayi kuning sederhana";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 11;
+		$period->title = "Rel kereta pengukuran permukaan menggunakan laser range finder";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 11;
+		$period->title = "Pengukuran pengotor pada minyak kelapa sawit";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 11;
+		$period->title = "Pembuatan prototipe perekam tomografi optik";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 12;
+		$period->title = "Perancangan Concert Hall -dedicated- musik kolintang berbasis kepada preferensi penonton";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 3;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 12;
+		$period->title = "Perancangan/model posisi -set up- ensemble musik gamelan bali di dalam Concert Hall";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 3;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 12;
+		$period->title = "Analisa sinyal akustik sebagai sarana komunikasi antar pemusik gamelan bali";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 3;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 12;
+		$period->title = "Pengujian psiko-akustik preferensi musik gondang batak";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 3;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 13;
+		$period->title = "Pengembangan absorber konstruksi paralel dan seri berbahan dasar felt";
+		$period->bobot = 3;
+		$period->waktu = 1;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 13;
+		$period->title = "Pengembangan absorber akustik berbasis sistem resonator co-planar";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 13;
+		$period->title = "Pengembangan absorber pita lebar berbasis chirped multi-layer";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 13;
+		$period->title = "Pengembangan sonic crystal noise barrier";
+		$period->bobot = 1;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 14;
+		$period->title = "Soundscape kereta penumpang";
+		$period->bobot = 2;
+		$period->waktu = 1;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 14;
+		$period->title = "Soundscape of iconic spaces (soundscape untuk ruang ikonik)";
+		$period->bobot = 2;
+		$period->waktu = 1;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 14;
+		$period->title = "Soundscape ruang rawat inap rumah sakit";
+		$period->bobot = 2;
+		$period->waktu = 1;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 14;
+		$period->title = "Auditory virtual reality environment (open plan offices)";
+		$period->bobot = 1;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 15;
+		$period->title = "perancangan komputasi katalis konversi CO2 menjadi metanol untuk aplikasi baterai";
+		$period->bobot = 1;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 16;
+		$period->title = "Pembuatan thin film menggunakan elektrospray pyrolisis";
+		$period->bobot = 2;
+		$period->waktu = 1;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 16;
+		$period->title = "Pembuatan thin film menggunakan metode solvo thermal";
+		$period->bobot = 2;
+		$period->waktu = 1;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 17;
+		$period->title = "Penerapan Standar Industri untuk Evaluasi Karakteristik dan Performansi Mini Plant di TF-ITB";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 17;
+		$period->title = "Integrasi PLC – HMI – Matlab untuk Simulasi dan Pengontrolan Proses Industri.";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 17;
+		$period->title = "Aplikasi Mikrokontroller dan Robotik untuk Pengembangan Mobil Listrik Tanpa Awak ";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 17;
+		$period->title = "Pengembangan Sistem Monitoring Posisi dan Pergerakan Truck Trailer di Lapangan Terbuka ";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 18;
+		$period->title = "Pengembangan Model Indeks Silau untuk Lampu/Luminer Berbasis LED";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 3;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 18;
+		$period->title = "Pengembangan Model Pencampuran Warna LED-RGB dan LED-Konversi Fosfor";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 18;
+		$period->title = "Optimisasi Sistem Penyalur Cahaya Alami Tipe Anidolik dalam Ruang Kantor Tapak Terbuka";
+		$period->bobot = 2;
+		$period->waktu = 1;
+		$period->dana = 3;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 18;
+		$period->title = "Optimisasi Desain Luminer Berbasis LED dengan Algoritma Genetik";
+		$period->bobot = 2;
+		$period->waktu = 1;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 18;
+		$period->title = "Optimisasi Spektrum Lampu Bantu untuk Praktik Dokter di Rumah Sakit";
+		$period->bobot = 2;
+		$period->waktu = 1;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 19;
+		$period->title = "Pengembangan model termoregulasi tubuh pasien operasi";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 3;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 19;
+		$period->title = "Pengaruh variasi kecepatan terhadap pola aliran udara di dalam ruang operasi (eksperimental uji asap dan simulasi)";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 19;
+		$period->title = "Penggunaan thermal insulation coating untuk pengurangan kehilangan energi kalor pada tungku";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 19;
+		$period->title = "Perancangan sistem penyimpanan biogas dalam tabung bertekanan";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 20;
+		$period->title = "Bio signal feedback untuk robot rehabilitasi";
+		$period->bobot = 2;
+		$period->waktu = 1;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 20;
+		$period->title = "Needle insertion guidance USD";
+		$period->bobot = 1;
+		$period->waktu = 1;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 20;
+		$period->title = "Skin imaging";
+		$period->bobot = 1;
+		$period->waktu = 1;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 21;
+		$period->title = "Nano Komposit Barium Ferrit untuk sensor medikal";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 21;
+		$period->title = "Nano Komposit Sitontium Ferrit untuk sensor medikal";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 22;
+		$period->title = "Perancangan sensor fusion untuk intelligent level crossing";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 22;
+		$period->title = "Pengembangan sistem kontrol untuk complex biological network";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 22;
+		$period->title = "Perancangan dan verifikasi sistem interlocking pada simulator Kereta Api";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 1;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 22;
+		$period->title = "Perancangan sensor fusion berbasis machine learning";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 23;
+		$period->title = "Pengembangan paket program aplikasi untuk simulator sistem pencairan gas";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 23;
+		$period->title = "Pengembangan paket program aplikasi untuk simulator sistem pembangkit daya siklus binari/siklus Rankine organik ";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 23;
+		$period->title = "Pengembangan paket program aplikasi untuk simulator aliran udara di dalam ruangan tertutup ";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
+
+		// Membuat topik-topik
+		$period = new Topic();
+		$period->period_id = 1;
+		$period->dosen1_id = 23;
+		$period->title = "Perancangan sistem penukar kalor untuk brine-panas bertekanan tinggi dengan refrigeran organik";
+		$period->bobot = 2;
+		$period->waktu = 2;
+		$period->dana = 2;
+		$period->save();
     }
 }

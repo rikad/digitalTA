@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
+use App\Role;
+use App\Group;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Session;
 
 class HomeController extends Controller
 {
@@ -22,14 +27,88 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
         if (Auth::user()->hasRole('admin')) {
-            return view('adminhome');
+            return view('admin.index');
+        }
+        else if (Auth::user()->hasRole('koordinator')) {
+            return view('koordinator.index');
+        }
+        else if (Auth::user()->hasRole('dosen')) {
+            return view('dosen.index');
+        }
+        elseif (Auth::user()->hasRole('student')) {
+          return view('students.index');
         }
 
-        return view('home');
+        return view('welcome');
     }
 
+    public function changePassword(Request $request)
+    {
+      $data = $request->except(['_token']);
+      if($data['passwordNew']!=$data['passwordNew2']){
+        Session::flash("flash_notification", [
+                    "level"=>"danger",
+                    "message"=>"Password baru tidak cocok"
+                ]);
+
+        return redirect('dashboard');
+      }
+
+      $user = User::select('users.*')
+        ->where('users.id',Auth::id())
+        ->first();//
+
+      $passwordIsOk = password_verify( $data['passwordCurrent'], $user['password'] );
+
+      if($passwordIsOk){
+        DB::table('users')
+            ->where('id', Auth::id())
+            ->update(['password' => bcrypt($data['passwordNew'])]); 
+        
+        Session::flash("flash_notification", [
+                    "level"=>"success",
+                    "message"=>"Password telah dirubah"
+                ]);
+
+        return redirect('dashboard');
+      }else{
+        Session::flash("flash_notification", [
+                    "level"=>"danger",
+                    "message"=>"Password salah. Silahkan coba lagi"
+                ]);
+
+        return redirect('dashboard');
+      }
+    }
+
+    public function getUserInfo(){
+      $user = User::select('users.*')
+        ->where('users.id',Auth::id())
+        ->first();
+
+      $filtered['no_induk']=$user['no_induk'];
+      $filtered['name']=$user['name'];
+      $filtered['email']=$user['email'];
+
+      return $filtered;     
+    }
+
+    public function updateUserInfo(Request $request){
+      $data = $request->except(['_token']);
+      
+          DB::table('users')
+            ->where('id', Auth::id())
+            ->update(['no_induk' => $data['ni'], 'name' => $data['name'], 'email' => $data['email']]); 
+
+              Session::flash("flash_notification", [
+                    "level"=>"success",
+                    "message"=>"Informasi user berhasil di update"
+                ]);
+
+        return back();//redirect('dashboard');
+    }
 }

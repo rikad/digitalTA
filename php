@@ -1,1 +1,1 @@
-/opt/lampstack-7.1.4-0/php/bin/php
+../lampstack-5.6.31-0/php/bin/php

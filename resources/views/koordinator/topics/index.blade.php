@@ -10,7 +10,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Educations</h4>
+          <h4 class="modal-title">Topics</h4>
         </div>
         <div class="modal-body">
           <p></p>
@@ -27,15 +27,21 @@
 		<div class="col-md-12">
 			<ul class="breadcrumb">
 				<li><a href="{{ url('/home') }}">Dashboard</a></li>
-				<li class="active">Users Management</li>
+				<li class="active">Topics Management</li>
 			</ul>
+
+			<div class="alert alert-info">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <b>TIPS:</b> Pada halaman ini, koordinator dapat mendaftarkan topik Tugas Akhir
+                    (Dosen juga dapat mendaftarkan topik Tugas Akhir lewat akun masing-masing)
+                </div>
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h2 class="panel-title">Users Management</h2>
+					<h2 class="panel-title">Topics Management</h2>
 				</div>
 				<div class="panel-body">
-					<div align="right"><button id="editBtn" class="btn btn-primary btn-sm" onclick="rikad.add(true)">Add</button></div><br>
+				<div align="right"><button id="editBtn" class="btn btn-primary btn-sm" onclick="rikad.add(true)">Add</button></div><br>
 					{!! $html->table(['class'=>'table-striped']) !!}
 				</div>
 			</div>
@@ -49,7 +55,7 @@
 <script src="/js/dataTables.bootstrap.min.js"></script>
 <script src="/js/selectize.min.js"></script>
 
-	{!! $html->scripts() !!}
+{!! $html->scripts() !!}
 
   <script>
 
@@ -69,21 +75,21 @@
 		this.optionData = {};
 
 		this.inputName = {
-			name: {title:'Name',type:'text'},
-			no_induk: {title:'No. Induk',type:'text'},
-			email: {title:'Email',type:'email'},
-			role: {title:'Role',type:'select'},
-			password: {title:'Password',type:'password'}
+			dosen1_id: {title:'Dosen',type:'select'},
+			title: {title:'Judul',type:'text'},
+			bobot: {title:'Bobot',type:'text'},
+			waktu: {title:'Waktu',type:'text'},
+			dana: {title:'Dana',type:'text'}
 		};
 
 		this.removeBtn = function (id) {
 			return '<button class="btn btn-danger btn-xs" onclick="rikad.deleteRow(this)"><span class="glyphicon glyphicon-remove"></span></button>';
 		}
 
-		this.getSelect = function() {
+		this.getDosen = function() {
 			var here = this;
 	        $.ajax({
-	            url: '/admin/users/roles',
+	            url: '/koordinator/topics/dosen',
 	            type: 'GET',
 	            dataType: 'json',
 	            error: function() {
@@ -130,7 +136,7 @@
 
 		this.showModal = function (data,id) {
 			$('#myModal').modal();
-			var form = '<form method="POST" action="/admin/users"> {{ csrf_field() }} ';
+			var form = '<form method="POST" action="/koordinator/topics"> {{ csrf_field() }} ';
 			form += '<input type="hidden" value="'+id+'" name="id">';
 			var i=0;
 			for(var input in this.inputName) {
@@ -149,6 +155,7 @@
 			}
 
 			form += '<div align="right"><input class="btn btn-primary btn-sm" type="submit" value="Save"></div></form>';
+
 
 			var content = $('#myModal').find('p')
 			content[0].innerHTML = form;
@@ -173,7 +180,7 @@
 
 		this.delete = function(id) {
 	        $.ajax({
-	            url: '/admin/users/'+id,
+	            url: '/koordinator/topics/'+id,
 	            type: 'DELETE',
 	            data: { '_token': window.Laravel.csrfToken },
 	            dataType: 'json',
@@ -189,8 +196,7 @@
 	}
 
 	var rikad = new rikad();
-	rikad.getSelect();
-
+	rikad.getDosen();
   </script>
 
 @endsection
