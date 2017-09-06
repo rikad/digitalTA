@@ -67,8 +67,41 @@
                 </td>
               </tr>
               <tr>
-                <td>Memilih Topik Tugas Akhir</td>
+                <td rowspan=3>Memilih Topik Tugas Akhir</td>
                 <td>
+                  Topik #1<br>
+		          @if(isset($topic))
+		        	@if($topic->status == 0)
+					<button id="progress" status="80" class="btn btn-warning btn-sm disabled">Menunggu Konfirmasi Pembimbing</button>
+		        	@elseif($topic->status == 1)
+					<button id="progress" status="100" class="btn btn-success btn-sm disabled"><span class="glyphicon glyphicon-ok"></span> Telah Di Setujui</button>
+		        	@elseif($topic->status == 2)
+					<button id="progress" status="60" class="btn btn-danger btn-sm disabled"><span class="glyphicon glyphicon-remove"></span> Di Tolak</button>
+		        	@endif
+				  @else
+                	<span class="glyphicon glyphicon-remove"></span>
+                  @endif
+                </td>
+              </tr>
+              <tr>
+              <td>
+                  Topik #2<br>
+		          @if(isset($topic))
+		        	@if($topic->status == 0)
+					<button id="progress" status="80" class="btn btn-warning btn-sm disabled">Menunggu Konfirmasi Pembimbing</button>
+		        	@elseif($topic->status == 1)
+					<button id="progress" status="100" class="btn btn-success btn-sm disabled"><span class="glyphicon glyphicon-ok"></span> Telah Di Setujui</button>
+		        	@elseif($topic->status == 2)
+					<button id="progress" status="60" class="btn btn-danger btn-sm disabled"><span class="glyphicon glyphicon-remove"></span> Di Tolak</button>
+		        	@endif
+				  @else
+                	<span class="glyphicon glyphicon-remove"></span>
+                  @endif
+                </td>
+              </tr>
+              <tr>
+              <td>
+                  Topik #3<br>
 		          @if(isset($topic))
 		        	@if($topic->status == 0)
 					<button id="progress" status="80" class="btn btn-warning btn-sm disabled">Menunggu Konfirmasi Pembimbing</button>

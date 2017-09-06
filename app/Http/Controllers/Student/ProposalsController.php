@@ -5,10 +5,8 @@ namespace App\Http\Controllers\student;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Proposal;
 use App\User;
-use App\Topic;
-use App\Group;
-use App\Role;
 use Illuminate\Support\Facades\Auth;
 
 use Session;
@@ -22,26 +20,32 @@ class ProposalsController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function validation($id) {
+    public function validation() {
 
         $data = [
-            'title' => 'required|unique:topics,title',
-            'bobot' => 'required',
-            'waktu' => 'required',
-            'dana' => 'required'
+            'group_id' => 'required|exists:groups,id',
+            'tanggal' => 'required|date',
+            'note_student' => 'nullable',
+            'note_dosen' => 'nullable',
+            'file' => 'string|required',
+            'status' => 'integer|required'
         ];
-
-        if($id != false ) {
-            $data['title'] = $data['title'].','.$id;
-        }
 
         return $data;
     }
 
     public function index(Request $request)
     {
+        $group = User::select('groups.id','group2.id AS id2')
+                            ->leftjoin('groups','groups.student1_id','users.id')
+                            ->leftjoin('groups AS group2','group2.student2_id','users.id')
+                            ->where('users.id',auth::id())
+                            ->first();
+        $group_id = isset($group->id) ? $group->id : $group->id2;
 
-        return view('students.proposals.index');
+        $data = Proposal::where('group_id',$group_id)->get();
+
+        return view('students.proposals.index',[ 'data' => $data]);
     }
 
     /**
@@ -63,51 +67,26 @@ class ProposalsController extends Controller
     public function store(Request $request)
     {
 
-        $data = $request->except(['_token']);
-        $topic = Topic::select('topics.*')->find($data['id']);
+        $data = $request->except(['_token','file']);
         
-        //return json_encode($data);
+        $validator = Validator::make($data, $this->validation());
 
-        // //check if data exists update else create
-         if($topic){
-            $validator = Validator::make($data, $this->validation($data['id']));
-                if ($validator->fails()) {
-                 Session::flash("flash_notification", [
-                     "level"=>"danger",
-                     "message"=>$validator->messages()
-                 ]);
-
-                 return redirect('/student/topics');//->route('users.index');
-             }
-
-             $topic->update($data);
-         } else {
-             $validator = Validator::make($data, $this->validation(false));
-             if ($validator->fails()) {
-                 Session::flash("flash_notification", [
-                     "level"=>"danger",
-                   "message"=>$validator->messages()
-                 ]);
-
-                 
-
-                 
-                 return redirect('/student/topics');//->route('users.index');
-             }
-
-            $data['period_id']=1;
-            $data['is_taken']=0;
+        if ($validator->fails()) {
+            Session::flash("flash_notification", [
+                "level"=>"danger",
+                "message"=>$validator->messages()
+            ]);
+            return back();
+        }
              
 
-             $topic = Topic::create($data);
-        }
-
+        $topic = Topic::create($data);
         Session::flash("flash_notification", [
              "level"=>"success",
              "message"=>"Berhasil Di Tambahkan"
          ]);
 
-         return redirect('/student/topics');//->route('users.index');
+         return back();
     }
 
     /**
@@ -141,25 +120,6 @@ class ProposalsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $group = Group::select('groups.id')
-                ->leftjoin('users','users.id','groups.student1_id')
-                ->leftjoin('users as users2','users2.id','groups.student2_id')
-                ->where('users.id',Auth::id())
-                ->orWhere('users2.id',Auth::id())
-                ->first();
-
-        $data['group_id'] = $group->id;
-        $data['topic_id'] = $id;
-        $data['status'] = 0;
-
-        DB::table('group_topic')->insert($data);
-
-        Session::flash("flash_notification", [
-            "level"=>"success",
-            "message"=>"Topik Berhasil Di Ajukan"
-        ]);
-
-        return 'ok';
     }
 
     /**
@@ -170,13 +130,13 @@ class ProposalsController extends Controller
      */
     public function destroy($id)
     {
-        DB::table('group_topic')->where('id',$id)->delete();
+        Proposal::find($id)->delete();
 
         Session::flash("flash_notification", [
             "level"=>"danger",
-            "message"=>"Berhasil Di Batalkan"
+            "message"=>"Berhasil Di Hapus"
         ]);
 
-        return 'ok';
+        return back();
     }
 }

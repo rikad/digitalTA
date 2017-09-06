@@ -44,7 +44,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample admin
 		$admin = new User();
 		$admin->name = 'admin';
-		$admin->email = 'admin@gmail.com';
+		$admin->username = 'admin';
 		$admin->password = bcrypt('rahasia');
 		$admin->save();
 		$admin->attachRole($adminRole);
@@ -52,7 +52,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "Eko Mursito Budi";
-		$member->email = 'emb@gmail.com';
+		$member->username = 'emb';
 		$member->password = bcrypt('emb');
 		$member->save();
 		$member->attachRole($profRole);
@@ -60,7 +60,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "AN";
-		$member->email = 'an@gmail.com';
+		$member->username = 'an';
 		$member->password = bcrypt('an');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -68,7 +68,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "AW";
-		$member->email = 'aw@gmail.com';
+		$member->username = 'aw';
 		$member->password = bcrypt('aw');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -76,7 +76,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "BY";
-		$member->email = 'by@gmail.com';
+		$member->username = 'by';
 		$member->password = bcrypt('by');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -84,7 +84,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "DK";
-		$member->email = 'dk@gmail.com';
+		$member->username = 'dk';
 		$member->password = bcrypt('dk');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -92,7 +92,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "DR";
-		$member->email = 'dr@gmail.com';
+		$member->username = 'dr';
 		$member->password = bcrypt('dr');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -100,7 +100,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "EE";
-		$member->email = 'ee@gmail.com';
+		$member->username = 'ee';
 		$member->password = bcrypt('ee');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -108,7 +108,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "EJ";
-		$member->email = 'ej@gmail.com';
+		$member->username = 'ej';
 		$member->password = bcrypt('ej');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -116,7 +116,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "EM";
-		$member->email = 'em@gmail.com';
+		$member->username = 'em';
 		$member->password = bcrypt('em');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -124,7 +124,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "EY";
-		$member->email = 'ey@gmail.com';
+		$member->username = 'ey';
 		$member->password = bcrypt('ey');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -132,7 +132,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "IM";
-		$member->email = 'im@gmail.com';
+		$member->username = 'im';
 		$member->password = bcrypt('im');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -140,7 +140,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "IP";
-		$member->email = 'ip@gmail.com';
+		$member->username = 'ip';
 		$member->password = bcrypt('ip');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -148,7 +148,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "JS";
-		$member->email = 'js@gmail.com';
+		$member->username = 'js';
 		$member->password = bcrypt('js');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -156,7 +156,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "MK";
-		$member->email = 'mk@gmail.com';
+		$member->username = 'mk';
 		$member->password = bcrypt('mk');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -164,7 +164,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "NG";
-		$member->email = 'ng@gmail.com';
+		$member->username = 'ng';
 		$member->password = bcrypt('ng');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -172,7 +172,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "PS";
-		$member->email = 'ps@gmail.com';
+		$member->username = 'ps';
 		$member->password = bcrypt('ps');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -180,7 +180,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "RA";
-		$member->email = 'ra@gmail.com';
+		$member->username = 'ra';
 		$member->password = bcrypt('ra');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -188,7 +188,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "RR";
-		$member->email = 'rr@gmail.com';
+		$member->username = 'rr';
 		$member->password = bcrypt('rr');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -196,7 +196,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "SP";
-		$member->email = 'sp@gmail.com';
+		$member->username = 'sp';
 		$member->password = bcrypt('sp');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -204,7 +204,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "YM";
-		$member->email = 'ym@gmail.com';
+		$member->username = 'ym';
 		$member->password = bcrypt('ym');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -212,14 +212,14 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "YY";
-		$member->email = 'yy@gmail.com';
+		$member->username = 'yy';
 		$member->password = bcrypt('yy');
 		$member->save();
 		$member->attachRole($lecturerRole);// Membuat sample member
 
 		$member = new User();
 		$member->name = "WH";
-		$member->email = 'wh@gmail.com';
+		$member->username = 'wh';
 		$member->password = bcrypt('wh');
 		$member->save();
 		$member->attachRole($lecturerRole);
@@ -228,7 +228,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "Student 1";
-		$member->email = 'student1@gmail.com';
+		$member->username = 'student1';
 		$member->password = bcrypt('student1');
 		$member->save();
 		$member->attachRole($academicAssistantRole);
@@ -236,7 +236,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "Student 2";
-		$member->email = 'student2@gmail.com';
+		$member->username = 'student2';
 		$member->password = bcrypt('student2');
 		$member->save();
 		$member->attachRole($academicAssistantRole);
@@ -244,7 +244,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "Student 3";
-		$member->email = 'student3@gmail.com';
+		$member->username = 'student3';
 		$member->password = bcrypt('student3');
 		$member->save();
 		$member->attachRole($academicAssistantRole);
@@ -252,7 +252,7 @@ class UsersSeeder extends Seeder
 		// Membuat sample member
 		$member = new User();
 		$member->name = "Student 4";
-		$member->email = 'student4@gmail.com';
+		$member->username = 'student4';
 		$member->password = bcrypt('student4');
 		$member->save();
 		$member->attachRole($academicAssistantRole);

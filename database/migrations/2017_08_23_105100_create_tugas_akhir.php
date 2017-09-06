@@ -14,7 +14,7 @@ class CreateTugasAkhir extends Migration
     public function up()
     {
         //periods part
-        /*Schema::create('periods', function (Blueprint $table) {
+        Schema::create('periods', function (Blueprint $table) {
             $table->increments('id');
 
             $table->string('year', 4);
@@ -90,7 +90,7 @@ class CreateTugasAkhir extends Migration
             $table->foreign('topic_id')->references('id')->on('topics')->onUpdate('cascade')->onDelete('cascade');
         });
         //end group part
-*/
+
         //group_topic part
         Schema::create('buku_biru', function (Blueprint $table) {
             $table->increments('id');
@@ -114,10 +114,11 @@ class CreateTugasAkhir extends Migration
      */
     public function down()
     {
-        //Schema::dropIfExists('group_topic');
-        //Schema::dropIfExists('groups');
-        //Schema::dropIfExists('topics');
-        //Schema::dropIfExists('student_period');
-        //Schema::dropIfExists('periods');
+        Schema::dropIfExists('buku_biru');
+        Schema::dropIfExists('group_topic');
+        Schema::dropIfExists('groups');
+        Schema::dropIfExists('topics');
+        Schema::dropIfExists('student_period');
+        Schema::dropIfExists('periods');
     }
 }

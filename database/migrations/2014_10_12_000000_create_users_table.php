@@ -13,18 +13,20 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        /*
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('no_induk', 20)->unique()->nullable();            
+            $table->string('username',20)->unique();
+            $table->string('nidn', 20)->unique()->nullable();            
+            $table->string('prefix', 10)->unique()->nullable();            
             $table->string('name', 200);
-            $table->string('username', 200)->nullable();
-            $table->string('email')->unique();
+            $table->string('suffix', 10)->unique()->nullable();            
+            $table->string('email')->unique()->nullable();;
             $table->string('password');
 
             $table->rememberToken();
             $table->timestamps();
-        });*/
+        });
     }
 
     /**
@@ -34,6 +36,13 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        //Schema::dropIfExists('users');
+        Schema::dropIfExists('buku_biru');
+        Schema::dropIfExists('group_topic');
+        Schema::dropIfExists('groups');
+        Schema::dropIfExists('topics');
+        Schema::dropIfExists('student_period');
+        Schema::dropIfExists('periods');
+
+        Schema::dropIfExists('users');
     }
 }
