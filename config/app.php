@@ -180,6 +180,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Laratrust\LaratrustServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -232,6 +233,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Laratrust' => Laratrust\LaratrustFacade::class,
         'Datatables' => Yajra\Datatables\Facades\Datatables::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

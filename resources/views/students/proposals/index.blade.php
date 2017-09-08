@@ -10,10 +10,10 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Topics</h4>
+          <h4 class="modal-title">Proposal</h4>
         </div>
         <div class="modal-body">
-			<form class="form" action="" method="POST">
+			<form class="form" action="" method="POST" enctype="multipart/form-data">
 				{{ csrf_field() }}
 			    <div class="form-group">
 			      <textarea class="form-control" cols="15" placeholder="Catatan Untuk Pembimbing" name="note_student"></textarea><br>
@@ -51,30 +51,35 @@
 					  <hr>
 					</div>
 					@if(count($data) > 0)
-						{{ json_encode($data) }}
-
 					  <table class="table table-striped">
 					    <thead>
 					      <tr>
 					        <th>Status</th>
 					        <th>Tanggal</th>
-					        <th>Catatan</th>
+					        <th>Catatan Mahasiswa</th>
+					        <th>Catatan Pembimbing</th>
 					        <th>Aksi</th>
 					      </tr>
 					    </thead>
 					    <tbody>
+					    @foreach($data as $v)
 					      <tr>
-					        <td><span class="label label-warning">Harap Revisi</span></td>
-					        <td>john@example.com</td>
-					        <td>Doe</td>
-					        <td>Doe</td>
-					      </tr>
-					      <tr>
+					      	@if($v->status == 2)
+					        <td><span class="label label-danger">Harap Revisi</span></td>
+					        @elseif($v->status == 1)
 					        <td><span class="label label-success">Telah Di Setujui</span></td>
-					        <td>Mary</td>
-					        <td>Moe</td>
-					        <td>Moe</td>
+					        @else
+					        <td><span class="label label-warning">Menunggu Review Pembimbing</span></td>
+					        @endif
+					        <td>{{ $v->created_at }}</td>
+					        <td>{{ $v->note_student }}</td>
+					        <td>{{ $v->note_dosen }}</td>
+					        <td>
+					        <button class="btn btn-xs btn-info" onclick="downloadProposal({{ $v->id }})">Download</button>
+					        <button class="btn btn-xs btn-danger" onclick="deleteProposal({{ $v->id }})">Delete</button>
+					        </td>
 					      </tr>
+					    @endforeach
 
 					    </tbody>
 					  </table>
@@ -94,21 +99,23 @@
 @section('scripts')
   <script>
 
+	var deleteProposal = function(id) {
+        $.ajax({
+            url: '/student/proposals/'+id,
+            type: 'DELETE',
+            data: { '_token': window.Laravel.csrfToken },
+            dataType: 'json',
+            error: function() {
+            	location.reload();
+            },
+            success: function() {
+            	location.reload(); 
+            }
+    	});
+	}
 
-		var deleteProposal = function(id) {
-	        $.ajax({
-	            url: '/student/topics/'+id,
-	            type: 'DELETE',
-	            data: { '_token': window.Laravel.csrfToken },
-	            dataType: 'json',
-	            error: function() {
-	            	location.reload();
-	            },
-	            success: function() {
-	            	location.reload(); 
-	            }
-	    	});
-		}
+	var downloadProposal = function(id) {
+		window.location = "/student/proposals/"+id;
 	}
 
   </script>

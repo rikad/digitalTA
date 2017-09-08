@@ -77,7 +77,7 @@ class TopicsController extends Controller
                 ->leftjoin('users as dosen2','dosen2.id','topics.dosen2_id')
                 ->where('users.id',Auth::id())
                 ->orWhere('users2.id',Auth::id())
-                ->first();
+                ->get();
 
         $partner = Group::select('users.name AS siswa1','users.no_induk AS siswa1no','users2.no_induk AS siswa2no','users2.name AS siswa2')
                 ->leftjoin('users','users.id','groups.student1_id')

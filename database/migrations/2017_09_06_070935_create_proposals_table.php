@@ -21,11 +21,10 @@ class CreateProposalsTable extends Migration
         Schema::create('proposals', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('group_id')->unsigned();
-            $table->date('tanggal');
-            $table->text('note_student');
-            $table->text('note_dosen');
+            $table->text('note_student')->nullable();
+            $table->text('note_dosen')->nullable();
             $table->string('file');
-            $table->smallInteger('status'); 
+            $table->smallInteger('status')->default(0);
             $table->timestamps();
 
             $table->foreign('group_id')->references('id')->on('groups')->onUpdate('cascade')->onDelete('cascade');

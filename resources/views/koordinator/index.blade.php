@@ -43,6 +43,15 @@
             </div>
 
           </div>
+          <div class="col-md-3">
+            <div class="panel panel-default" url="/koordinator/transcripts">
+              <div class="panel-heading">Kelola Transkrip Mahasiswa</div>
+              <div class="panel-body">
+                <span class="glyphicon glyphicon-save-file"></span>
+              </div>
+            </div>
+
+          </div>
 
         </div>
         <!-- end Row 1 -->

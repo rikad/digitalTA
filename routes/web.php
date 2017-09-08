@@ -43,6 +43,9 @@ Route::group(['prefix'=>'koordinator', 'middleware'=>['auth', 'role:koordinator'
 	Route::get('students/period', 'Koordinator\StudentsController@period');
 	Route::resource('students', 'Koordinator\StudentsController');
 	Route::resource('topics', 'Koordinator\TopicsController');
+
+	Route::get('transcripts/detail', 'Koordinator\TranscriptsController@detail');
+	Route::resource('transcripts', 'Koordinator\TranscriptsController');
 	// Route::resource('periods', 'Koordinator\PeriodsController');
 });
 
@@ -56,6 +59,7 @@ Route::group(['prefix'=>'dosen', 'middleware'=>['auth', 'role:dosen']], function
 Route::group(['prefix'=>'student', 'middleware'=>['auth', 'role:student']], function () {
 
 	Route::resource('groups', 'Student\GroupsController');
+	Route::get('graduation', 'Student\GraduationsController@index');
 
 	Route::group(['middleware'=>['checkgroup']], function () {
 		Route::get('topics/dosen', 'Koordinator\TopicsController@dosen');

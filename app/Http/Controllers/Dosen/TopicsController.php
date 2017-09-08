@@ -245,10 +245,19 @@ class TopicsController extends Controller
             ->where('id', $data['idtopic'])
             ->update(['status' => $data['submitRespond'], 'note' => $data['note']]);
 
+        $currentgroup = DB::table('group_topic')
+            ->where('id', $data['idtopic'])
+            ->first();
+
         if($data['submitRespond']==1){$hasil="disetujui";
             DB::table('topics')
             ->where('id', $data['id_topic'])
             ->update(['is_taken' => 1]);
+
+            DB::table('group_topic')
+            ->where('group_id', $currentgroup->group_id)
+            ->whereNotIn('status', [1])
+            ->delete();
 
             DB::table('group_topic')
             ->where('topic_id', $data['id_topic'])

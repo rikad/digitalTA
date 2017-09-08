@@ -11,7 +11,7 @@
 
       <!-- Panel -->
       <div class="panel panel-primary">
-        <div class="panel-heading"><h2 class="panel-title"><span class="glyphicon glyphicon-th-large"></span>  Menu</h2></div>
+        <div class="panel-heading"><h2 class="panel-title"><span class="glyphicon glyphicon-th-large"></span>  Tugas Akhir</h2></div>
         <!-- Content -->
         <div class="panel-body">
 
@@ -61,8 +61,33 @@
       </div>
       <!-- End panel -->
 
+      <!-- Panel -->
+      <div class="panel panel-primary">
+        <div class="panel-heading"><h2 class="panel-title"><span class="glyphicon glyphicon-th-large"></span>  Transkrip</h2></div>
+        <!-- Content -->
+        <div class="panel-body">
+
+        <!-- Row 1 -->
+        <div class="row">
+
+          <div class="col-md-3">
+            <div class="panel panel-default" url="/student/graduation">
+              <div class="panel-heading">Graduation Checklist</div>
+              <div class="panel-body">
+                <span class="glyphicon glyphicon-save-file"></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- end Row 1 -->
+
+        </div>
+        <!-- End Content -->
+
       </div>
       <!-- End panel -->
+
     </div>
   </div>
 </div>

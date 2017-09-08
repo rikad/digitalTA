@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Proposal;
 use App\User;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\File;
 use Session;
 use Validator;
 
@@ -19,15 +19,31 @@ class ProposalsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    
+    protected $group_id;
+
+    function __construct() {
+        $this->middleware(function ($request, $next) {
+
+            $group = User::select('groups.id','group2.id AS id2')
+                                ->leftjoin('groups','groups.student1_id','users.id')
+                                ->leftjoin('groups AS group2','group2.student2_id','users.id')
+                                ->where('users.id',auth::id())
+                                ->first();
+
+            $this->group_id = isset($group->id) ? $group->id : $group->id2;
+
+            return $next($request);
+        });
+    }
 
     public function validation() {
 
         $data = [
             'group_id' => 'required|exists:groups,id',
-            'tanggal' => 'required|date',
             'note_student' => 'nullable',
             'note_dosen' => 'nullable',
-            'file' => 'string|required',
+            'file' => 'max:2048000|mimes:pdf,doc,docx,xls,xlsx',
             'status' => 'integer|required'
         ];
 
@@ -36,14 +52,7 @@ class ProposalsController extends Controller
 
     public function index(Request $request)
     {
-        $group = User::select('groups.id','group2.id AS id2')
-                            ->leftjoin('groups','groups.student1_id','users.id')
-                            ->leftjoin('groups AS group2','group2.student2_id','users.id')
-                            ->where('users.id',auth::id())
-                            ->first();
-        $group_id = isset($group->id) ? $group->id : $group->id2;
-
-        $data = Proposal::where('group_id',$group_id)->get();
+        $data = Proposal::where('group_id',$this->group_id)->get();
 
         return view('students.proposals.index',[ 'data' => $data]);
     }
@@ -67,10 +76,12 @@ class ProposalsController extends Controller
     public function store(Request $request)
     {
 
-        $data = $request->except(['_token','file']);
+        $data = $request->except(['_token']);
+        $data['group_id'] = $this->group_id;
+        $data['status'] = 0;
         
-        $validator = Validator::make($data, $this->validation());
 
+        $validator = Validator::make($data, $this->validation());
         if ($validator->fails()) {
             Session::flash("flash_notification", [
                 "level"=>"danger",
@@ -78,9 +89,27 @@ class ProposalsController extends Controller
             ]);
             return back();
         }
-             
 
-        $topic = Topic::create($data);
+        if ($request->hasFile('file')) {
+            // Mengambil file yang diupload
+            $uploaded_file = $request->file('file');
+
+            // mengambil extension file
+            $extension = $uploaded_file->getClientOriginalExtension();
+
+            // membuat nama file random berikut extension
+            $filename = md5(time()) . '.' . $extension;
+
+            // menyimpan ke folder public/proposals
+            $destinationPath = storage_path(). DIRECTORY_SEPARATOR . 'proposals';
+            $uploaded_file->move($destinationPath, $filename);
+
+            // mengisi field cover di book dengan filename yang baru dibuat
+            $data['file'] = $filename;
+        }
+
+        Proposal::create($data);
+
         Session::flash("flash_notification", [
              "level"=>"success",
              "message"=>"Berhasil Di Tambahkan"
@@ -97,7 +126,16 @@ class ProposalsController extends Controller
      */
     public function show($id)
     {
-        //
+        $proposal = Proposal::where('group_id',$this->group_id)->find($id);
+
+        $file = $proposal->file;
+
+        $extension = explode('.',$file);
+        $extension = $extension[1];
+
+        $fileName = 'proposal-'.$proposal->created_at .'-'. Auth::user()->name . '.' . $extension;
+
+        return $this->downloadProposal($file,$fileName);
     }
 
     /**
@@ -109,6 +147,12 @@ class ProposalsController extends Controller
     public function edit($id)
     {
         //
+    }
+
+    public function downloadProposal($file,$fileName) {
+        $file = storage_path().DIRECTORY_SEPARATOR."proposals".DIRECTORY_SEPARATOR.$file;
+
+        return Response()->download($file, $fileName);
     }
 
     /**
@@ -130,13 +174,31 @@ class ProposalsController extends Controller
      */
     public function destroy($id)
     {
-        Proposal::find($id)->delete();
+        try {
+            $proposal = Proposal::where('group_id',$this->group_id)->find($id);
 
-        Session::flash("flash_notification", [
-            "level"=>"danger",
-            "message"=>"Berhasil Di Hapus"
-        ]);
+            if ($proposal->file) {
 
-        return back();
+                $filepath = storage_path().DIRECTORY_SEPARATOR.'proposals'. DIRECTORY_SEPARATOR.$proposal->file;
+                File::delete($filepath);
+            } 
+
+            $proposal->delete();
+
+            Session::flash("flash_notification", [
+                "level"=>"danger",
+                "message"=>"Berhasil Di Hapus"
+            ]);
+
+        }
+
+        catch (FileNotFoundException $e) {
+            Session::flash("flash_notification", [
+                "level"=>"danger",
+                "message"=>"Opps !, Something Wrong"
+            ]);
+        }
+
+        return 'ok';
     }
 }

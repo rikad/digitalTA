@@ -60,129 +60,134 @@
                 <td>Membuat Kelompok Tugas Akhir</td>
                 <td><span class="glyphicon glyphicon-ok"></span>&nbsp;-&nbsp; 
 		          @if(isset($partner->siswa1) && $partner->siswa1 != Auth::user()->name)
-		          {{ $partner->siswa1 }}({{ $partner->siswa1no }})
+		          {{ $partner->siswa1 }} ({{ $partner->siswa1no }})
 		          @elseif($partner->siswa2)
-		          {{ $partner->siswa2 }}/({{ $partner->siswa2no }})
+		          {{ $partner->siswa2 }} ({{ $partner->siswa2no }})
 		          @endif
                 </td>
               </tr>
               <tr>
-                <td rowspan=3>Memilih Topik Tugas Akhir</td>
-                <td>
-                  Topik #1<br>
-		          @if(isset($topic))
-		        	@if($topic->status == 0)
+                <td rowspan=4>Memilih Topik Tugas Akhir</td>
+              </tr>
+
+              @if(isset($topic))
+              @foreach ($topic as $i => $t)
+    			<tr>
+              	<td>
+                  Topik #{{$i+1}} - {{$t->title}} ({{$t->dosen1}})
+                  <br>
+		        	@if($t->status == 0)
 					<button id="progress" status="80" class="btn btn-warning btn-sm disabled">Menunggu Konfirmasi Pembimbing</button>
-		        	@elseif($topic->status == 1)
+		        	@elseif($t->status == 1)
 					<button id="progress" status="100" class="btn btn-success btn-sm disabled"><span class="glyphicon glyphicon-ok"></span> Telah Di Setujui</button>
-		        	@elseif($topic->status == 2)
+		        	@elseif($t->status == 2)
 					<button id="progress" status="60" class="btn btn-danger btn-sm disabled"><span class="glyphicon glyphicon-remove"></span> Di Tolak</button>
 		        	@endif
-				  @else
-                	<span class="glyphicon glyphicon-remove"></span>
-                  @endif
+		        	<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalTopic{{$i+1}}">Lihat Detail</button>
                 </td>
-              </tr>
-              <tr>
-              <td>
-                  Topik #2<br>
-		          @if(isset($topic))
-		        	@if($topic->status == 0)
-					<button id="progress" status="80" class="btn btn-warning btn-sm disabled">Menunggu Konfirmasi Pembimbing</button>
-		        	@elseif($topic->status == 1)
-					<button id="progress" status="100" class="btn btn-success btn-sm disabled"><span class="glyphicon glyphicon-ok"></span> Telah Di Setujui</button>
-		        	@elseif($topic->status == 2)
-					<button id="progress" status="60" class="btn btn-danger btn-sm disabled"><span class="glyphicon glyphicon-remove"></span> Di Tolak</button>
-		        	@endif
-				  @else
-                	<span class="glyphicon glyphicon-remove"></span>
-                  @endif
-                </td>
-              </tr>
-              <tr>
-              <td>
-                  Topik #3<br>
-		          @if(isset($topic))
-		        	@if($topic->status == 0)
-					<button id="progress" status="80" class="btn btn-warning btn-sm disabled">Menunggu Konfirmasi Pembimbing</button>
-		        	@elseif($topic->status == 1)
-					<button id="progress" status="100" class="btn btn-success btn-sm disabled"><span class="glyphicon glyphicon-ok"></span> Telah Di Setujui</button>
-		        	@elseif($topic->status == 2)
-					<button id="progress" status="60" class="btn btn-danger btn-sm disabled"><span class="glyphicon glyphicon-remove"></span> Di Tolak</button>
-		        	@endif
-				  @else
-                	<span class="glyphicon glyphicon-remove"></span>
-                  @endif
-                </td>
-              </tr>
+              </tr>	
+			  @endforeach
+			  @endif
+
+			  @if (!(count($topic) >2 || (isset($topic[0]) && $topic[0]->status==1)))
+    		  <tr><td>
+			  <button type="button" class="btn btn-info btn-sm">
+			  Pilih Topik 
+			  @if(count($topic)>0) Lainnya @endif
+			  (max. 3)
+			  </button>
+			  </td></tr>
+			  @endif
+			  
             </tbody>
           </table>
-          <br>
+
           @if(isset($topic))
-          <table class="table table-bordered">
-            <thead>
-              <tr class="info">
-                <th colspan="2">Informasi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Nama Topik</td>
-                <td>{{ $topic->title }}</td>
-              </tr>
-              <tr>
-                <td>Deskripsi</td>
-                <td>{{ $topic->description }}</td>
-              </tr>
-              <tr>
-                <td>Bobot</td>
-                <td>{{ $topic->bobot }}</td>
-              </tr>
-              <tr>
-                <td>Waktu</td>
-                <td>{{ $topic->waktu }}</td>
-              </tr>
-              <tr>
-                <td>Dana</td>
-                <td>{{ $topic->dana }}</td>
-              </tr>
-              <tr>
-                <td>Pembimbing Pertama</td>
-                <td>{{ $topic->dosen1 }} / {{ $topic->dosen1no }}</td>
-              </tr>
-              <tr>
-                <td>Pembimbing Kedua</td>
-                <td>{{ $topic->dosen2 }} / {{ $topic->dosen2no }}</td>
-              </tr>
-              <tr>
-                <td>Mahasiswa Pertama</td>
-                <td>{{ $topic->siswa1 }} / {{ $topic->siswa1no }}</td>
-              </tr>
-              <tr>
-                <td>Mahasiswa Kedua</td>
-                <td>{{ $topic->siswa2 }} / {{ $topic->siswa2no }}</td>
-              </tr>
-              <tr>
-                <td>Catatan</td>
-                <td>{{ $topic->note }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <hr>
-        	@if($topic->status != 1)
-			<div align="right"><button class="btn btn-danger btn-sm" onclick="rikad.delete({{ $topic->relasi }})">Batalkan Pengajuan Topik</button></div>
-            @endif
-          @endif
+          @foreach ($topic as $i => $t)
+          <!-- Modal -->
+			<div id="modalTopic{{$i+1}}" class="modal fade" role="dialog">
+  			<div class="modal-dialog">
+
+    		<!-- Modal content-->
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">&times;</button>
+        			<h4 class="modal-title">Informasi Topik</h4>
+      			</div>
+      		<div class="modal-body">
+          		<table class="table table-bordered">
+            		<thead>
+              			<tr class="info">
+                			<th colspan="2"> </th>
+              			</tr>
+            		</thead>
+            		<tbody>
+              			<tr>
+                			<td>Nama Topik</td>
+                			<td>{{ $t->title }}</td>
+              			</tr>
+              			<tr>
+                			<td>Deskripsi</td>
+                			<td>{{ $t->description }}</td>
+              			</tr>
+              			<tr>
+                			<td>Bobot</td>
+                			<td>{{ $t->bobot }}</td>
+              			</tr>
+              			<tr>
+                			<td>Waktu</td>
+                			<td>{{ $t->waktu }}</td>
+              			</tr>
+              			<tr>
+                			<td>Dana</td>
+                			<td>{{ $t->dana }}</td>
+              			</tr>
+              			<tr>
+                			<td>Pembimbing Pertama</td>
+                			<td>{{ $t->dosen1 }} / {{ $t->dosen1no }}</td>
+              			</tr>
+              			<tr>
+                			<td>Pembimbing Kedua</td>
+                			<td>{{ $t->dosen2 }} / {{ $t->dosen2no }}</td>
+              			</tr>
+              			<tr>
+                			<td>Mahasiswa Pertama</td>
+                			<td>{{ $t->siswa1 }} / {{ $t->siswa1no }}</td>
+              			</tr>
+              			<tr>
+                			<td>Mahasiswa Kedua</td>
+                			<td>{{ $t->siswa2 }} / {{ $t->siswa2no }}</td>
+              			</tr>
+              			<tr>
+                			<td>Catatan</td>
+                			<td>{{ $t->note }}</td>
+              			</tr>
+            		</tbody>
+          		</table>
+          		<hr>
+        		@if($t->status != 1)
+					<div align="right"><button class="btn btn-danger btn-sm" onclick="rikad.delete({{ $t->relasi }})">Batalkan Pengajuan Topik</button></div>
+            	@endif
+            </div></div>
+			</div></div>
+          @endforeach
+		  @endif
+
+
+          <br>
+
         </div>
         <!-- End Content -->
 
       </div>
       <!-- End panel groups -->
+      		
+      		@if(!(count($topic) >2 || (isset($topic[0]) && $topic[0]->status==1)))
 
-      		@if(!isset($topic))
-			<div class="panel panel-primary">
+      		<!--limit-->
+			<div class="panel panel-primary"">
 				<div class="panel-heading">
-					<h2 class="panel-title">Pemilihan Topik</h2>
+					<h2 class="panel-title">Pemilihan Topik (max. 3)</h2>
 				</div>
 				<div class="panel-body">
 
@@ -209,7 +214,7 @@
 <script src="/js/dataTables.bootstrap.min.js"></script>
 <script src="/js/selectize.min.js"></script>
 
-@if(!isset($topic))
+@if(count($topic) <3)
 {!! $html->scripts() !!}
 @endif
 
