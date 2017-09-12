@@ -42,6 +42,9 @@ class HomeController extends Controller
         elseif (Auth::user()->hasRole('student')) {
           return view('students.index');
         }
+        elseif (Auth::user()->hasRole('administration')) {
+          return view('administration.index');
+        }
 
         return view('welcome');
     }

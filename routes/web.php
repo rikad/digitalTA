@@ -44,8 +44,6 @@ Route::group(['prefix'=>'koordinator', 'middleware'=>['auth', 'role:koordinator'
 	Route::resource('students', 'Koordinator\StudentsController');
 	Route::resource('topics', 'Koordinator\TopicsController');
 
-	Route::get('transcripts/detail', 'Koordinator\TranscriptsController@detail');
-	Route::resource('transcripts', 'Koordinator\TranscriptsController');
 	// Route::resource('periods', 'Koordinator\PeriodsController');
 });
 
@@ -69,4 +67,12 @@ Route::group(['prefix'=>'student', 'middleware'=>['auth', 'role:student']], func
 		Route::resource('bukubiru', 'Student\BukuBiruController');
 		Route::resource('proposals', 'Student\ProposalsController');
 	});
+});
+
+Route::group(['prefix'=>'tu', 'middleware'=>['auth', 'role:administration']], function () {
+	Route::resource('kpcorps', 'Tu\KPCorpsController');
+
+	Route::get('transcripts/detail', 'Tu\TranscriptsController@detail');
+	Route::post('transcripts/register', 'Tu\TranscriptsController@register');
+	Route::resource('transcripts', 'Tu\TranscriptsController');
 });

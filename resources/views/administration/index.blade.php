@@ -19,30 +19,23 @@
         <div class="row">
 
           <div class="col-md-3">
-            <div class="panel panel-default" url="#/koordinator/periods">
-              <div class="panel-heading">Kelola Tahun Ajaran</div>
+            <div class="panel panel-default" url="/tu/kpcorps">
+              <div class="panel-heading">Kelola Tempat Kerja Praktek</div>
               <div class="panel-body">
-                <span class="glyphicon glyphicon-calendar"></span>
+                <span class="glyphicon glyphicon-blackboard"></span>
               </div>
             </div>
           </div>
           <div class="col-md-3">
-            <div class="panel panel-default" url="/koordinator/topics">
-              <div class="panel-heading">Kelola Topik Tugas Akhir</div>
+            <div class="panel panel-default" url="/tu/transcripts">
+              <div class="panel-heading">Kelola Transkrip Mahasiswa</div>
               <div class="panel-body">
-                <span class="glyphicon glyphicon-file"></span>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="panel panel-default" url="/koordinator/students">
-              <div class="panel-heading">Kelola Peserta Tugas Akhir</div>
-              <div class="panel-body">
-                <span class="glyphicon glyphicon-user"></span>
+                <span class="glyphicon glyphicon-save-file"></span>
               </div>
             </div>
 
           </div>
+
         </div>
         <!-- end Row 1 -->
 
@@ -52,8 +45,6 @@
       </div>
       <!-- End panel -->
 
-      </div>
-      <!-- End panel -->
     </div>
   </div>
 </div>

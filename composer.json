@@ -11,8 +11,14 @@
         "laravelcollective/html": "^5.4",
         "santigarcor/laratrust": "^3.2",
         "yajra/laravel-datatables-oracle": "~6.2.2",
-        "maatwebsite/excel": "^2.1"
+	"PHPOffice/PhpSpreadsheet": "dev-master"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/PHPOffice/PhpSpreadsheet"
+        }
+    ],
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
@@ -53,3 +59,4 @@
         "optimize-autoloader": true
     }
 }
+
