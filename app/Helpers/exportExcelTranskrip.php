@@ -4,7 +4,7 @@
  * @Author: elawliet
  * @Date:   2017-09-11 01:36:37
  * @Last Modified by:   rikad
- * @Last Modified time: 2017-09-12 12:09:39
+ * @Last Modified time: 2017-09-13 16:13:00
  * Helper import transkrip
  * Build Object dengan parameter $data, $template, $ouput_file
  * **$data array multi dengan key sesuai var $cellLocation
@@ -55,7 +55,6 @@ class exportExcelTranskrip
     	'semester6ip'  => 'N38',
     	'semester7ip'  => 'E52',  
     	'semester8ip'  => 'N52',
-
     	'semester1ipk'  => 'G14',  
     	'semester2ipk'  => 'P14',
     	'semester3ipk'  => 'G26',  
@@ -65,6 +64,47 @@ class exportExcelTranskrip
     	'semester7ipk'  => 'G52',  
     	'semester8ipk'  => 'P52',
 
+	//history template column
+        'Hname' => 'B4',
+        'Hnim' => 'B3',
+        'HfinalGrade' => 'J4',
+        'HacademicAdviserName' => 'E101',
+        'HacademicAdviserNip' => 'E102',
+        'HprogramChairName' => 'K101',
+        'HprogramChairNip' => 'K102',
+
+        'Hsemester1' => 'A9',
+        'Hsemester2' => 'A19',
+        'Hsemester3' => 'A29',
+        'Hsemester4' => 'A40',
+        'Hsemester5' => 'A51',
+        'Hsemester6' => 'A62',
+        'Hsemester7' => 'A73',
+        'Hsemester8' => 'A85',
+    	'Hsemester1ip'  => 'I7',  
+    	'Hsemester2ip'  => 'I17',
+    	'Hsemester3ip'  => 'I27',  
+    	'Hsemester4ip'  => 'I38',
+    	'Hsemester5ip'  => 'I49',  
+    	'Hsemester6ip'  => 'I60',
+    	'Hsemester7ip'  => 'I71',
+    	'Hsemester8ip'  => 'I83',
+    	'Hsemester1ipk'  => 'L7',
+    	'Hsemester2ipk'  => 'L17',
+    	'Hsemester3ipk'  => 'L27',  
+    	'Hsemester4ipk'  => 'L38',
+    	'Hsemester5ipk'  => 'L49',  
+    	'Hsemester6ipk'  => 'L60',
+    	'Hsemester7ipk'  => 'L71',
+    	'Hsemester8ipk'  => 'L83',
+        'Hsemester1ipk_v2'  => 'O7',
+        'Hsemester2ipk_v2'  => 'O17',
+        'Hsemester3ipk_v2'  => 'O27',  
+        'Hsemester4ipk_v2'  => 'O38',
+        'Hsemester5ipk_v2'  => 'O49',  
+        'Hsemester6ipk_v2'  => 'O60',
+        'Hsemester7ipk_v2'  => 'O71',
+        'Hsemester8ipk_v2'  => 'O83',
     ];
 
 

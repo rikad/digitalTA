@@ -5,17 +5,17 @@ namespace App\Http\Controllers\Koordinator;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use App\Period;
 use App\User;
 use App\Topic;
 use App\Role;
-use App\Period;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Html\Builder;
 use Illuminate\Support\Facades\Auth;
 use Session;
 use Validator;
 
-class TopicsController extends Controller
+class PeriodsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,34 +34,19 @@ class TopicsController extends Controller
     public function validation($id) {
 
         $data = [
-            'title' => 'required|unique:topics,title',
-            'bobot' => 'required',
-            'waktu' => 'required',
-            'dana' => 'required'
+            'year' => 'required',
+            'semester' => 'required'
         ];
-
-        if($id != false ) {
-            $data['title'] = $data['title'].','.$id;
-        }
 
         return $data;
     }
 
     public function index(Request $request, Builder $htmlBuilder)
     {
-
-        $period_id = $request->input('id');
-        if (!$period_id) {
-            $last_period = Period::orderBy('id','desc')->first();
-            $period_id = $last_period->id;
-        }
-
         if ($request->ajax()) {
-            $data = Topic::selectRaw('topics.id,topics.title,topics.description,topics.is_taken, topics.dosen1_id, users.name, topics.bobot, topics.waktu, topics.dana,
-                (select count(*) from group_topic where group_topic.topic_id = topics.id) as peminat')
-                    ->join('users','users.id','topics.dosen1_id')
-                    ->where('topics.period_id',$period_id);
+            $data = Period::select('periods.*');
                     //->join('users dosen2','dosen2.id','roles.id')
+                    //->where('roles.name','student');
 
             return Datatables::of($data)
                     ->addColumn('action',function($data) { 
@@ -70,18 +55,11 @@ class TopicsController extends Controller
         }
 
         $html = $htmlBuilder
-          ->addColumn(['data' => 'name', 'name'=>'users.name', 'title'=>'Dosen'])
-          ->addColumn(['data' => 'title', 'name'=>'topics.title', 'title'=>'Judul'])
-          ->addColumn(['data' => 'bobot', 'name'=>'topics.bobot', 'title'=>'Bobot', 'searchable'=>false])
-          ->addColumn(['data' => 'waktu', 'name'=>'topics.waktu', 'title'=>'Waktu', 'searchable'=>false])
-          ->addColumn(['data' => 'dana', 'name'=>'topics.dana', 'title'=>'Dana', 'searchable'=>false])
-          ->addColumn(['data' => 'peminat', 'name'=>'peminat', 'title'=>'Peminat', 'searchable'=>false])
+          ->addColumn(['data' => 'year', 'name'=>'periods.year', 'title'=>'Tahun'])
+          ->addColumn(['data' => 'semester', 'name'=>'periods.semester', 'title'=>'Semester'])
           ->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'Action', 'orderable'=>false, 'searchable'=>false]);
 
-        $period = Period::orderBy('id')->get();
-	    $last_period = $period[count($period) - 1]->id;
-
-        return view('koordinator.topics.index')->with(compact('html'))->with(compact('period'))->with(compact('last_period'));
+        return view('koordinator.periods.index')->with(compact('html'));
     }
 
     /**
@@ -104,12 +82,12 @@ class TopicsController extends Controller
     {
 
         $data = $request->except(['_token']);
-        $topic = Topic::select('topics.*')->find($data['id']);
+        $period = Period::select('periods.*')->find($data['id']);
         
         //return json_encode($data);
 
         // //check if data exists update else create
-         if($topic){
+         if($period){
             $validator = Validator::make($data, $this->validation($data['id']));
                 if ($validator->fails()) {
                  Session::flash("flash_notification", [
@@ -117,10 +95,10 @@ class TopicsController extends Controller
                      "message"=>$validator->messages()
                  ]);
 
-                 return redirect('/koordinator/topics');//->route('users.index');
+                 return redirect('/koordinator/periods');//->route('users.index');
              }
 
-             $topic->update($data);
+             $period->update($data);
          } else {
              $validator = Validator::make($data, $this->validation(false));
              if ($validator->fails()) {
@@ -132,14 +110,10 @@ class TopicsController extends Controller
                  
 
                  
-                 return redirect('/koordinator/topics');//->route('users.index');
+                 return redirect('/koordinator/periods');//->route('users.index');
              }
 
-            $data['period_id']=1;
-            $data['is_taken']=0;
-             
-
-             $topic = Topic::create($data);
+             $period = Period::create($data);
         }
 
         Session::flash("flash_notification", [
@@ -147,7 +121,7 @@ class TopicsController extends Controller
              "message"=>"Users Information Updated"
          ]);
 
-         return redirect('/koordinator/topics');//->route('users.index');
+         return redirect('/koordinator/periods');//->route('users.index');
     }
 
     /**
@@ -158,18 +132,7 @@ class TopicsController extends Controller
      */
     public function show($id)
     {
-            $data = Topic::select('topics.*','dosen1.name AS dosen1Name','student1.name AS student1Name','student2.name AS student2Name')
-                    ->leftJoin('group_topic','group_topic.topic_id','topics.id')
-                    ->leftJoin('groups','group_topic.group_id','groups.id')
-                    ->leftJoin('users AS dosen1','dosen1.id','topics.dosen1_id')
-                    ->leftJoin('users AS student1','groups.student1_id','student1.id')
-                    ->leftJoin('users AS student2','groups.student2_id','student2.id')
-                    ->where('topics.period_id',$id)->get();
-
-            $period = Period::all();
-            $id = $id;
-
-        return view('koordinator.topics.status')->with(compact('data'))->with(compact('period'))->with(compact('id'));
+        //
     }
 
     /**
@@ -203,12 +166,12 @@ class TopicsController extends Controller
      */
     public function destroy($id)
     {
-        $user = Topic::where('id', $id)->first();
+        $user = Period::where('id', $id)->first();
         $user->delete();
 
         Session::flash("flash_notification", [
             "level"=>"danger",
-            "message"=>"Topic Deleted"
+            "message"=>"Period Deleted"
         ]);
 
         return 'ok';

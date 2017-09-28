@@ -7,12 +7,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Group;
 use App\User;
+use App\Topic;
 use App\Role;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Html\Builder;
 use Illuminate\Support\Facades\Auth;
 use Session;
 use Validator;
+use DB;
 
 class GroupsController extends Controller
 {
@@ -228,6 +230,14 @@ class GroupsController extends Controller
         $user = Auth::id();
 
         if ($group->student1_id == $user || $group->student2_id == $user) { //jika user sah
+
+            $relasi = DB::table('group_topic')->where('group_id',$group->id)->first();
+
+            if ($relasi) {
+              $topic = Topic::find($relasi->topic_id);
+              $topic->update(['is_taken' => 0]);
+            }
+
             $group->delete();
             Session::flash("flash_notification", [
                 "level"=>"success",

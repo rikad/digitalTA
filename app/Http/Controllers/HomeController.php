@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Role;
 use App\Group;
+use App\Topic;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Session;
@@ -40,7 +41,30 @@ class HomeController extends Controller
             return view('dosen.index');
         }
         elseif (Auth::user()->hasRole('student')) {
-          return view('students.index');
+            $teman = null;
+            $topic = null;
+            $group = Group::where('student1_id',Auth::id())->where('status',1)->first();
+
+            if ($group) {
+              $teman = User::find($group->student2_id);
+            } else {
+              $group = Group::where('student2_id',Auth::id())->where('status',1)->first();
+              if($group) $teman = User::find($group->student1_id);
+            }
+
+            if ($group) {
+              $topic = Topic::select('topics.*','group_topic.group_id','user1.name AS dosen1','user2.name AS dosen2')
+                        ->join('group_topic','group_topic.topic_id','topics.id')
+                        ->leftJoin('users AS user1','user1.id','topics.dosen1_id')
+                        ->leftJoin('users AS user2','user2.id','topics.dosen2_id')
+                        ->where('group_topic.group_id',$group->id)
+                        ->first();
+            }
+
+            return view('students.index',[
+              'teman' => $teman,
+              'topic' => $topic,
+            ]);
         }
         elseif (Auth::user()->hasRole('administration')) {
           return view('administration.index');

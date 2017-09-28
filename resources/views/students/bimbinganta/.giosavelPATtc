@@ -185,7 +185,7 @@
       		@if(!(count($topic) >2 || (isset($topic[0]) && $topic[0]->status==1)))
 
       		<!--limit-->
-			<div class="panel panel-primary">
+			<div class="panel panel-primary"">
 				<div class="panel-heading">
 					<h2 class="panel-title">Pemilihan Topik (max. 3)</h2>
 				</div>
@@ -225,7 +225,7 @@
 
 			// add selectize to select element
 			$('.js-selectize').selectize({
-				create:true,
+				create:false,
 				sortField: 'text'
 			});
 		});
@@ -389,6 +389,4 @@
 
 @section('css')
 <link href="/css/jquery.dataTables.min.css" rel="stylesheet">
-<link href="/css/dataTables.bootstrap.min.css" rel="stylesheet">
-<link href="/css/selectize.css" rel="stylesheet">
-@endsection
+<link href="

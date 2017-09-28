@@ -10,7 +10,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Topics</h4>
+          <h4 class="modal-title">Bimbingan Tugas Akhir</h4>
         </div>
         <div class="modal-body">
           <p></p>
@@ -27,45 +27,19 @@
 		<div class="col-md-12">
 			<ul class="breadcrumb">
 				<li><a href="{{ url('/home') }}">Dashboard</a></li>
-				<li class="active">Topics Management</li>
+				<li class="active">Bimbingan Tugas Akhir</li>
 			</ul>
 
 			<div class="alert alert-info">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <b>TIPS:</b> Pada halaman ini, koordinator dapat mendaftarkan topik Tugas Akhir
-                    (Dosen juga dapat mendaftarkan topik Tugas Akhir lewat akun masing-masing)
+                    <b>TIPS:</b> Pada halaman ini, dosen dapat melakukan bimbingan Tugas Akhir (Buku Biru)
                 </div>
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h2 class="panel-title">Topics Management</h2>
+					<h2 class="panel-title">Bimbingan Tugas Akhir</h2>
 				</div>
-
 				<div class="panel-body">
-
-<ul class="nav nav-tabs">
-  <li class="active"><a href="#">Daftar Topik</a></li>
-  <li><a href="/koordinator/topics/{{ $last_period }}">Status Topik</a></li>
-</ul>
-
-<br>
-@isset($period)
-<h5>Pilih Periode :</h5>
-  <select onchange="changeStatus(this.value)" class="form-control">
-  @foreach($period as $v)
-  	@if(isset($_GET['id']))
-    <option value="{{ $v->id }}" @if($_GET['id'] == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
-    @else
-    <option value="{{ $v->id }}" @if($last_period == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
-    @endif
-  @endforeach
-  </select>
-
-@endisset
-<hr>
-
-
-				<div align="right"><button id="editBtn" class="btn btn-primary btn-sm" onclick="rikad.add(true)">Add</button></div><br>
 					{!! $html->table(['class'=>'table-striped']) !!}
 				</div>
 			</div>
@@ -99,7 +73,6 @@
 		this.optionData = {};
 
 		this.inputName = {
-			dosen1_id: {title:'Dosen',type:'select'},
 			title: {title:'Judul',type:'text'},
 			bobot: {title:'Bobot',type:'text'},
 			waktu: {title:'Waktu',type:'text'},
@@ -113,7 +86,7 @@
 		this.getDosen = function() {
 			var here = this;
 	        $.ajax({
-	            url: '/koordinator/topics/dosen',
+	            url: '/dosen/topics/dosen',
 	            type: 'GET',
 	            dataType: 'json',
 	            error: function() {
@@ -160,7 +133,7 @@
 
 		this.showModal = function (data,id) {
 			$('#myModal').modal();
-			var form = '<form method="POST" action="/koordinator/topics"> {{ csrf_field() }} ';
+			var form = '<form method="POST" action="/dosen/topics"> {{ csrf_field() }} ';
 			form += '<input type="hidden" value="'+id+'" name="id">';
 			var i=0;
 			for(var input in this.inputName) {
@@ -204,7 +177,7 @@
 
 		this.delete = function(id) {
 	        $.ajax({
-	            url: '/koordinator/topics/'+id,
+	            url: '/dosen/topics/'+id,
 	            type: 'DELETE',
 	            data: { '_token': window.Laravel.csrfToken },
 	            dataType: 'json',
@@ -220,13 +193,6 @@
 	}
 
 	var rikad = new rikad();
-	rikad.getDosen();
-
-
-    function changeStatus(id) {
-      window.location = "{{ url('koordinator/topics') }}" +'?id='+id;
-    }
-
   </script>
 
 @endsection

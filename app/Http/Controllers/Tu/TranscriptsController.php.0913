@@ -41,9 +41,7 @@ class TranscriptsController extends Controller
                         if(count($is_filled)==0){
                             $button = '<button class="btn btn-primary btn-xs" onclick="rikad.showModal(\''.$data->id.'\')"><span class="glyphicon glyphicon-upload"></span> Upload Transkrip</button>';
                         }else{
-                            $button = '<a href="/tu/transcripts/detail?id='.$data->id.'" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Graduation Checklist</a> ';
-
-                            $button .= '<a href="/tu/transcripts/detailHistoris?id='.$data->id.'" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Transcript History</a>';
+                            $button = '<a href="/tu/transcripts/detail?id='.$data->id.'" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Lihat Transkrip</a>';
 
                             $button .= ' <button class="btn btn-danger btn-xs" onclick="rikad.delete(\''.$data->id.'\')"><span class="glyphicon glyphicon-remove"></span> Reset</button>';
                         }
@@ -80,9 +78,9 @@ class TranscriptsController extends Controller
 
         //
         $data = $request->except(['_token','password']);
-    $user = Transcript::select('users.no_induk','users.name')->join('users','users.id','pc_transcripts.student_id')
-                            ->where('pc_transcripts.student_id',$data['id'])
-                            ->first();
+	$user = Transcript::select('users.no_induk','users.name')->join('users','users.id','pc_transcripts.student_id')
+							->where('pc_transcripts.student_id',$data['id'])
+							->first();
 
         for ($i = 0; $i < 8; $i++) {
             $result[$i] = Transcript::select(['pc_transcripts.grade_uni','pc_courses.code', 'pc_courses.title_en', 'pc_courses.sch', 'pc_courses.rex', 'pc_courses.mbs', 'pc_courses.et', 'pc_courses.ge', 'pc_curricula.title', 'pc_courses.semester'])
@@ -92,12 +90,10 @@ class TranscriptsController extends Controller
                     ->where('pc_transcripts.is_transcripted',1)
                     ->where('pc_courses.rex',"R")
                     ->where('pc_courses.semester',$i+1)
-                    ->orderBy('pc_courses.curriculum_id')
-                    ->orderBy('pc_courses.code')
                     ->get();
         }
 
-    
+	
         $finalData = [];
         for ($j = 0; $j < count($result); $j++) {
 
@@ -120,15 +116,15 @@ class TranscriptsController extends Controller
 
             $finalData['semester'.($j+1)] = $semester;
         }
-    $finalData['name'] = trim($user->name);
+	$finalData['name'] = trim($user->name);
     $finalData['nim'] = trim($user->no_induk);
 
     //set kaprodi
     $kaprodi = $this->readConfig();
     $finalData['programChairNip'] = 'NIP: '.$kaprodi->nip;
-    $finalData['programChairName'] = $kaprodi->name;
-    
-    $pilihan = Transcript::select(['pc_transcripts.grade_uni','pc_courses.code', 'pc_courses.title_en', 'pc_courses.sch', 'pc_courses.rex', 'pc_courses.mbs', 'pc_courses.et', 'pc_courses.ge', 'pc_curricula.title', 'pc_courses.semester', 'pc_transcripts.smt_taken', 'pc_transcripts.year_taken'])
+	$finalData['programChairName'] = $kaprodi->name;
+	
+	$pilihan = Transcript::select(['pc_transcripts.grade_uni','pc_courses.code', 'pc_courses.title_en', 'pc_courses.sch', 'pc_courses.rex', 'pc_courses.mbs', 'pc_courses.et', 'pc_courses.ge', 'pc_curricula.title', 'pc_courses.semester', 'pc_transcripts.smt_taken', 'pc_transcripts.year_taken'])
                     ->join('pc_courses','pc_transcripts.course_id','pc_courses.id')
                     ->join('pc_curricula','pc_courses.curriculum_id','pc_curricula.id')
                     ->where('pc_transcripts.student_id',$data['id'])
@@ -140,10 +136,10 @@ class TranscriptsController extends Controller
                     ->get();
 
 
-    //untuk matkul pilihan, olah dulu penempatan semesternya (sesuai semester pengambilan oleh mhs, bukan struktur kurikulum)
+	//untuk matkul pilihan, olah dulu penempatan semesternya (sesuai semester pengambilan oleh mhs, bukan struktur kurikulum)
         for ($j = 0; $j < count($pilihan); $j++) {
-        $pilihan[$j]->semester = 6+($pilihan[$j]->smt_taken%2);
-        
+		$pilihan[$j]->semester = 6+($pilihan[$j]->smt_taken%2);
+		
                 $rows = [];
     
                 $rows[] = $pilihan[$j]->code."-".substr($pilihan[$j]->title, -2);
@@ -156,31 +152,31 @@ class TranscriptsController extends Controller
                 $rows[] = $pilihan[$j]->ge;
 
 
-        if(count($finalData['semester7'])>count($finalData['semester8'])){
-            array_push($finalData['semester8'], $rows);
-        }else{array_push($finalData['semester7'], $rows);}
-        
-    }
+		if(count($finalData['semester7'])>count($finalData['semester8'])){
+			array_push($finalData['semester8'], $rows);
+		}else{array_push($finalData['semester7'], $rows);}
+		
+	}
 
         for ($j = 0; $j < 8; $j++) {
-        $grade = 0;
-        $sks = 0;
+		$grade = 0;
+		$sks = 0;
 
-        $current = $finalData['semester'.($j+1)];
-        for($i = 0; $i < count($current); $i++){
-            $singleGrade = $this->gradeConvert($current[$i][3], substr($current[$i][0],2,1)=="1");
-            $grade+=$current[$i][2]*$singleGrade;
-            $sks+=$current[$i][2];
-        }
+		$current = $finalData['semester'.($j+1)];
+		for($i = 0; $i < count($current); $i++){
+			$singleGrade = $this->gradeConvert($current[$i][3], substr($current[$i][0],2,1)=="1");
+			$grade+=$current[$i][2]*$singleGrade;
+			$sks+=$current[$i][2];
+		}
         if ($sks == 0) {
             $finalData['semester'.($j+1).'ip']=0;
         } else {
-            $finalData['semester'.($j+1).'ip']=$grade/$sks;
+    		$finalData['semester'.($j+1).'ip']=$grade/$sks;
         }
-    }
-    $endResult = array_merge($finalData, $this->countIPK($data['id']));
-    //[WARNING] Kemana semester diatas 8?
-    
+	}
+	$endResult = array_merge($finalData, $this->countIPK($data['id']));
+	//[WARNING] Kemana semester diatas 8?
+	
 
     //Dapatkan info transkrip
     $transcriptInfo = TranscriptInfo::select(['tr_infos.*'])->where('student_id', $data['id'])->first();
@@ -207,7 +203,7 @@ class TranscriptsController extends Controller
 
     //return $endResult;
 
-        $name = 'Transkrip-'.$user->no_induk.'-'.$user->name.'.xlsx';
+    	$name = 'Transkrip-'.$user->no_induk.'-'.$user->name.'.xlsx';
         $template = storage_path(). DIRECTORY_SEPARATOR . 'templates'. DIRECTORY_SEPARATOR . 'finalGradTemplate.xlsx';
         $file = $this->exportExcel($endResult,$template);
         return Response()->download($file, $name)->deleteFileAfterSend(true);
@@ -224,12 +220,7 @@ class TranscriptsController extends Controller
                     ->get();
         }
 
-        $last_pilihan="";
-        $last_semester=0;
-
-        $total7=0;
-        $total8=0;
-    
+	
         $finalData = [];
         for ($j = 0; $j < count($result); $j++) {
 
@@ -243,19 +234,12 @@ class TranscriptsController extends Controller
                 $rows[] = $result[$j][$i]->grade_uni;
         
                 $semester[] = $rows;
-
-                if($last_pilihan!=$result[$j][$i]->code){
-                    $last_pilihan=$result[$j][$i]->code;
-                    if($j==6){$total7++;}
-                    if($j==7){$total8++;}
-                }
             }
 
             $finalData['semester'.($j+1)] = $semester;
         }
-        $last_pilihan="";
-    
-    $pilihan = Transcript::select(['pc_transcripts.grade_uni','pc_courses.code', 'pc_courses.sch', 'pc_courses.rex',  'pc_courses.semester', 'pc_transcripts.smt_taken', 'pc_transcripts.year_taken', 'pc_courses.curriculum_id', 'pc_transcripts.is_transcripted'])
+	
+	$pilihan = Transcript::select(['pc_transcripts.grade_uni','pc_courses.code', 'pc_courses.sch', 'pc_courses.rex',  'pc_courses.semester', 'pc_transcripts.smt_taken', 'pc_transcripts.year_taken'])
                     ->join('pc_courses','pc_transcripts.course_id','pc_courses.id')
                     ->join('pc_curricula','pc_courses.curriculum_id','pc_curricula.id')
                     ->where('pc_transcripts.student_id',$id)
@@ -265,73 +249,46 @@ class TranscriptsController extends Controller
                     ->orderBy('pc_transcripts.is_transcripted', 'desc')
                     ->get();
 
-    
-                    //return $pilihan;
-    //untuk matkul pilihan, olah dulu penempatan semesternya (sesuai semester pengambilan oleh mhs, bukan struktur kurikulum)
-        
-        $untranscripted = [];
 
+	//untuk matkul pilihan, olah dulu penempatan semesternya (sesuai semester pengambilan oleh mhs, bukan struktur kurikulum)
         for ($j = 0; $j < count($pilihan); $j++) {
-        $pilihan[$j]->semester = 6+($pilihan[$j]->smt_taken%2);
-        
+		$pilihan[$j]->semester = 6+($pilihan[$j]->smt_taken%2);
+		
                 $rows = [];
     
                 $rows[] = $pilihan[$j]->code."-".substr($pilihan[$j]->title, -2);
                 $rows[] = $pilihan[$j]->sch;
                 $rows[] = $pilihan[$j]->grade_uni;
 
-        if($pilihan[$j]->code==$last_pilihan){
-            array_push($finalData['semester'.$last_semester], $rows);
-        }else{
-            $last_pilihan=$pilihan[$j]->code;
-            
-            //pembeda matkul pilihan drop/tidak. ==0 utk drop
-            if($pilihan[$j]->is_transcripted!=0){
-                if($total7>$total8){
-                    array_push($finalData['semester8'], $rows);
-                    $last_semester=8;
-                    $total8++;
-                }else{array_push($finalData['semester7'], $rows);
-                    $last_semester=7;
-                    $total7++;
-                }    
-            }else{
-                array_push($untranscripted, $rows);
-            }
-        }
-    }
 
-    //If untranscripted counted.........................
-    for ($j = 0; $j < count($untranscripted); $j++) {
-        if($total7>$total8){
-            array_push($finalData['semester8'], $untranscripted[$j]);
-            $total8++;
-        }else{
-            array_push($finalData['semester7'], $untranscripted[$j]);
-            $total7++;
-        }
-    }
-
+		if(count($finalData['semester7'])>count($finalData['semester8'])){
+			array_push($finalData['semester8'], $rows);
+		}else{array_push($finalData['semester7'], $rows);}
+		
+	}
 
         for ($j = 0; $j < 8; $j++) {
-        $grade = 0;
-        $sks = 0;
+		$grade = 0;
+		$sks = 0;
 
-        $current = $finalData['semester'.($j+1)];
-        for($i = 0; $i < count($current); $i++){
-            $singleGrade = $this->gradeConvert($current[$i][2], substr($current[$i][0],2,1)=="1");
+		$current = $finalData['semester'.($j+1)];
+		for($i = 0; $i < count($current); $i++){
+			$singleGrade = $this->gradeConvert($current[$i][2], substr($current[$i][0],2,1)=="1");
 
-            $grade+=$current[$i][1]*$singleGrade;
-            $sks+=$current[$i][1];
+			$grade+=$current[$i][1]*$singleGrade;
+			$sks+=$current[$i][1];
+		}
+
+        if ($sks == 0) {
+            $f['semester'.($j+1).'ipk']=0;
+        } else {
+    		$f['semester'.($j+1).'ipk']=$grade/$sks;
         }
-        $f['semester'.($j+1).'ipk']=$grade/$sks;
+	}
+
+	return $f;
+
     }
-
-    return $f;
-
-    }
-
-    
     public function exportExcel($data,$template)
     {
 
@@ -344,9 +301,9 @@ class TranscriptsController extends Controller
     }
 
     public function gradeConvert($alphabet,$isTPB) {
-    $grade = ["T"=>0, "E"=>0, "D"=>0, "C"=>2, "BC"=>2.5, "B"=>3, "AB"=>3.5, "A"=>4];
-    if ($isTPB) $grade['D'] = 1;
-    return $grade[$alphabet];
+	$grade = ["T"=>0, "E"=>0, "D"=>0, "C"=>2, "BC"=>2.5, "B"=>3, "AB"=>3.5, "A"=>4];
+	if ($isTPB) $grade['D'] = 1;
+	return $grade[$alphabet];
     }
 
     public function create(Request $request)
@@ -381,7 +338,7 @@ class TranscriptsController extends Controller
     public function store(Request $request)
     {
         $data = $request->except(['_token','password']);
-        //return $data;
+        
     /*$user['no_induk'] = $data['nim'];
     $user['username'] = $data['nim'];
     $user['name'] = $data['nama'];
@@ -394,20 +351,7 @@ class TranscriptsController extends Controller
         $list = preg_split('/\r\n|[\r\n]/', $data['grade']);
 
         for ($x = 0; $x < count($list); $x++) {
-        	$params = preg_split('/;|[;]/', $list[$x]);
-        	if(count($params)!=10){
-                Session::flash("flash_notification", [
-                "level"=>"danger",
-                "message"=>"Data file bukan CSV. Pastikan pemisah kolom menggunakan tanda <b>;</b> dan terdapat 10 kolom data. <br><b>Contoh:</b>&nbsp;&nbsp;&nbsp;1;2011;1;1;2;FI1101;Elementary Physics IA;4;B;X"
-                ]);
-
-                return redirect('tu/transcripts');        
-            }
-        }
-
-        	for ($x = 0; $x < count($list); $x++) {
-            //$params = preg_split('/\t|[\t]/', $list[$x]);
-            $params = preg_split('/;|[;]/', $list[$x]);
+            $params = preg_split('/\t|[\t]/', $list[$x]);
 
 
             $courseID = 0;
@@ -452,17 +396,11 @@ class TranscriptsController extends Controller
                 $newCourse['mbs']=0;
                 $newCourse['et']=0;
                 $newCourse['ge']=0;
-                $newCourse['no']=$params[4];
 
                 $courseNew = Course::create($newCourse); 
                 $courseID=$courseNew->id;
             
             }else{
-                if($course->no==null||$course->no==0){
-                    $course->no=$params[4];
-                    if($course->semester!=$params[3]&&$params[3]<=8){$course->semester=$params[3];}
-                    $course->save();
-                }
                 $courseID=$course->id;
             }
 
@@ -472,7 +410,7 @@ class TranscriptsController extends Controller
             $tmp[$x]['smt_taken']=$params[2];
             $tmp[$x]['grade_uni']=$params[8];
             $tmp[$x]['grade_ps']=$params[8];
-            if(!isset($params[9])||$params[9]==""){
+            if($params[9]==""){
             $tmp[$x]['is_transcripted']=0;    
             }else{$tmp[$x]['is_transcripted']=1;}
             
@@ -641,16 +579,20 @@ class TranscriptsController extends Controller
     public function detailHistoris(Request $request)
     {
 
+        //
         $data = $request->except(['_token','password']);
-        $user = Transcript::select('users.no_induk','users.name')->join('users','users.id','pc_transcripts.student_id')
+    $user = Transcript::select('users.no_induk','users.name')->join('users','users.id','pc_transcripts.student_id')
                             ->where('pc_transcripts.student_id',$data['id'])
                             ->first();
         if($user==null){
-            Session::flash("flash_notification", [
-                "level"=>"danger",
-                "message"=>"Data transkrip untuk mahasiswa tersebut tidak ditemukan"
-            ]);
-            return redirect('tu/transcripts');
+
+        Session::flash("flash_notification", [
+            "level"=>"danger",
+            "message"=>"Data transkrip untuk mahasiswa tersebut tidak ditemukan"
+        ]);
+
+        return redirect('tu/transcripts');
+
         }
 
         for ($i = 0; $i < 8; $i++) {
@@ -662,10 +604,8 @@ class TranscriptsController extends Controller
                     ->where('pc_transcripts.is_transcripted',1)
                     ->where('pc_courses.rex',"R")
                     ->where('pc_courses.semester',$i+1)
-                    ->orderBy('pc_courses.no')
                     ->get();
         }
-
 
     
         $finalData = [];
@@ -736,46 +676,38 @@ class TranscriptsController extends Controller
                 $semester[] = $rows;
             }
 
-            $finalData['Hsemester'.($j+1)] = $semester;
+            $finalData['semester'.($j+1).'H'] = $semester;
         }
+    $finalData['nameH'] = ': '.trim($user->name);
+    $finalData['nimH'] = ': '.trim($user->no_induk);
 
-        $finalData['Hname'] = ': '.trim($user->name);
-        $finalData['Hnim'] = ': '.trim($user->no_induk);
-
-        //set kaprodi
-        $kaprodi = $this->readConfig();
-        $finalData['HprogramChairNip'] = 'NIP: '.$kaprodi->nip;
-        $finalData['HprogramChairName'] = $kaprodi->name;
-
-        
-        $pilihan = Transcript::select(['pc_transcripts.grade_uni','pc_courses.code', 'pc_courses.title_en', 'pc_courses.sch', 'pc_courses.rex', 'pc_courses.mbs', 'pc_courses.et', 'pc_courses.ge', 'pc_curricula.title', 'pc_courses.semester', 'pc_transcripts.smt_taken', 'pc_transcripts.year_taken', 'pc_transcripts.course_id'])
+    //set kaprodi
+    $kaprodi = $this->readConfig();
+    $finalData['programChairNipH'] = 'NIP: '.$kaprodi->nip;
+    $finalData['programChairNameH'] = $kaprodi->name;
+    
+    $pilihan = Transcript::select(['pc_transcripts.grade_uni','pc_courses.code', 'pc_courses.title_en', 'pc_courses.sch', 'pc_courses.rex', 'pc_courses.mbs', 'pc_courses.et', 'pc_courses.ge', 'pc_curricula.title', 'pc_courses.semester', 'pc_transcripts.smt_taken', 'pc_transcripts.year_taken', 'pc_transcripts.course_id'])
                     ->join('pc_courses','pc_transcripts.course_id','pc_courses.id')
                     ->join('pc_curricula','pc_courses.curriculum_id','pc_curricula.id')
                     ->where('pc_transcripts.student_id',$data['id'])
                     ->where('pc_transcripts.is_transcripted',1)
                     ->where('pc_courses.rex',"!=","R")
                     ->get();
-        
 
-        //untuk matkul pilihan, olah dulu penempatan semesternya (sesuai semester pengambilan oleh mhs, bukan struktur kurikulum)
+
+    //untuk matkul pilihan, olah dulu penempatan semesternya (sesuai semester pengambilan oleh mhs, bukan struktur kurikulum)
         for ($j = 0; $j < count($pilihan); $j++) {
-            //$pilihan[$j]->semester = 6+($pilihan[$j]->smt_taken%2);
+        $pilihan[$j]->semester = 6+($pilihan[$j]->smt_taken%2);
         
                 $rows = [];
     
                 $rows[] = $pilihan[$j]->code."-".substr($pilihan[$j]->title, -2);
-                if($pilihan[$j]->title_en=="-"){
-                    $rows[] = $pilihan[$j]->title;
-                }else{
-                    $rows[] = $pilihan[$j]->title_en;
-                }
-                
+                $rows[] = $pilihan[$j]->title_en;
                 $rows[] = $pilihan[$j]->sch;
                 
                 $rows[] = $pilihan[$j]->year_taken."/".($pilihan[$j]->year_taken+1);
                 $rows[] = $pilihan[$j]->grade_uni;
 
-                //kalau ngulang cari lagi
                 $tmp = Transcript::select(['pc_transcripts.grade_uni', 'pc_transcripts.year_taken'])
                         ->where('pc_transcripts.student_id',$data['id'])
                         ->where('pc_transcripts.course_id',$pilihan[$j]->course_id)
@@ -790,339 +722,56 @@ class TranscriptsController extends Controller
                 //$rows[] = $pilihan[$j]->year_taken."/".($pilihan[$j]->year_taken+1);;
                 //$rows[] = $pilihan[$j]->grade_uni;
                 
-                array_push($finalData['Hsemester'.$pilihan[$j]->semester], $rows);
-                //if(count($finalData['Hsemester7'])>count($finalData['Hsemester8'])){
-                    //array_push($finalData['Hsemester8'], $rows);
-                //}else{array_push($finalData['Hsemester7'], $rows);}
-        }
 
+        if(count($finalData['semester7H'])>count($finalData['semester8H'])){
+            array_push($finalData['semester8H'], $rows);
+        }else{array_push($finalData['semester7H'], $rows);}
         
-        //itung ip&ipk disini
-        for ($j = 0; $j < 8; $j++) {
-            $grade = 0;
-            $sks = 0;
-
-            $grade_ipk =0;
-            $sks_ipk =0;
-
-            $current = $finalData['Hsemester'.($j+1)];
-            for($i = 0; $i < count($current); $i++){
-                $singleGrade = $this->gradeConvert($current[$i][4], substr($current[$i][0],2,1)=="1");
-                $grade+=$current[$i][2]*$singleGrade;
-                $sks+=$current[$i][2];
-
-                //untuk ipk
-                $grade_ipk+=$current[$i][2]*$singleGrade;
-                $sks_ipk+=$current[$i][2];
-
-                for($k=6;$k<count($current[$i]);$k+=2){
-                    $singleGrade = $this->gradeConvert($current[$i][$k], substr($current[$i][0],2,1)=="1");
-                    $grade_ipk+=$current[$i][2]*$singleGrade;
-                    $sks_ipk+=$current[$i][2];
-                }
-            }
-            $finalData['Hsemester'.($j+1).'ip']=$grade/$sks;
-            $finalData['Hsemester'.($j+1).'ipk']=$grade_ipk/$sks_ipk;
-            $finalData['Hsemester'.($j+1).'sks_lulus']=$sks;
-            $finalData['Hsemester'.($j+1).'sks_total']=$sks_ipk;
-        }
-
-        //matkul pilihan tidak lulus smt7
-        $ghostList = [];
-        $pilihanGhost = Transcript::select(['pc_transcripts.grade_uni','pc_courses.code', 'pc_courses.title_en', 'pc_courses.sch', 'pc_courses.rex', 'pc_courses.mbs', 'pc_courses.et', 'pc_courses.ge', 'pc_curricula.title', 'pc_courses.semester', 'pc_transcripts.smt_taken', 'pc_transcripts.year_taken', 'pc_transcripts.course_id'])
-                    ->join('pc_courses','pc_transcripts.course_id','pc_courses.id')
-                    ->join('pc_curricula','pc_courses.curriculum_id','pc_curricula.id')
-                    ->where('pc_transcripts.student_id',$data['id'])
-                    ->where('pc_transcripts.is_transcripted',0)
-                    ->where('pc_courses.rex',"!=","R")
-                    ->where('pc_courses.semester',7)
-                    ->get();
-
-        
-        for ($j = 0; $j < count($pilihanGhost); $j++) {
-            $checking = Transcript::select(['pc_transcripts.*'])
-                        ->where('pc_transcripts.student_id',$data['id'])
-                        ->where('pc_transcripts.course_id', $pilihanGhost[$j]->course_id)
-                        ->where('pc_transcripts.is_transcripted',1)
-                        ->first();
-            
-            if($checking==null&&!in_array($pilihanGhost[$j]->code, $ghostList)){
-                array_push($ghostList, $pilihanGhost[$j]->code);
-
-                $rows = [];
-    
-                $rows[] = $pilihanGhost[$j]->code."-".substr($pilihanGhost[$j]->title, -2);
-                $rows[] = $pilihanGhost[$j]->title_en;
-                $rows[] = $pilihanGhost[$j]->sch;
-                
-                $rows[] = $pilihanGhost[$j]->year_taken."/".($pilihanGhost[$j]->year_taken+1);
-                $rows[] = $pilihanGhost[$j]->grade_uni;
-
-                $tmp = Transcript::select(['pc_transcripts.grade_uni', 'pc_transcripts.year_taken'])
-                        ->join('pc_courses','pc_transcripts.course_id','pc_courses.id')
-                        ->where('pc_transcripts.student_id',$data['id'])
-                        ->where('pc_transcripts.course_id',$pilihanGhost[$j]->course_id)
-                        ->where('pc_transcripts.is_transcripted', 0)
-                        ->where('pc_transcripts.smt_taken',1)
-                        ->orderBy('pc_transcripts.year_taken', 'desc')
-                        ->get();
-
-                for($k=0;$k<count($tmp);$k++){
-                    $rows[] = $tmp[$k]->year_taken."/".($tmp[$k]->year_taken+1);
-                    $rows[] = $tmp[$k]->grade_uni;
-                }
-
-                array_push($finalData['Hsemester7'], $rows);
-            }
-        }
-
-        //matkul pilihan tidak lulus smt8
-        $ghostList = [];
-        $pilihanGhost = Transcript::select(['pc_transcripts.grade_uni','pc_courses.code', 'pc_courses.title_en', 'pc_courses.sch', 'pc_courses.rex', 'pc_courses.mbs', 'pc_courses.et', 'pc_courses.ge', 'pc_curricula.title', 'pc_courses.semester', 'pc_transcripts.smt_taken', 'pc_transcripts.year_taken', 'pc_transcripts.course_id'])
-                    ->join('pc_courses','pc_transcripts.course_id','pc_courses.id')
-                    ->join('pc_curricula','pc_courses.curriculum_id','pc_curricula.id')
-                    ->where('pc_transcripts.student_id',$data['id'])
-                    ->where('pc_transcripts.is_transcripted',0)
-                    ->where('pc_courses.rex',"!=","R")
-                    ->where('pc_courses.semester',8)
-                    ->get();
-
-        
-        for ($j = 0; $j < count($pilihanGhost); $j++) {
-            $checking = Transcript::select(['pc_transcripts.*'])
-                        ->where('pc_transcripts.student_id',$data['id'])
-                        ->where('pc_transcripts.course_id', $pilihanGhost[$j]->course_id)
-                        ->where('pc_transcripts.is_transcripted',1)
-                        ->first();
-            
-            if($checking==null&&!in_array($pilihanGhost[$j]->code, $ghostList)){
-                array_push($ghostList, $pilihanGhost[$j]->code);
-
-                $rows = [];
-    
-                $rows[] = $pilihanGhost[$j]->code."-".substr($pilihanGhost[$j]->title, -2);
-                $rows[] = $pilihanGhost[$j]->title_en;
-                $rows[] = $pilihanGhost[$j]->sch;
-                
-                $rows[] = $pilihanGhost[$j]->year_taken."/".($pilihanGhost[$j]->year_taken+1);
-                $rows[] = $pilihanGhost[$j]->grade_uni;
-
-                $tmp = Transcript::select(['pc_transcripts.grade_uni', 'pc_transcripts.year_taken'])
-                        ->join('pc_courses','pc_transcripts.course_id','pc_courses.id')
-                        ->where('pc_transcripts.student_id',$data['id'])
-                        ->where('pc_transcripts.course_id',$pilihanGhost[$j]->course_id)
-                        ->where('pc_transcripts.is_transcripted', 0)
-                        ->where('pc_transcripts.smt_taken',2)
-                        ->orderBy('pc_transcripts.year_taken', 'desc')
-                        ->get();
-
-                for($k=0;$k<count($tmp);$k++){
-                    $rows[] = $tmp[$k]->year_taken."/".($tmp[$k]->year_taken+1);
-                    $rows[] = $tmp[$k]->grade_uni;
-                }
-
-                array_push($finalData['Hsemester8'], $rows);
-            }
-        }
-
-        //itung lagi ip&ipk dengan matkul pilihan ghost
-        //itung ip&ipk disini
-        for ($j = 0; $j < 8; $j++) {
-            $grade = 0;
-            $sks = 0;
-
-            $grade_ipk =0;
-            $sks_ipk =0;
-
-            $current = $finalData['Hsemester'.($j+1)];
-            for($i = 0; $i < count($current); $i++){
-                $singleGrade = $this->gradeConvert($current[$i][4], substr($current[$i][0],2,1)=="1");
-                
-                $grade+=$current[$i][2]*$singleGrade;
-                if($singleGrade!=0){ $sks+=$current[$i][2]; }
-
-                //untuk ipk
-                $grade_ipk+=$current[$i][2]*$singleGrade;
-                $sks_ipk+=$current[$i][2];
-
-                for($k=6;$k<count($current[$i]);$k+=2){
-                    $singleGrade = $this->gradeConvert($current[$i][$k], substr($current[$i][0],2,1)=="1");
-                    $grade_ipk+=$current[$i][2]*$singleGrade;
-                    $sks_ipk+=$current[$i][2];
-                }
-            }
-            $finalData['Hsemester'.($j+1).'ip_v2']=$grade/$sks;
-            $finalData['Hsemester'.($j+1).'ipk_v2']=$grade_ipk/$sks_ipk;
-            $finalData['Hsemester'.($j+1).'sks_lulus_v2']=$sks;
-            $finalData['Hsemester'.($j+1).'sks_total_v2']=$sks_ipk;
-        }
-
-
-        //hitung ip&ipk final
-        $grade_total=0;
-        $grade_total_ipk=0;
-        $sks_total=0;
-        $sks_total_ipk=0;
+    }
 
         for ($j = 0; $j < 8; $j++) {
-            $grade_total+=($finalData['Hsemester'.($j+1).'ip']*$finalData['Hsemester'.($j+1).'sks_lulus']);
-            $sks_total+=$finalData['Hsemester'.($j+1).'sks_lulus'];
-            $grade_total_ipk+=($finalData['Hsemester'.($j+1).'ipk']*$finalData['Hsemester'.($j+1).'sks_lulus']);
-            $sks_total_ipk+=$finalData['Hsemester'.($j+1).'sks_total'];
+        $grade = 0;
+        $sks = 0;
+
+        $current = $finalData['semester'.($j+1).'H'];
+        for($i = 0; $i < count($current); $i++){
+            $singleGrade = $this->gradeConvert($current[$i][4], substr($current[$i][0],2,1)=="1");
+            $grade+=$current[$i][2]*$singleGrade;
+            $sks+=$current[$i][2];
         }
-        $finalData['HFinal_sks_lulus']=$sks_total;
-        $finalData['HFinal_sks_total']=$sks_total_ipk;
-        $finalData['HFinal_ip']=$grade_total/$sks_total;
-        $finalData['HFinal_ipk']=$grade_total_ipk/$sks_total_ipk;
-        
-        $grade_total=0;
-        $grade_total_ipk=0;
-        $sks_total=0;
-        $sks_total_ipk=0;
-
-        for ($j = 0; $j < 8; $j++) {
-            $grade_total+=($finalData['Hsemester'.($j+1).'ip_v2']*$finalData['Hsemester'.($j+1).'sks_lulus_v2']);
-            $sks_total+=$finalData['Hsemester'.($j+1).'sks_lulus_v2'];
-            $grade_total_ipk+=($finalData['Hsemester'.($j+1).'ipk_v2']*$finalData['Hsemester'.($j+1).'sks_lulus_v2']);
-            $sks_total_ipk+=$finalData['Hsemester'.($j+1).'sks_total_v2'];
-        }
-        //$finalData['HFinal_sks_lulus_v2']=$sks_total;
-        //$finalData['HFinal_sks_total_v2']=$sks_total_ipk;
-        //$finalData['HFinal_ip_v2']=$grade_total/$sks_total;
-
-        //ipkv1
-        $tmp = Transcript::select(['pc_transcripts.grade_uni', 'pc_transcripts.year_taken', 'pc_courses.sch', 'pc_courses.code'])
-                        ->join('pc_courses','pc_transcripts.course_id','pc_courses.id')
-                        ->where('pc_transcripts.student_id',$data['id'])
-                        ->get();
-
-        $total_grade=0;$total_sks=0;
-        for ($j = 0; $j < count($tmp); $j++) {
-            $singleGrade = $this->gradeConvert($tmp[$j]->grade_uni, substr($tmp[$j]->code,2,1)=="1");
-            $total_grade+=$singleGrade*$tmp[$j]->sch;
-            $total_sks+=$tmp[$j]->sch;
-        }
-
-        //$finalData['HFinal_ipk_v2']=$grade_total_ipk/$sks_total_ipk;
-        $finalData['HFinal_ipk']=$total_grade/$total_sks;
-        $finalData['HFinal_sks_total']=$total_sks;
-
-        //ipkv2
-        $tmp = Transcript::select(['pc_transcripts.grade_uni', 'pc_transcripts.year_taken', 'pc_courses.sch', 'pc_courses.code'])
-                        ->join('pc_courses','pc_transcripts.course_id','pc_courses.id')
-                        ->where('pc_transcripts.student_id',$data['id'])
-                        ->get();
-
-        $total_grade=0;$total_sks=0;
-        for ($j = 0; $j < count($tmp); $j++) {
-            $singleGrade = $this->gradeConvert($tmp[$j]->grade_uni, true);
-            $total_grade+=$singleGrade*$tmp[$j]->sch;
-            $total_sks+=$tmp[$j]->sch;
-        }
-
-        //$finalData['HFinal_ipk_v2']=$grade_total_ipk/$sks_total_ipk;
-        $finalData['HFinal_ipk_v2']=$total_grade/$total_sks;
-        $finalData['HFinal_sks_total_v2']=$total_sks;
-
-        //crosscheck sks sarjana v1
-        $tmp = Transcript::select(['pc_transcripts.grade_uni', 'pc_transcripts.year_taken', 'pc_courses.sch', 'pc_courses.code'])
-                        ->join('pc_courses','pc_transcripts.course_id','pc_courses.id')
-                        ->where('pc_transcripts.student_id',$data['id'])
-                        ->where('pc_courses.semester','>',2)
-                        ->get();
-
-        $total_grade=0;$total_sks=0;
-        for ($j = 0; $j < count($tmp); $j++) {
-            $singleGrade = $this->gradeConvert($tmp[$j]->grade_uni,  substr($tmp[$j]->code,2,1)=="1");
-            $total_grade+=$singleGrade*$tmp[$j]->sch;
-            $total_sks+=$tmp[$j]->sch;
-        }
-
-        $finalData['HSarjana_ipk']=$total_grade/$total_sks;
-        $finalData['HSarjana_sks']=$total_sks;
-
-        //crosscheck sks sarjana v1
-        $tmp = Transcript::select(['pc_transcripts.grade_uni', 'pc_transcripts.year_taken', 'pc_courses.sch', 'pc_courses.code'])
-                        ->join('pc_courses','pc_transcripts.course_id','pc_courses.id')
-                        ->where('pc_transcripts.student_id',$data['id'])
-                        ->where('pc_courses.semester','>',2)
-                        ->get();
-
-        $total_grade=0;$total_sks=0;
-        for ($j = 0; $j < count($tmp); $j++) {
-            $singleGrade = $this->gradeConvert($tmp[$j]->grade_uni, true);
-            $total_grade+=$singleGrade*$tmp[$j]->sch;
-            $total_sks+=$tmp[$j]->sch;
-        }
-
-        $finalData['HSarjana_ipk_v2']=$total_grade/$total_sks;
-        $finalData['HSarjana_sks_v2']=$total_sks;
-        
-
-        //hitung final grade R
-        $finalData['HfinalGrade'] = [
-            [
-                $finalData['Hsemester1sks_lulus']+$finalData['Hsemester2sks_lulus'],
-                ($finalData['Hsemester1ip']*$finalData['Hsemester1sks_lulus']+$finalData['Hsemester2ip']*$finalData['Hsemester2sks_lulus'])/($finalData['Hsemester1sks_lulus']+$finalData['Hsemester2sks_lulus']),
-                $finalData['Hsemester1sks_total']+$finalData['Hsemester2sks_total'],
-                ($finalData['Hsemester1ipk']*$finalData['Hsemester1sks_total']+$finalData['Hsemester2ipk']*$finalData['Hsemester2sks_total'])/($finalData['Hsemester1sks_total']+$finalData['Hsemester2sks_total']),
-                $finalData['Hsemester1sks_total_v2']+$finalData['Hsemester2sks_total_v2'],
-                ($finalData['Hsemester1ipk_v2']*$finalData['Hsemester1sks_total_v2']+$finalData['Hsemester2ipk_v2']*$finalData['Hsemester2sks_total_v2'])/($finalData['Hsemester1sks_total_v2']+$finalData['Hsemester2sks_total_v2'])
-            ],
-            [
-            $finalData['Hsemester3sks_lulus']+$finalData['Hsemester4sks_lulus']+$finalData['Hsemester5sks_lulus']+$finalData['Hsemester6sks_lulus']+$finalData['Hsemester7sks_lulus']+$finalData['Hsemester8sks_lulus'],
-            ($finalData['Hsemester3ip']*$finalData['Hsemester3sks_lulus']+$finalData['Hsemester4ip']*$finalData['Hsemester4sks_lulus']+$finalData['Hsemester5ip']*$finalData['Hsemester5sks_lulus']+$finalData['Hsemester6ip']*$finalData['Hsemester6sks_lulus']+$finalData['Hsemester7ip']*$finalData['Hsemester7sks_lulus']+$finalData['Hsemester8ip']*$finalData['Hsemester8sks_lulus'])/($finalData['Hsemester3sks_lulus']+$finalData['Hsemester4sks_lulus']+$finalData['Hsemester5sks_lulus']+$finalData['Hsemester6sks_lulus']+$finalData['Hsemester7sks_lulus']+$finalData['Hsemester8sks_lulus']),
-            $finalData['HSarjana_sks'],
-            $finalData['HSarjana_ipk'],
-            $finalData['HSarjana_sks_v2'],
-            $finalData['HSarjana_ipk_v2'],
-            ],
-            [
-                $finalData['HFinal_sks_lulus'],
-                $finalData['HFinal_ip'],
-                $finalData['HFinal_sks_total'],
-                $finalData['HFinal_ipk'],
-                $finalData['HFinal_sks_total_v2'],
-                $finalData['HFinal_ipk_v2'],
-            ],
-        ];
-
-         //return $finalData;
-
-
-    //$endResult = array_merge($finalData, $this->countIPK($data['id']));
-
+        $finalData['semester'.($j+1).'ipH']=$grade/$sks;
+    }
+    $endResult = array_merge($finalData, $this->countIPK($data['id']));
     //[WARNING] Kemana semester diatas 8?
     
 
     //Dapatkan info transkrip
     $transcriptInfo = TranscriptInfo::select(['tr_infos.*'])->where('student_id', $data['id'])->first();
-
     if($transcriptInfo!=null){
         $advisor = User::select(['users.*'])->where('id', $transcriptInfo->advisor_id)->first();
 
-        // $endResult['HyudisiumDate'] = $transcriptInfo->yudisium_date;
-        // $endResult['HgraduationDate'] = $transcriptInfo->graduation_date;
-        $finalData['HacademicAdviserName'] = $advisor->name;
-        $finalData['HacademicAdviserNip'] = "NIP: ".$advisor->no_induk;
-        //$endResult['Hfinal_exam'] = $transcriptInfo->final_exam;
-        // $endResult['HfinalExamination'] = [];
+        $endResult['yudisiumDateH'] = $transcriptInfo->yudisium_date;
+        $endResult['graduationDateH'] = $transcriptInfo->graduation_date;
+        $endResult['academicAdviserNameH'] = $advisor->name;
+        $endResult['academicAdviserNipH'] = "NIP: ".$advisor->no_induk;
+        //$endResult['final_examH'] = $transcriptInfo->final_exam;
+        $endResult['finalExaminationH'] = [];
 
-        // $final_exam=explode(";", $transcriptInfo->final_exam);
-        // for ($i=0; $i<count($final_exam); $i+=2) {
-        //     $tmp_[0]=$i/2+1;
-        //     $tmp_[1]=$final_exam[$i];
+        $final_exam=explode(";", $transcriptInfo->final_exam);
+        for ($i=0; $i<count($final_exam); $i+=2) {
+            $tmp_[0]=$i/2+1;
+            $tmp_[1]=$final_exam[$i];
 
-        //     $tmp2[0]=$final_exam[$i+1];
-        //     $endResult['HfinalExaminationCheck'][] = $tmp2;
-        //     $endResult['HfinalExamination'][] = $tmp_;
-        // }
+            $tmp2[0]=$final_exam[$i+1];
+            $endResult['finalExaminationCheckH'][] = $tmp2;
+            $endResult['finalExaminationH'][] = $tmp_;
+        }
     }
+    // return $endResult;
 
-        
         $name = 'Transkrip-'.$user->no_induk.'-'.$user->name.'.xlsx';
         $template = storage_path(). DIRECTORY_SEPARATOR . 'templates'. DIRECTORY_SEPARATOR . 'finalHistoryTemplate.xlsx';
-        $file = $this->exportExcel($finalData,$template);
+        $file = $this->exportExcel($endResult,$template);
         return Response()->download($file, $name)->deleteFileAfterSend(true);
     }
 }

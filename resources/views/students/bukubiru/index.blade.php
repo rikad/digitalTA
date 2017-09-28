@@ -185,7 +185,7 @@
       		@if(!(count($topic) >2 || (isset($topic[0]) && $topic[0]->status==1)))
 
       		<!--limit-->
-			<div class="panel panel-primary">
+			<div class="panel panel-primary"">
 				<div class="panel-heading">
 					<h2 class="panel-title">Pemilihan Topik (max. 3)</h2>
 				</div>

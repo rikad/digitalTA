@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Session;
 use Validator;
 
-class TopicsController extends Controller
+class TopicssController extends Controller
 {
     /**
      * Display a listing of the resource.

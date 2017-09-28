@@ -27,6 +27,26 @@
             </div>
           </div>
 
+          <div class="col-md-3">
+            <div class="panel panel-default" url="/dosen/bimbinganTA">
+              <div class="panel-heading">Bimbingan Tugas Akhir</div>
+              <div class="panel-body">
+                <span class="glyphicon glyphicon-book"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="panel panel-default" url="/dosen/proposals">
+              <div class="panel-heading">Proposals Tugas Akhir</div>
+              <div class="panel-body">
+                <span class="glyphicon glyphicon-save-file"></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
         </div>
         <!-- end Row 1 -->
 

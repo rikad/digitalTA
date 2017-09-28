@@ -135,6 +135,21 @@
 			contentName[0].innerHTML = "Setting Template Excel";
 		}
 
+		this.delete = function(id) {
+	        $.ajax({
+	            url: '/tu/transcripts/'+id,
+	            type: 'DELETE',
+	            data: { '_token': window.Laravel.csrfToken },
+	            dataType: 'json',
+	            error: function() {
+	            	location.reload();
+	            },
+	            success: function() {
+	            	location.reload(); 
+	            }
+	    	});
+		}
+
 	}
 
 	var rikad = new rikad();

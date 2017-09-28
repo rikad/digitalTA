@@ -27,6 +27,15 @@
             </div>
           </div>
           <div class="col-md-3">
+            <div class="panel panel-default" url="/tu/courses">
+              <div class="panel-heading">Kelola Mata Kuliah</div>
+              <div class="panel-body">
+                <span class="glyphicon glyphicon-book"></span>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-md-3">
             <div class="panel panel-default" url="/tu/transcripts">
               <div class="panel-heading">Kelola Transkrip Mahasiswa</div>
               <div class="panel-body">

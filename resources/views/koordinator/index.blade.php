@@ -19,7 +19,7 @@
         <div class="row">
 
           <div class="col-md-3">
-            <div class="panel panel-default" url="#/koordinator/periods">
+            <div class="panel panel-default" url="/koordinator/periods">
               <div class="panel-heading">Kelola Tahun Ajaran</div>
               <div class="panel-body">
                 <span class="glyphicon glyphicon-calendar"></span>

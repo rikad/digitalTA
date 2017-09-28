@@ -10,6 +10,6 @@ class Course extends Model
     protected $table = 'pc_courses';
 
     protected $fillable = [
-        'curriculum_id','code','title', 'title_en', 'semester', 'rex', 'sch', 'mbs', 'et', 'ge', 'other'
+        'no','curriculum_id','code','title', 'title_en', 'semester', 'rex', 'sch', 'mbs', 'et', 'ge', 'other'
     ];
 }
