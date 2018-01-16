@@ -572,7 +572,7 @@ class TranscriptsController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('administration.transcripts.form');
     }
 
 
