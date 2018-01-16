@@ -41,7 +41,8 @@
 				</div>
 				<div class="panel-body">
 				<div align="right">
-					<button id="editBtn" class="btn btn-primary btn-sm" onclick="rikad.showModalNew()">Tambah Baru</button>
+					<a href="{{ route('transcripts.edit',0) }}"><button class="btn btn-primary btn-sm">Tambah Mahasiswa</button></a>
+					<button id="editBtn" class="btn btn-primary btn-sm" onclick="rikad.showModalNew()">Import Mahasiswa</button>
 					<button id="setBtn" class="btn btn-primary btn-sm" onclick="rikad.setting()">Pengaturan</button>
 				</div><br>
 					{!! $html->table(['class'=>'table-striped']) !!}
@@ -119,11 +120,11 @@
 			var form = '<form method="GET" action="/tu/transcripts/create">';
 			form += '<div class="form-group"> \
 				  	<label for="comment">NIP Kaprodi:</label> \
-				  		<input class="form-control" type="text" value="@isset($kaprodi){{$kaprodi->nip}}@endisset" name="nip" placeholder="NIP Kaprodi"> \
+				  		<input class="form-control" type="text" value="@if (isset($kaprodi) && count($kaprodi) > 0) {{$kaprodi->nip}}@endisset" name="nip" placeholder="NIP Kaprodi"> \
 					</div> ';
 			form += '<div class="form-group"> \
 				  	<label for="comment">Nama Kaprodi:</label> \
-				  		<input class="form-control" value="@isset($kaprodi){{$kaprodi->name}}@endisset" type="text" name="name" placeholder="Nama Kaprodi"> \
+				  		<input class="form-control" value="@if (isset($kaprodi) && count($kaprodi) > 0){{$kaprodi->name}}@endisset" type="text" name="name" placeholder="Nama Kaprodi"> \
 					</div> ';
 
 			form += '<div align="right"><input class="btn btn-primary btn-sm" type="submit" value="Save"/></div></form>';
