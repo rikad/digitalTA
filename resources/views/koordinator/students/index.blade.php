@@ -36,7 +36,22 @@
         <div class="modal-body">
         	<form method="POST" action="/koordinator/students"> {{ csrf_field() }}
         	Periode<br>
-        	<select><option>2017 Semester 1</option></select><br><br>
+
+				@isset($period)
+				  <select name="period" class="form-control">
+				  @foreach($period as $v)
+				  	@if(isset($_GET['id']))
+				    <option value="{{ $v->id }}" @if($_GET['id'] == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
+				    @else
+				    <option value="{{ $v->id }}" @if($last_period == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
+				    @endif
+				  @endforeach
+				  </select>
+
+				@endisset
+
+				<hr>
+
         	List Student (Contoh format dibawah)<br>
         	<textarea rows=10 class="form-control" name=students>
 13318001 Student Pertama
@@ -51,6 +66,7 @@
   <!---->
 
 	<div class="row">
+
 		<div class="col-md-12">
 			<ul class="breadcrumb">
 				<li><a href="{{ url('/home') }}">Dashboard</a></li>
@@ -69,11 +85,25 @@
 					<h2 class="panel-title">Student Management</h2>
 				</div>
 				<div class="panel-body">
+					<br>
+
+					@isset($period)
+					  <select onchange="changeStatus(this.value)" class="form-control">
+					  @foreach($period as $v)
+					  	@if(isset($_GET['id']))
+					    <option value="{{ $v->id }}" @if($_GET['id'] == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
+					    @else
+					    <option value="{{ $v->id }}" @if($last_period == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
+					    @endif
+					  @endforeach
+					  </select>
+
+					@endisset
+					<hr>
+
 				<div align="right">
-					<select><option>2017 Semester 1</option></select>
 					<button id="editBtn" class="btn btn-primary btn-sm" 
 					data-toggle="modal" data-target="#myModalBulk">Tambahkan Peserta</button>
-					<!--<button id="editBtn" class="btn btn-primary btn-sm" onclick="rikad.add(true)">Add</button>-->
 				</div><br>
 					{!! $html->table(['class'=>'table-striped']) !!}
 				</div>
@@ -227,6 +257,11 @@
 
 	var rikad = new rikad();
 	//rikad.getPeriod();
+
+    function changeStatus(id) {
+      window.location = "{{ url('koordinator/students') }}" +'?id='+id;
+    }
+
   </script>
 
 @endsection

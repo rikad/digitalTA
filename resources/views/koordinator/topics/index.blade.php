@@ -43,26 +43,26 @@
 
 				<div class="panel-body">
 
-<ul class="nav nav-tabs">
-  <li class="active"><a href="#">Daftar Topik</a></li>
-  <li><a href="/koordinator/topics/{{ $last_period }}">Status Topik</a></li>
-</ul>
+				<ul class="nav nav-tabs">
+				  <li class="active"><a href="#">Daftar Topik</a></li>
+				  <li><a href="/koordinator/topics/{{ $last_period }}">Status Topik</a></li>
+				</ul>
 
-<br>
-@isset($period)
-<h5>Pilih Periode :</h5>
-  <select onchange="changeStatus(this.value)" class="form-control">
-  @foreach($period as $v)
-  	@if(isset($_GET['id']))
-    <option value="{{ $v->id }}" @if($_GET['id'] == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
-    @else
-    <option value="{{ $v->id }}" @if($last_period == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
-    @endif
-  @endforeach
-  </select>
+				<br>
+				@isset($period)
+				<h5>Pilih Periode :</h5>
+				  <select onchange="changeStatus(this.value)" class="form-control">
+				  @foreach($period as $v)
+				  	@if(isset($_GET['id']))
+				    <option value="{{ $v->id }}" @if($_GET['id'] == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
+				    @else
+				    <option value="{{ $v->id }}" @if($last_period == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
+				    @endif
+				  @endforeach
+				  </select>
 
-@endisset
-<hr>
+				@endisset
+				<hr>
 
 
 				<div align="right"><button id="editBtn" class="btn btn-primary btn-sm" onclick="rikad.add(true)">Add</button></div><br>

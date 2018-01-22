@@ -46,13 +46,20 @@ class StudentsController extends Controller
 
     public function index(Request $request, Builder $htmlBuilder)
     {
+
+        $period_id = $request->input('id');
+        if (!$period_id) {
+            $last_period = Period::orderBy('id','desc')->first();
+            $period_id = $last_period->id;
+        }
+
         if ($request->ajax()) {
             $data = User::select(['users.id','users.name','users.no_induk', 'users.email','roles.display_name'])
                     ->join('role_user','role_user.user_id','users.id')
                     ->join('roles','role_user.role_id','roles.id')
                     ->join('student_period','student_period.student_id','users.id')
                     ->where('roles.name','student')
-                    ->where('student_period.period_id','1');
+                    ->where('student_period.period_id',$period_id);
 
             return Datatables::of($data)
                     ->addColumn('action',function($data) { 
@@ -66,7 +73,10 @@ class StudentsController extends Controller
           ->addColumn(['data' => 'email', 'name'=>'users.email', 'title'=>'Email'])
           ->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'Action', 'orderable'=>false, 'searchable'=>false]);
 
-        return view('koordinator.students.index')->with(compact('html'));
+        $period = Period::orderBy('id')->get();
+        $last_period = $period[count($period) - 1]->id;
+
+        return view('koordinator.students.index')->with(compact('html'))->with(compact('period'))->with(compact('last_period'));
     }
 
     /**
@@ -107,7 +117,7 @@ class StudentsController extends Controller
 
                 
                 DB::table('student_period')->insert(
-                    ['student_id' => $user['id'], 'period_id' => 1]
+                    ['student_id' => $user['id'], 'period_id' => $data['period'] ]
                 );
             } 
 
