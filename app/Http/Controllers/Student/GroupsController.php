@@ -37,16 +37,19 @@ class GroupsController extends Controller
 
     public function index(Request $request, Builder $htmlBuilder) {
 
+        $period = DB::table('student_period')->where('student_id',Auth::id())->first();
+
+
         $group = User::select('users.*','teman.name as teman_name','teman.id AS teman_id','groups.id AS group_id','groups.status')
                   ->join('groups','groups.student1_id','users.id')
-                  ->join('users AS teman','groups.student2_id','teman.id')
+                  ->leftjoin('users AS teman','groups.student2_id','teman.id')
                   ->where('users.id',Auth::id())->orderBy('status','desc')->get();
         $konfirmasi_mode = false;
 
         if (count($group) <= 0) { //jika tidak ada di student1
           $group = User::select('users.*','teman.name as teman_name','teman.id AS teman_id','groups.id AS group_id','groups.status')
                     ->join('groups','groups.student2_id','users.id')
-                    ->join('users AS teman','groups.student1_id','teman.id')
+                    ->leftjoin('users AS teman','groups.student1_id','teman.id')
                     ->where('users.id',Auth::id())->orderBy('status','desc')->get();
           $konfirmasi_mode = true;
 
@@ -71,8 +74,10 @@ class GroupsController extends Controller
                       ->join('roles','role_user.role_id','roles.id')
                       ->leftJoin('groups','groups.student1_id','users.id')
                       ->leftJoin('groups AS groups2','groups2.student2_id','users.id')
+                      ->join('student_period','student_period.student_id','users.id')
                       ->where('roles.name','student')
-                      ->where('users.id','!=',Auth::id());
+                      ->where('users.id','!=',Auth::id())
+                      ->where('student_period.period_id',$period->period_id);
 
               return Datatables::of($data)
                       ->addColumn('action',function($data) {
@@ -123,41 +128,51 @@ class GroupsController extends Controller
         $data['student2_id'] = $data['id'];
         $data['period_id'] = 1;
 
-        //validasi
-        $validator = Validator::make($data, $this->validation());
+        if ($data['id'] == '') {
+          $data['status'] = 1;
+          Group::Create($data);
+          Session::flash("flash_notification", [
+              "level"=>"warning",
+              "message"=>"Group Telah Di buat"
+          ]);
 
-        if ($validator->fails()) {
-            Session::flash("flash_notification", [
-                "level"=>"danger",
-                "message"=>$validator->messages()
-            ]);
+        } else {
+          //validasi
+          $validator = Validator::make($data, $this->validation());
+          if ($validator->fails()) {
+              Session::flash("flash_notification", [
+                  "level"=>"danger",
+                  "message"=>$validator->messages()
+              ]);
 
-            return back();
-        }
-        //validasi
+              return back();
+          }
+          //validasi
+          $group1 = Group::where('student1_id',$data['student1_id'])->where('status',1)->first();
+          $group2 = Group::where('student2_id',$data['student2_id'])->where('status',1)->first();
 
-        $group1 = Group::where('student1_id',$data['student1_id'])->where('status',1)->first();
-        $group2 = Group::where('student2_id',$data['student2_id'])->where('status',1)->first();
+          if ($group1) {
+              Session::flash("flash_notification", [
+                  "level"=>"danger",
+                  "message"=>"Anda Telah Mempunyai Grup"
+              ]);
+          }
+          elseif ($group2) {
+              Session::flash("flash_notification", [
+                  "level"=>"danger",
+                  "message"=>"Teman Anda Telah Mempunyai Grup"
+              ]);
+          }
+          else {
+              Group::Create($data);
+              Session::flash("flash_notification", [
+                  "level"=>"warning",
+                  "message"=>"Group Telah Di buat, Menunggu Konfirmasi"
+              ]);
+          }
+        }
 
-        if ($group1) {
-            Session::flash("flash_notification", [
-                "level"=>"danger",
-                "message"=>"Anda Telah Mempunyai Grup"
-            ]);
-        }
-        elseif ($group2) {
-            Session::flash("flash_notification", [
-                "level"=>"danger",
-                "message"=>"Teman Anda Telah Mempunyai Grup"
-            ]);
-        }
-        else {
-            Group::Create($data);
-            Session::flash("flash_notification", [
-                "level"=>"warning",
-                "message"=>"Group Telah Di buat, Menunggu Konfirmasi"
-            ]);
-        }
+
 
         return back();
     }

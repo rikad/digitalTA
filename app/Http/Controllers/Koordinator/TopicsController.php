@@ -64,20 +64,8 @@ class TopicsController extends Controller
                     ->where('topics.period_id',$period_id);
                     //->join('users dosen2','dosen2.id','roles.id')
 
-            return Datatables::of($data)
-                    ->addColumn('action',function($data) { 
-                        return '<button class="btn btn-primary btn-xs" onclick="rikad.edit(this,\''.$data->id.'\')"><span class="glyphicon glyphicon-pencil"></span></button> <button class="btn btn-danger btn-xs" onclick="rikad.delete(\''.$data->id.'\')"><span class="glyphicon glyphicon-remove"></span></button>';
-                    })->make(true);
+            return Datatables::of($data)->make(true);
         }
-
-        $html = $htmlBuilder
-          ->addColumn(['data' => 'name', 'name'=>'users.name', 'title'=>'Dosen'])
-          ->addColumn(['data' => 'title', 'name'=>'topics.title', 'title'=>'Judul'])
-          ->addColumn(['data' => 'bobot', 'name'=>'topics.bobot', 'title'=>'Bobot', 'searchable'=>false])
-          ->addColumn(['data' => 'waktu', 'name'=>'topics.waktu', 'title'=>'Waktu', 'searchable'=>false])
-          ->addColumn(['data' => 'dana', 'name'=>'topics.dana', 'title'=>'Dana', 'searchable'=>false])
-          ->addColumn(['data' => 'peminat', 'name'=>'peminat', 'title'=>'Peminat', 'searchable'=>false])
-          ->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'Action', 'orderable'=>false, 'searchable'=>false]);
 
         $period = Period::orderBy('id')->get();
 	    $last_period = $period[count($period) - 1]->id;

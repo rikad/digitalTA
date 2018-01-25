@@ -5,8 +5,8 @@
 	<div class="row">
 		<div class="col-md-12">
 			<ul class="breadcrumb">
-				<li><a href="{{ url('/home') }}">Dashboard</a></li>
-				<li class="active">Daftar Kelompok</li>
+		        <li><span class="glyphicon glyphicon-home"></span> &nbsp;<a href="{{ url('/home') }}">Dashboard</a></li>
+		        <li class="active">Proposal Tugas Akhir</li>
 			</ul>
 
 			<div class="alert alert-info">
@@ -16,9 +16,23 @@
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h2 class="panel-title">Bimbingan Tugas Akhir</h2>
+					<h2 class="panel-title">Proposal Tugas Akhir</h2>
 				</div>
 				<div class="panel-body">
+					@isset($period)
+					  <select onchange="changeStatus(this.value)" class="form-control">
+					  @foreach($period as $v)
+					  	@if(isset($_GET['id']))
+					    <option value="{{ $v->id }}" @if($_GET['id'] == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
+					    @else
+					    <option value="{{ $v->id }}" @if($last_period == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
+					    @endif
+					  @endforeach
+					  </select>
+
+					@endisset
+					<hr>
+
 					{!! $html->table(['class'=>'table-striped']) !!}
 				</div>
 			</div>
@@ -35,6 +49,10 @@
 {!! $html->scripts() !!}
 
   <script>
+
+    function changeStatus(id) {
+      window.location = "{{ url('dosen/proposals') }}" +'?id='+id;
+    }
 
   	function additional() {
 		$(document).ready(function () {

@@ -28,7 +28,7 @@
     <div class="col-md-12">
 
       <ul class="breadcrumb">
-        <li><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;&nbsp;<a href="/dashboard">Dashboard</a></li>
+        <li><span class="glyphicon glyphicon-home"></span> &nbsp;<a href="{{ url('/home') }}">Dashboard</a></li>
         <li>Kelompok Tugas Akhir</li>
       </ul>
 
@@ -38,7 +38,10 @@
         <!-- Content -->
         <div class="panel-body">
           @if(method_exists($html,'table'))
-          {!! $html->table(['class'=>'table-striped']) !!}
+            <div align="right"><button class="btn btn-primary btn-sm" onclick="showModal('','POST')">TA Tanpa Teman</button></div>
+            <hr>
+
+            {!! $html->table(['class'=>'table-striped']) !!}
           @else
             <div class="alert alert-warning">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -134,7 +137,7 @@
     form += '<input type="hidden" value="'+id+'" name="id"><p>';
 
     if (action == 'POST') {
-      form += 'Konfirmasi Penambahan Teman TA, Tekan Konfirmasi.';
+      form += id == '' ? 'Konfirmasi TA Tanpa Teman, Tekan Konfirmasi.' : 'Konfirmasi Penambahan Teman TA, Tekan Konfirmasi.';
     } else {
       form += 'Konfirmasi Pembatalan Teman TA, Tekan Konfirmasi.';
     }

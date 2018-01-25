@@ -50,23 +50,16 @@ class TopicsController extends Controller
 
     public function index(Request $request, Builder $htmlBuilder)
     {
+
+        $period = DB::table('student_period')->where('student_id',Auth::id())->first();
+
         if ($request->ajax()) {
             $data = Topic::selectRaw('topics.id,topics.title,topics.description,topics.is_taken, topics.dosen1_id, topics.bobot, topics.waktu, topics.dana,
-                (select count(*) from group_topic where group_topic.topic_id = topics.id) as peminat');
+                (select count(*) from group_topic where group_topic.topic_id = topics.id) as peminat')
+                ->where('period_id',$period->period_id);
 
-            return Datatables::of($data)
-                    ->addColumn('action',function($data) {
-                        return $data->is_taken == 0 ? '<button class="btn btn-primary btn-xs" onclick="rikad.pilihTopik(\''.$data->id.'\')">Pilih</button>' : '<button class="btn btn-info btn-xs disabled">Telah Di Ambil</button>';
-                    })->make(true);
+            return Datatables::of($data)->make(true);
         }
-
-        $html = $htmlBuilder
-          ->addColumn(['data' => 'title', 'name'=>'topics.title', 'title'=>'Judul'])
-          ->addColumn(['data' => 'bobot', 'name'=>'topics.bobot', 'title'=>'Bobot'])
-          ->addColumn(['data' => 'waktu', 'name'=>'topics.waktu', 'title'=>'Waktu'])
-          ->addColumn(['data' => 'dana', 'name'=>'topics.dana', 'title'=>'Dana'])
-          ->addColumn(['data' => 'peminat', 'name'=>'peminat', 'title'=>'Peminat', 'searchable'=>false])
-          ->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'Action', 'orderable'=>false, 'searchable'=>false]);
 
         $topic = Group::select('topics.*','users.name AS siswa1','users.no_induk AS siswa1no','users2.no_induk AS siswa2no','users2.name AS siswa2','dosen1.name AS dosen1','dosen1.no_induk AS dosen1no','dosen2.no_induk AS dosen2no','dosen2.name AS dosen2','group_topic.note','group_topic.status','group_topic.id AS relasi')
                 ->leftjoin('users','users.id','groups.student1_id')
@@ -87,7 +80,7 @@ class TopicsController extends Controller
                 ->first();
 
 
-        return view('students.topics.index')->with(compact('html'))->with(compact('topic'))->with(compact('partner'));
+        return view('students.topics.index')->with(compact('topic'))->with(compact('partner'));
     }
 
     /**
@@ -115,19 +108,25 @@ class TopicsController extends Controller
         //return json_encode($data);
 
         // //check if data exists update else create
-         if($topic){
-            $validator = Validator::make($data, $this->validation($data['id']));
-                if ($validator->fails()) {
+        if($topic){
+
+            $valid = [
+                'dosen2_id' => 'exists:users,id',
+            ];
+
+            $validator = Validator::make($data, $valid);
+            if ($validator->fails()) {
                  Session::flash("flash_notification", [
                      "level"=>"danger",
                      "message"=>$validator->messages()
                  ]);
 
                  return redirect('/student/topics');//->route('users.index');
-             }
+            }
 
-             $topic->update($data);
-         } else {
+            $topic->update($data);
+
+        } else {
              $validator = Validator::make($data, $this->validation(false));
              if ($validator->fails()) {
                  Session::flash("flash_notification", [
@@ -140,8 +139,9 @@ class TopicsController extends Controller
                  
                  return redirect('/student/topics');//->route('users.index');
              }
-
-            $data['period_id']=1;
+    
+            $period = DB::table('student_period')->where('student_id',Auth::id())->first();
+            $data['period_id']=$period->period_id;
             $data['is_taken']=0;
              
 
@@ -188,22 +188,34 @@ class TopicsController extends Controller
     public function update(Request $request, $id)
     {
         $group = Group::select('groups.id')
-                ->leftjoin('users','users.id','groups.student1_id')
-                ->leftjoin('users as users2','users2.id','groups.student2_id')
+                ->leftJoin('users','users.id','groups.student1_id')
+                ->leftJoin('users as users2','users2.id','groups.student2_id')
                 ->where('users.id',Auth::id())
                 ->orWhere('users2.id',Auth::id())
                 ->first();
 
-        $data['group_id'] = $group->id;
-        $data['topic_id'] = $id;
-        $data['status'] = 0;
 
-        DB::table('group_topic')->insert($data);
+        $search = DB::table('group_topic')->where('group_id',$group->id)->where('topic_id',$id)->get();
 
-        Session::flash("flash_notification", [
-            "level"=>"success",
-            "message"=>"Topik Berhasil Di Ajukan"
-        ]);
+        //if not exist
+        if (count($search) > 0) {
+           Session::flash("flash_notification", [
+                "level"=>"danger",
+                "message"=>"Topik Sudah Anda Pilih"
+            ]);           
+        }
+        else {
+            $data['group_id'] = $group->id;
+            $data['topic_id'] = $id;
+            $data['status'] = 0;
+            DB::table('group_topic')->insert($data);
+
+            Session::flash("flash_notification", [
+                "level"=>"success",
+                "message"=>"Topik Berhasil Di Ajukan"
+            ]);
+        }
+
 
         return 'ok';
     }

@@ -26,8 +26,8 @@
 	<div class="row">
 		<div class="col-md-12">
 			<ul class="breadcrumb">
-				<li><a href="{{ url('/home') }}">Dashboard</a></li>
-				<li class="active">Pemilihan Topik</li>
+		        <li><span class="glyphicon glyphicon-home"></span> &nbsp;<a href="{{ url('/home') }}">Dashboard</a></li>
+		        <li class="active">Pemilihan Topik</li>
 			</ul>
 
       <!-- Panel groups-->

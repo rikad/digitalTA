@@ -10,6 +10,7 @@ use App\Topic;
 use App\BukuBiru;
 use App\Group;
 use App\Role;
+use App\Period;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Html\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -53,14 +54,24 @@ class BimbinganTAController extends Controller
 
     public function index(Request $request, Builder $htmlBuilder)
     {
+
+        $period_id = $request->input('id');
+
+        if (!$period_id) {
+            $last_period = Period::orderBy('id','desc')->first();
+            $period_id = $last_period->id;
+        }
+
         if ($request->ajax()) {
             $data = Topic::select('topics.id', 'topics.title', 'groups.id as group_id', 'users.name', 'users2.name as name2')
             ->join('group_topic', 'group_topic.topic_id', 'topics.id')
             ->join('groups', 'group_topic.group_id', 'groups.id')
             ->join('users','users.id','groups.student1_id')
-            ->join('users as users2','users2.id','groups.student2_id')
+            ->join('student_period','student_period.student_id','users.id')
+            ->leftJoin('users as users2','users2.id','groups.student2_id')
             ->where(function($query){$query->where('dosen1_id', Auth::id())->orWhere('dosen2_id', Auth::id());})
-            ->where('is_taken', 1);
+            ->where('is_taken', 1)
+            ->where('topics.period_id', $period_id);
             
             return Datatables::of($data)
                     ->addColumn('sum',function($data) { 
@@ -72,6 +83,9 @@ class BimbinganTAController extends Controller
                     })->make(true);
         }
 
+        $period = Period::orderBy('id')->get();
+        $last_period = $period[count($period) - 1]->id;
+
         $html = $htmlBuilder
           ->addColumn(['data' => 'title', 'name'=>'topics.title', 'title'=>'Judul'])
           ->addColumn(['data' => 'name', 'name'=>'users.name', 'title'=>'Nama 1'])
@@ -79,10 +93,8 @@ class BimbinganTAController extends Controller
           ->addColumn(['data' => 'sum', 'name'=>'sum', 'title'=>'Jumlah Bimbingan', 'searchable'=>false])
           ->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'Action', 'orderable'=>false, 'searchable'=>false]);
 
-        return view('dosen.bimbinganta.index')->with(compact('html'));
+        return view('dosen.bimbinganta.index')->with(compact('html'))->with(compact('period'))->with(compact('last_period'));
 
-        //$topic = 
-            //return $topic;
     }
 
     public function regu(Request $request, Builder $htmlBuilder){
@@ -92,7 +104,7 @@ class BimbinganTAController extends Controller
             ->join('group_topic', 'group_topic.topic_id', 'topics.id')
             ->join('groups', 'group_topic.group_id', 'groups.id')
             ->join('users','users.id','groups.student1_id')
-            ->join('users as users2','users2.id','groups.student2_id')
+            ->leftJoin('users as users2','users2.id','groups.student2_id')
             ->where('group_id', $group_id)
             ->where('is_taken', 1)->first();
 

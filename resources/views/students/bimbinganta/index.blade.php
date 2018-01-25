@@ -91,7 +91,8 @@
     <div class="col-md-12">
 
       <ul class="breadcrumb">
-        <li><a href="{{ url('/home') }}"><span class="glyphicon glyphicon-home"></span> Dashboard</a></li>
+        <li><span class="glyphicon glyphicon-home"></span> &nbsp;<a href="{{ url('/home') }}">Dashboard</a></li>
+        <li class="active">Bimbingan Tugas Akhir</li>
       </ul>
 
       <!-- Panel -->

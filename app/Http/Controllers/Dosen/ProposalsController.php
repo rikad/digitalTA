@@ -10,6 +10,7 @@ use App\Topic;
 use App\Proposal;
 use App\Group;
 use App\Role;
+use App\Period;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Html\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -29,23 +30,42 @@ class ProposalsController extends Controller
 
     public function index(Request $request, Builder $htmlBuilder)
     {
+        $period_id = $request->input('id');
+
+        if (!$period_id) {
+            $last_period = Period::orderBy('id','desc')->first();
+            $period_id = $last_period->id;
+        }
+
         if ($request->ajax()) {
             $data = Topic::select('topics.id', 'topics.title', 'groups.id as group_id', 'users.name', 'users2.name as name2')
             ->join('group_topic', 'group_topic.topic_id', 'topics.id')
             ->join('groups', 'group_topic.group_id', 'groups.id')
             ->join('users','users.id','groups.student1_id')
-            ->join('users as users2','users2.id','groups.student2_id')
+            ->leftJoin('users as users2','users2.id','groups.student2_id')
+            ->where('topics.period_id', $period_id)
             ->where(function($query){$query->where('dosen1_id', Auth::id())->orWhere('dosen2_id', Auth::id());})
             ->where('is_taken', 1);
             
             return Datatables::of($data)
                     ->addColumn('status',function($data) {
-                        $proposal = Proposal::where('group_id', $data->group_id)->where('status',0)->get();
-                        if(count($proposal) > 0) {
-                            return '<div class="label label-warning">Menunggu Review</div>';
+                        $proposalT = Proposal::where('group_id', $data->group_id)->where('status',0)->get();
+                        $proposalS = Proposal::where('group_id', $data->group_id)->where('status',1)->get();
+
+                        $output = '';
+                        if(count($proposalS) == 0 && count($proposalT) == 0) {
+                            $output = '<div class="label label-danger">Kosong</div>';
                         } else {
-                            return '<div class="label label-success">Sudah di Review</div>';
+                            
+                            if(count($proposalT) > 0) {
+                                $output .= '<div class="label label-warning">'.count($proposalT).' Menunggu Review</div>';
+                            }
+                            if(count($proposalS) > 0) {
+                                $output .= ' <div class="label label-success">'.count($proposalS).' Sudah di Review</div>';
+                            }
                         }
+
+                        return $output;
                     })
                     ->addColumn('action',function($data) {
                         return '<a class="btn btn-primary btn-xs" href="/dosen/proposals/'.$data->group_id.'"><span class="glyphicon glyphicon-eye-open"></span> Lihat Proposal</button>';
@@ -59,7 +79,10 @@ class ProposalsController extends Controller
           ->addColumn(['data' => 'status', 'name'=>'status', 'title'=>'Status', 'searchable'=>false])
           ->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'Action', 'orderable'=>false, 'searchable'=>false]);
 
-        return view('dosen.proposals.index')->with(compact('html'));
+        $period = Period::orderBy('id')->get();
+        $last_period = $period[count($period) - 1]->id;
+
+        return view('dosen.proposals.index')->with(compact('html'))->with(compact('period'))->with(compact('last_period'));
     }
 
     /**

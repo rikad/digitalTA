@@ -66,7 +66,7 @@
 
 
 				<div align="right"><button id="editBtn" class="btn btn-primary btn-sm" onclick="rikad.add(true)">Add</button></div><br>
-					{!! $html->table(['class'=>'table-striped']) !!}
+					<table id="konten" class="table"></table>
 				</div>
 			</div>
 		</div>
@@ -79,7 +79,50 @@
 <script src="/js/dataTables.bootstrap.min.js"></script>
 <script src="/js/selectize.min.js"></script>
 
-{!! $html->scripts() !!}
+  <script>
+
+  	function genStar(n) {
+  		var out = '<p id='+n+'>';
+  		for (var i = 0; i < 5; i++) {
+  			if (i < n) {
+	  			out += '<span class="glyphicon glyphicon-star"></span>';
+  			} else {
+	  			out += '<span class="glyphicon glyphicon-star-empty"></span>';	
+  			}
+  		}
+
+  		out += '</div>';
+
+  		return out;
+  	}
+
+    $('#konten').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: '',
+      columns: [
+      { data: 'name', name: 'users.name', title: 'Dosen', searchable: true },
+      { data: 'title', name: 'topics.title', title: 'Judul', searchable: true },
+      { data: 'bobot', name: 'topics.bobot', title: 'Bobot', searchable: false, render: function(data) {
+      	return genStar(data)
+      }},
+      { data: 'waktu', name: 'topics.waktu', title: 'Waktu', searchable: false, render: function(data) {
+      	return genStar(data)
+      }},
+      { data: 'dana', name: 'topics.dana', title: 'Dana', searchable: false, render: function(data) {
+      	return genStar(data)
+      }},
+      { data: 'peminat', name: 'peminat', title: 'Peminat', searchable: false },
+      { data: 'id', name: 'id', sortable: false, searchable: false,render: function(data) {
+		return '<button class="btn btn-primary btn-xs" onclick="rikad.edit(this,'+data+')"><span class="glyphicon glyphicon-pencil"></span></button> <button class="btn btn-danger btn-xs" onclick="rikad.delete('+data+')"> <span class="glyphicon glyphicon-remove"></span></button>';      	
+      }},
+    ]});
+
+
+    function changeStatus(id) {
+      window.location = "{{ url('koordinator/topics') }}" +'/'+id;
+    }
+  </script>
 
   <script>
 
@@ -101,9 +144,9 @@
 		this.inputName = {
 			dosen1_id: {title:'Dosen',type:'select'},
 			title: {title:'Judul',type:'text'},
-			bobot: {title:'Bobot',type:'text'},
-			waktu: {title:'Waktu',type:'text'},
-			dana: {title:'Dana',type:'text'}
+			bobot: {title:'Bobot',type:'number'},
+			waktu: {title:'Waktu',type:'number'},
+			dana: {title:'Dana',type:'number'}
 		};
 
 		this.removeBtn = function (id) {
@@ -153,6 +196,10 @@
 				case 'date': 
 					output = '<div class="input-group date" id="date"><input type="text" class="form-control" name="'+ name +'" value="'+ value +'" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>';
 				break;
+				case 'number':
+					output = '<input type="number" class="form-control" name="'+ name +'" value="'+ value +'" max="5"/>';
+				break;
+
 				default: output = '<input type="text" class="form-control" name="'+ name +'" value="'+ value +'" />';
 			}
 			return output;
@@ -196,7 +243,11 @@
 
 			data = [];
 			for (var i = 0, lt = row.length; i < lt-1; i++) {
-				data.push(row[i].innerHTML);
+				if (i == 2 || i == 3 || i == 4) {
+					data.push(row[i].firstChild.id)
+				} else {
+					data.push(row[i].innerHTML);
+				}
 			}
 
 			this.showModal(data,id);

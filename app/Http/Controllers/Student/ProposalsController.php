@@ -33,6 +33,17 @@ class ProposalsController extends Controller
 
             $this->group_id = isset($group->id) ? $group->id : $group->id2;
 
+            $gt = DB::table('group_topic')->where('group_id',$this->group_id)->where('status',1)->first();
+
+            if(!$gt){
+              Session::flash("flash_notification", [
+                 "level"=>"danger",
+                 "message"=>"Menu Proposal hanya dapat diakses setelah ada topik yang disetujui oleh dosen"
+                ]);
+
+                return back();//->route('users.index');
+            }
+
             return $next($request);
         });
     }
@@ -43,7 +54,7 @@ class ProposalsController extends Controller
             'group_id' => 'required|exists:groups,id',
             'note_student' => 'nullable',
             'note_dosen' => 'nullable',
-            'file' => 'max:2048000|mimes:pdf,doc,docx,xls,xlsx',
+            'file' => 'required|max:20480|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx',
             'status' => 'integer|required'
         ];
 

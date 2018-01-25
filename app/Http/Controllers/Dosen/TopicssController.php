@@ -9,6 +9,7 @@ use App\User;
 use App\Topic;
 use App\TopicInterest;
 use App\Role;
+use App\Period;
 use Yajra\Datatables\Datatables;
 use Yajra\Datatables\Html\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -50,34 +51,28 @@ class TopicssController extends Controller
 
     public function index(Request $request, Builder $htmlBuilder)
     {
-        if ($request->ajax()) {
-            $data = Topic::selectRaw('topics.id,topics.title,topics.description,topics.is_taken, topics.dosen1_id, users.name, topics.bobot, topics.waktu, topics.dana,
-                (select count(*) from group_topic where group_topic.topic_id = topics.id) as peminat2'
-                //DB::raw('')
-                )
 
-                    ->join('users','users.id','topics.dosen1_id')
-                    //->join('users dosen2','dosen2.id','roles.id')
-                    ->where('topics.dosen1_id',Auth::id());
+        $period_id = $request->input('id');
 
-            return Datatables::of($data)
-                    ->addColumn('peminat', function($data){
-                        return '<a href=/dosen/topics/peminat/'.$data->id.'>'.$data->peminat2.'</a>';
-                    })
-                    ->addColumn('action',function($data) { 
-                        return '<button class="btn btn-primary btn-xs" onclick="rikad.edit(this,\''.$data->id.'\')"><span class="glyphicon glyphicon-pencil"></span></button> <button class="btn btn-danger btn-xs" onclick="rikad.delete(\''.$data->id.'\')"><span class="glyphicon glyphicon-remove"></span></button>';
-                    })->make(true);
+        if (!$period_id) {
+            $last_period = Period::orderBy('id','desc')->first();
+            $period_id = $last_period->id;
         }
 
-        $html = $htmlBuilder
-          ->addColumn(['data' => 'title', 'name'=>'topics.title', 'title'=>'Judul'])
-          ->addColumn(['data' => 'bobot', 'name'=>'topics.bobot', 'title'=>'Bobot', 'searchable'=>false])
-          ->addColumn(['data' => 'waktu', 'name'=>'topics.waktu', 'title'=>'Waktu', 'searchable'=>false])
-          ->addColumn(['data' => 'dana', 'name'=>'topics.dana', 'title'=>'Dana', 'searchable'=>false])
-          ->addColumn(['data' => 'peminat', 'name'=>'peminat', 'title'=>'Peminat', 'searchable'=>false])
-          ->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'Action', 'orderable'=>false, 'searchable'=>false]);
+        if ($request->ajax()) {
+            $data = Topic::selectRaw('topics.id,topics.title,topics.description,topics.is_taken, topics.dosen1_id, users.name, topics.bobot, topics.waktu, topics.dana,
+                (select count(*) from group_topic where group_topic.topic_id = topics.id) as peminat')
+                    ->join('users','users.id','topics.dosen1_id')
+                    ->where('topics.period_id', $period_id)
+                    ->where('topics.dosen1_id',Auth::id());
 
-        return view('dosen.topics.index')->with(compact('html'));
+            return Datatables::of($data)->make(true);
+        }
+
+        $period = Period::orderBy('id')->get();
+        $last_period = $period[count($period) - 1]->id;
+
+        return view('dosen.topics.index')->with(compact('period'))->with(compact('last_period'));
     }
 
     /**

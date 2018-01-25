@@ -26,7 +26,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<ul class="breadcrumb">
-				<li><a href="{{ url('/home') }}">Dashboard</a></li>
+        <li><span class="glyphicon glyphicon-home"></span> &nbsp;<a href="{{ url('/home') }}">Dashboard</a></li>
 				<li class="active">Pemilihan Topik</li>
 			</ul>
 
@@ -198,7 +198,7 @@
                 </div>
 
 				<div align="right"><button id="editBtn" class="btn btn-primary btn-sm" onclick="rikad.add(true)">Ajukan Topik Baru</button></div><br>
-					{!! $html->table(['class'=>'table-striped']) !!}
+					<table id="konten" class="table"></table>
 				</div>
 			</div>
             @endif
@@ -215,7 +215,43 @@
 <script src="/js/selectize.min.js"></script>
 
 @if(count($topic) <3)
-{!! $html->scripts() !!}
+<script>
+  	function genStar(n) {
+  		var out = '<p id='+n+'>';
+  		for (var i = 0; i < 5; i++) {
+  			if (i < n) {
+	  			out += '<span class="glyphicon glyphicon-star"></span>';
+  			} else {
+	  			out += '<span class="glyphicon glyphicon-star-empty"></span>';	
+  			}
+  		}
+
+  		out += '</div>';
+
+  		return out;
+  	}
+
+    $('#konten').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: '',
+      columns: [
+      { data: 'title', name: 'topics.title', title: 'Judul', searchable: true },
+      { data: 'bobot', name: 'topics.bobot', title: 'Bobot', searchable: false, render: function(data) {
+      	return genStar(data)
+      }},
+      { data: 'waktu', name: 'topics.waktu', title: 'Waktu', searchable: false, render: function(data) {
+      	return genStar(data)
+      }},
+      { data: 'dana', name: 'topics.dana', title: 'Dana', searchable: false, render: function(data) {
+      	return genStar(data)
+      }},
+      { data: 'peminat', name: 'peminat', title: 'Peminat', searchable: false },
+      { data: 'is_taken', name: 'is_taken', sortable: false, searchable: false,render: function(data,type,full) {
+		return data == 0 ? '<button class="btn btn-primary btn-xs" onclick="rikad.pilihTopik('+full.id+')">Pilih</button>' : '<button class="btn btn-info btn-xs disabled">Telah Di Ambil</button>'      	
+      }},
+    ]});
+</script>
 @endif
 
   <script>
@@ -238,9 +274,9 @@
 		this.inputName = {
 			dosen1_id: {title:'Dosen',type:'select'},
 			title: {title:'Judul',type:'text'},
-			bobot: {title:'Bobot',type:'text'},
-			waktu: {title:'Waktu',type:'text'},
-			dana: {title:'Dana',type:'text'}
+			bobot: {title:'Bobot',type:'number'},
+			waktu: {title:'Waktu',type:'number'},
+			dana: {title:'Dana',type:'number'}
 		};
 
 		this.removeBtn = function (id) {
@@ -290,6 +326,10 @@
 				case 'date': 
 					output = '<div class="input-group date" id="date"><input type="text" class="form-control" name="'+ name +'" value="'+ value +'" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>';
 				break;
+				case 'number':
+					output = '<input type="number" class="form-control" name="'+ name +'" value="'+ value +'" max="5"/>';
+				break;
+
 				default: output = '<input type="text" class="form-control" name="'+ name +'" value="'+ value +'" />';
 			}
 			return output;
@@ -333,7 +373,11 @@
 
 			data = [];
 			for (var i = 0, lt = row.length; i < lt-1; i++) {
-				data.push(row[i].innerHTML);
+        if (i == 1 || i == 2 || i == 3) {
+          data.push(row[i].firstChild.id)
+        } else {
+          data.push(row[i].innerHTML);
+        }
 			}
 
 			this.showModal(data,id);

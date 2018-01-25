@@ -20,7 +20,7 @@ class CheckGroup
     {
         $group = User::select('users.*','teman.name as teman_name','teman.id AS teman_id','groups.id AS group_id','groups.status')
                   ->join('groups','groups.student1_id','users.id')
-                  ->join('users AS teman','groups.student2_id','teman.id')
+                  ->leftjoin('users AS teman','groups.student2_id','teman.id')
                   ->where('users.id',Auth::id())
                   ->where('status',1)
                   ->first();
@@ -28,7 +28,7 @@ class CheckGroup
         if (!$group) { //jika tidak ada di student1
           $group = User::select('users.*','teman.name as teman_name','teman.id AS teman_id','groups.id AS group_id','groups.status')
                     ->join('groups','groups.student2_id','users.id')
-                    ->join('users AS teman','groups.student1_id','teman.id')
+                    ->leftjoin('users AS teman','groups.student1_id','teman.id')
                     ->where('users.id',Auth::id())
                     ->where('status',1)
                     ->first();

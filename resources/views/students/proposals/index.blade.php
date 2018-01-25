@@ -33,8 +33,8 @@
 	<div class="row">
 		<div class="col-md-12">
 			<ul class="breadcrumb">
-				<li><a href="{{ url('/home') }}">Dashboard</a></li>
-				<li class="active">Proposal Tugas Akhir</li>
+		        <li><span class="glyphicon glyphicon-home"></span> &nbsp;<a href="{{ url('/home') }}">Dashboard</a></li>
+		        <li class="active">Proposal Tugas Akhir</li>
 			</ul>
 
 			<div class="panel panel-primary">

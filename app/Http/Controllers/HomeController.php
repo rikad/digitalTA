@@ -64,6 +64,7 @@ class HomeController extends Controller
             return view('students.index',[
               'teman' => $teman,
               'topic' => $topic,
+              'group_id' => $group ? $group->id : null,
             ]);
         }
         elseif (Auth::user()->hasRole('administration')) {

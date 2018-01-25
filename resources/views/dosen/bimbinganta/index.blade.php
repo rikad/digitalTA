@@ -40,6 +40,20 @@
 					<h2 class="panel-title">Bimbingan Tugas Akhir</h2>
 				</div>
 				<div class="panel-body">
+					@isset($period)
+					  <select onchange="changeStatus(this.value)" class="form-control">
+					  @foreach($period as $v)
+					  	@if(isset($_GET['id']))
+					    <option value="{{ $v->id }}" @if($_GET['id'] == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
+					    @else
+					    <option value="{{ $v->id }}" @if($last_period == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
+					    @endif
+					  @endforeach
+					  </select>
+
+					@endisset
+					<hr>
+
 					{!! $html->table(['class'=>'table-striped']) !!}
 				</div>
 			</div>
@@ -56,6 +70,10 @@
 {!! $html->scripts() !!}
 
   <script>
+
+    function changeStatus(id) {
+      window.location = "{{ url('dosen/bimbinganTA') }}" +'?id='+id;
+    }
 
   	function additional() {
 		$(document).ready(function () {
