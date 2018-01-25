@@ -41,7 +41,15 @@
                 <span class="glyphicon glyphicon-user"></span>
               </div>
             </div>
-
+          </div>
+          <div class="col-md-3">
+            <div class="panel panel-default" url="/koordinator/groups">
+              <div class="panel-heading">Kelola Grup Tugas Akhir</div>
+              <div class="panel-body">
+                <span class="glyphicon glyphicon-user"></span>
+                <span class="glyphicon glyphicon-user"></span>
+              </div>
+            </div>
           </div>
         </div>
         <!-- end Row 1 -->
