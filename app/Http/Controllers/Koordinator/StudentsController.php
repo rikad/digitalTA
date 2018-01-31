@@ -106,7 +106,6 @@ class StudentsController extends Controller
             for ($x = 0; $x < count($list); $x++) {
               $tmp = explode(' ', $list[$x], 2);
 
-              $student['id'] = Auth::id();
               $student['no_induk'] = $tmp[0];
               $student['username'] = $tmp[0];
               $student['name'] = $tmp[1];
@@ -140,9 +139,14 @@ class StudentsController extends Controller
               Session::flash("flash_notification", [
                 "level"=>"danger",
                 "message"=>$validator->messages()
-            ]);
+                ]);
+            }
 
             return redirect('koordinator/students');
+        }
+
+        if ($data['password']) {
+            $data['password'] = bcrypt($data['no_induk']);
         }
 
         $user->update($data);
