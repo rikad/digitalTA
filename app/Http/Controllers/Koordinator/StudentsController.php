@@ -100,7 +100,7 @@ class StudentsController extends Controller
         $data = $request->except(['_token','password']);
         
         
-        if($data['students']){
+        if(isset($data['students'])){
             //return $data['students'];
             $list = preg_split('/\r\n|[\r\n]/', $data['students']);
             for ($x = 0; $x < count($list); $x++) {
