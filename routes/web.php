@@ -44,7 +44,7 @@ Route::group(['prefix'=>'koordinator', 'middleware'=>['auth', 'role:koordinator'
 	Route::resource('students', 'Koordinator\StudentsController');
 	Route::resource('topics', 'Koordinator\TopicsController');
 	Route::resource('periods', 'Koordinator\PeriodsController');
-	// Route::resource('periods', 'Koordinator\PeriodsController');
+	Route::resource('groups', 'Koordinator\GroupsController');
 });
 
 Route::group(['prefix'=>'dosen', 'middleware'=>['auth', 'role:dosen']], function () {

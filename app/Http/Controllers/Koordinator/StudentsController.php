@@ -106,7 +106,6 @@ class StudentsController extends Controller
             for ($x = 0; $x < count($list); $x++) {
               $tmp = explode(' ', $list[$x], 2);
 
-              $student['id'] = Auth::id();
               $student['no_induk'] = $tmp[0];
               $student['username'] = $tmp[0];
               $student['name'] = $tmp[1];
@@ -137,39 +136,27 @@ class StudentsController extends Controller
             $validator = Validator::make($data, $this->validation($data['id']));
 
             if ($validator->fails()) {
-                Session::flash("flash_notification", [
-                    "level"=>"danger",
-                    "message"=>$validator->messages()
+              Session::flash("flash_notification", [
+                "level"=>"danger",
+                "message"=>$validator->messages()
                 ]);
-
-                return redirect('koordinator/students');
             }
 
-            $user->update($data);
-        }/*else{
-            $validator = Validator::make($data, $this->validation($data['id']));
+            return redirect('koordinator/students');
+        }
 
-            if ($validator->fails()) {
-                Session::flash("flash_notification", [
-                    "level"=>"danger",
-                    "message"=>$validator->messages()
-                ]);
+        if ($data['password']) {
+            $data['password'] = bcrypt($data['no_induk']);
+        }
 
-                return redirect('koordinator/students');
-            }
-
-            $data['id'] = Auth::id();
-            $data['password']=bcrypt($data['no_induk']);
-            $user = User::create($data);
-            $user->attachRole(4);
-        }*/
+        $user->update($data);
         
         Session::flash("flash_notification", [
             "level"=>"success",
             "message"=>"Users Information Updated"
         ]);
 
-        return redirect('koordinator/students');
+          return redirect('koordinator/students');
         }
     }
 
