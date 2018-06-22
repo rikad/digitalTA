@@ -492,18 +492,15 @@ class TranscriptsController extends Controller
     public function register(Request $request)
     {
         $data = $request->except(['_token','password']);
-        
-    
-        $list = preg_split('/\r\n|[\r\n]/', $data['data']);
 
-        for ($x = 0; $x < count($list); $x++) {
-            $params = preg_split('/\t|[\t]/', $list[$x]);
 
-            if($params[0]=='')break;
+		foreach ($data['data'] as $params) {
+		    
+            if($params[0]==null) continue;
 
             $userID = 0;
             $user_check = User::select(['users.*'])->where('no_induk', $params[0])->first();
-            if($user_check==null){
+            if($user_check==null) {
                 //Buatkan entitiy student
                 $user['no_induk'] = $params[0];
                 $user['username'] = $params[0];
@@ -515,8 +512,8 @@ class TranscriptsController extends Controller
                 $userNew->attachRole(4);
 
                 $userID = $userNew['id'];
-            }else{
-                $userID = $user_check->id;
+            } else {
+                continue;
             }
 
             //Cari ID advisor dari inisial (username)
@@ -542,11 +539,9 @@ class TranscriptsController extends Controller
             $transcriptInfo = TranscriptInfo::create($info);
         } 
 
-        //return $tmp;
-
         Session::flash("flash_notification", [
             "level"=>"success",
-            "message"=>"Data transkrip berhasil diupload. Lihat hasil dengan menekan tombol disamping <a href='/tu/transcripts/detail?id=".$userID."' class='btn btn-primary btn-xs'><span class='glyphicon glyphicon-eye-open'></span></a>"
+            "message"=>"Data transkrip berhasil diupload."
         ]);
 
         return redirect('tu/transcripts');

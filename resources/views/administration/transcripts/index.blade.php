@@ -42,7 +42,6 @@
 				<div class="panel-body">
 				<div align="right">
 					<a href="{{ route('transcripts.edit',0) }}"><button class="btn btn-primary btn-sm">Tambah Mahasiswa</button></a>
-					<button id="editBtn" class="btn btn-primary btn-sm" onclick="rikad.showModalNew()">Import Mahasiswa</button>
 					<button id="setBtn" class="btn btn-primary btn-sm" onclick="rikad.setting()">Pengaturan</button>
 				</div><br>
 					{!! $html->table(['class'=>'table-striped']) !!}
@@ -64,37 +63,6 @@
 
 
 	function rikad() {
-
-
-		this.showModalNew = function () {
-			$('#myModal').modal();
-			var form = '<form method="POST" action="/tu/transcripts/register"> {{ csrf_field() }} ';
-			form += '<div class="form-group"> \
-				  <label for="comment">Daftarkan siswa (dari excel sheet "Students"):</label> \
-				  <textarea class="form-control" rows="5" id="comment" name=data></textarea> \
-				</div> ';
-				/*'<div class="form-group"> \
-				  <label for="comment">Nama Siswa:</label> \
-				  <input type=text class="form-control" id="comment" name=nama></input> \
-				</div> \
-							 <div class="form-group"> \
-				  <label for="comment">NIM:</label> \
-				  <input type=text class="form-control" rows="5" id="comment" name=nim></input> \
-				</div> \
-							 <div class="form-group"> \
-				  <label for="comment">Dosen Wali:</label> \
-				  <input type=text class="form-control" rows="5" id="comment" name=dosenwali></input> \
-				</div> \
-					*/
-
-			form += '<div align="right"><input class="btn btn-primary btn-sm" type="submit" value="Save"/></div></form>';
-
-			var content = $('#myModal').find('p');
-			content[0].innerHTML = form;
-
-			var contentName = $('#myModal').find('span');
-			contentName[0].innerHTML = "Upload Daftar Nilai";
-		}
 
 
 		this.showModal = function (id) {

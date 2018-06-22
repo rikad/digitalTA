@@ -109,17 +109,17 @@
           <form method="POST" action="/changePassword"> {{ csrf_field() }}
             <div class="form-group">
                 <label for="pwd">Password Saat Ini:</label>
-                <input type="password" class="form-control" id="pwd" name="passwordCurrent">
+                <input type="password" class="form-control" id="pwdc" name="passwordCurrent">
             </div>
 
             <div class="form-group">
                 <label for="pwd">Password Baru:</label>
-                <input type="password" class="form-control" id="pwd" name="passwordNew">
+                <input type="password" class="form-control" id="pwdn" name="passwordNew">
             </div>
 
             <div class="form-group">
                 <label for="pwd">Password Baru (Konfirmasi):</label>
-                <input type="password" class="form-control" id="pwd" name="passwordNew2">
+                <input type="password" class="form-control" id="pwdn2" name="passwordNew2">
             </div>
 
               <button type="submit" class="btn btn-default">Ganti Password</button>
