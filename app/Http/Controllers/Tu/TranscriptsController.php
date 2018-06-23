@@ -513,7 +513,7 @@ class TranscriptsController extends Controller
 
                 $userID = $userNew['id'];
             } else {
-                continue;
+            	$userID = $user_check->id;
             }
 
             //Cari ID advisor dari inisial (username)
@@ -526,17 +526,27 @@ class TranscriptsController extends Controller
             }
 
             //Buat record info transcript
-            $info['student_id']=$userID;
-            $info['advisor_id']=$advisor_id->id;
-            $info['yudisium_date']=$params[6];
-            $info['graduation_date']=$params[7];
+            $transcriptInfo = TranscriptInfo::where('student_id',$userID)->first();
 
             $tmp_final_exam = array_slice($params, 8);
 
-            $info['final_exam']= join(";", $tmp_final_exam);
 
+            if ($transcriptInfo) {
+            	$transcriptInfo->advisor_id = $advisor_id->id;
+            	$transcriptInfo->yudisium_date = $params[6];
+            	$transcriptInfo->graduation_date = $params[7];
+            	$transcriptInfo->final_exam = join(";", $tmp_final_exam);
+            	$transcriptInfo->save();
+            } else {
+	            $info['student_id']=$userID;
+	            $info['advisor_id']=$advisor_id->id;
+	            $info['yudisium_date']=$params[6];
+	            $info['graduation_date']=$params[7];
+	            $info['final_exam']= join(";", $tmp_final_exam);
+
+	            $transcriptInfo = TranscriptInfo::create($info);
+            }
             
-            $transcriptInfo = TranscriptInfo::create($info);
         } 
 
         Session::flash("flash_notification", [
