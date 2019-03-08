@@ -100,6 +100,8 @@
 
 	    	return '<span class="label label-danger">Belum Memilih Topik</span>';
 	    }},
+	    { data: 'dosen1_name', name: 'dosen1.name', title: 'Pembimbing1', searchable: true },
+	    { data: 'dosen2_name', name: 'dosen2.name', title: 'Pembimbing2', searchable: true },
 	    { data: 'id', name: 'id', title: 'Action',sortable: false, searchable: false,render: function(data) {
 			return '<button class="btn btn-danger btn-xs" onclick="deleteGroup('+data+')"> <span class="glyphicon glyphicon-remove"></span> Hapus</button>';
 	    }},

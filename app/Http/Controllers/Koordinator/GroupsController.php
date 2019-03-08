@@ -32,12 +32,14 @@ class GroupsController extends Controller
 
 
         if ($request->ajax()) {
-            $data = Group::select('groups.*','users.username as s1_username','users.name as s1_name','users2.username as s2_username','users2.name as s2_name', 'topics.title', 'topics.is_taken', 'group_topic.topic_id as topicid')
+            $data = Group::select('groups.*','users.username as s1_username','users.name as s1_name','users2.username as s2_username','users2.name as s2_name', 'topics.title', 'topics.is_taken', 'group_topic.topic_id as topicid', 'dosen1.name as dosen1_name', 'dosen2.name as dosen2_name')
                 ->leftJoin('group_topic','group_topic.group_id','groups.id')
                 ->leftJoin('topics','topics.id','group_topic.topic_id')
                 ->join('users','users.id','groups.student1_id')
                 ->join('student_period','users.id','student_period.student_id')
                 ->leftJoin('users as users2','users2.id','groups.student2_id')
+                ->join('users as dosen1','dosen1.id','topics.dosen1_id')
+                ->leftJoin('users as dosen2','dosen2.id','topics.dosen2_id')
                 ->where('student_period.period_id', $period_id);
 
             return Datatables::of($data)->make(true);

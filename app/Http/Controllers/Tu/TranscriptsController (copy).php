@@ -381,7 +381,16 @@ class TranscriptsController extends Controller
     public function store(Request $request)
     {
         $data = $request->except(['_token','password']);
+        //return $data;
+    /*$user['no_induk'] = $data['nim'];
+    $user['username'] = $data['nim'];
+    $user['name'] = $data['nama'];
+    $user['email'] = $data['nim']."@gmail.com";
+    $user['password'] = bcrypt($data['nim']);
 
+            $userNew = User::create($user);
+            $userNew->attachRole(4);*/
+            //return $data['grade'];
         $list = preg_split('/\r\n|[\r\n]/', $data['grade']);
 
         for ($x = 0; $x < count($list); $x++) {
@@ -396,7 +405,7 @@ class TranscriptsController extends Controller
             }
         }
 
-        for ($x = 0; $x < count($list); $x++) {
+        	for ($x = 0; $x < count($list); $x++) {
             //$params = preg_split('/\t|[\t]/', $list[$x]);
             $params = preg_split('/;|[;]/', $list[$x]);
 
@@ -405,6 +414,9 @@ class TranscriptsController extends Controller
             $curriculumID = 0;
 
             $kurikulum_title=2008+(floor(($params[1]-2008)/5))*5;
+            //return $kurikulum;
+
+            //if($params[1]>2012){$kurikulum_title="2013";}else{$kurikulum_title="2008";}
 
             $curriculum = Curriculum::select(['pc_curricula.*'])->where('title', $kurikulum_title)->first();
                 if ($kurikulum_title<2000||$kurikulum_title>2100) {
@@ -466,6 +478,8 @@ class TranscriptsController extends Controller
             
             $transcript = Transcript::create($tmp[$x]);
         } 
+
+        //return $tmp;
 
         Session::flash("flash_notification", [
             "level"=>"success",

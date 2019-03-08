@@ -27,6 +27,7 @@ class TopicssController extends Controller
     public function dosen() {
         $data = User::join('role_user','role_user.user_id','users.id')
             ->join('roles','role_user.role_id','roles.id')
+            ->join('periods','.role_id','roles.id')
             ->where('roles.name','dosen')
             ->pluck("users.name","users.id");
 
@@ -61,9 +62,9 @@ class TopicssController extends Controller
         }
 
         if ($request->ajax()) {
-            $data = Topic::selectRaw('topics.*,CONCAT(periods.year," - ",periods.semester) AS period, (select count(*) from group_topic where group_topic.topic_id = topics.id) as peminat')
+            $data = Topic::selectRaw('topics.*,
+                (select count(*) from group_topic where group_topic.topic_id = topics.id) as peminat')
                     ->join('users','users.id','topics.dosen1_id')
-                    ->join('periods','topics.period_id','periods.id')
                     ->where('topics.period_id', $period_id)
                     ->where('topics.dosen1_id',Auth::id());
 
@@ -217,9 +218,9 @@ class TopicssController extends Controller
                     })
                     ->addColumn('action',function($data) { 
                         if($data->status==0){
-                        	return '<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalAccept" onclick="prepare(\''.$data->gtopic_id.'\', \''.$data->id.'\')"><span class="glyphicon glyphicon-pencil"></span> Setujui</button> <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#transfer" onclick="transfer(\''.$data->gtopic_id.'\', \''.$data->id.'\')"><span class="glyphicon glyphicon-user"></span> Transfer</button>';
-                    	} else { return ''; }
-                    
+                        return '<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalAccept" onclick="prepare(\''.$data->gtopic_id.'\', \''.$data->id.'\')"><span class="glyphicon glyphicon-pencil"></span> Setujui</button>';
+                        /*return '<button class="btn btn-primary btn-xs" onClick="rikad.edit(this,\''.$data->id.'\')"><span class="glyphicon glyphicon-pencil"></span></button>';*/
+                    }else{return '';}
                     })->make(true);
         }
 
@@ -234,7 +235,7 @@ class TopicssController extends Controller
     }
 
     public function peminatRespond(Request $request){
-
+        //return "huh";
         $data = $request->except(['_token']);
         
         DB::table('group_topic')

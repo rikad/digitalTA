@@ -78,9 +78,25 @@ class TopicsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $period_id = $request->input('id');
+        if (!$period_id) {
+            $last_period = Period::orderBy('id','desc')->first();
+            $period_id = $last_period->id;
+        }
+
+        $data = Topic::select(DB::raw('count(topics.id) as totalTopics, count(groups.id) as totalGroups'),'dosen1.name AS dosen', DB::raw('SUM(case when group_topic.status = 1 then 1 else 0 end) as totalGroupsAgree') )
+                ->leftJoin('group_topic','group_topic.topic_id','topics.id')
+                ->leftJoin('groups','group_topic.group_id','groups.id')
+                ->join('users AS dosen1','dosen1.id','topics.dosen1_id')
+                ->groupBy('dosen1.id')
+                ->where('topics.period_id',$period_id)
+                ->get();
+
+        $period = Period::orderBy('id')->get();
+
+        return view('koordinator.topics.statistics')->with(compact('data'))->with(compact('period'))->with(compact('period_id'));
     }
 
     /**
@@ -149,7 +165,7 @@ class TopicsController extends Controller
     {
 
         if ($request->ajax()) {
-            $data = Topic::select('topics.*','dosen1.name AS dosen1Name','dosen2.name AS dosen2Name','student1.name AS student1Name','student2.name AS student2Name')
+            $data = Topic::select('topics.*','dosen1.name AS dosen1Name','dosen2.name AS dosen2Name','student1.name AS student1Name','student2.name AS student2Name','group_topic.id as gtopicid')
                     ->leftJoin('group_topic','group_topic.topic_id','topics.id')
                     ->leftJoin('groups','group_topic.group_id','groups.id')
                     ->leftJoin('users AS dosen1','dosen1.id','topics.dosen1_id')
@@ -209,4 +225,50 @@ class TopicsController extends Controller
 
         return 'ok';
     }
+
+    public function peminatRespond(Request $request){
+
+        $data = $request->except(['_token']);
+        
+        DB::table('group_topic')
+            ->where('id', $data['idtopic'])
+            ->update(['status' => $data['submitRespond'], 'note' => $data['note']]);
+
+        $currentgroup = DB::table('group_topic')
+            ->where('id', $data['idtopic'])
+            ->first();
+
+        if($data['submitRespond']==1){$hasil="disetujui";
+            DB::table('topics')
+            ->where('id', $data['id_topic'])
+            ->update(['is_taken' => 1]);
+
+            DB::table('group_topic')
+            ->where('group_id', $currentgroup->group_id)
+            ->whereNotIn('status', [1])
+            ->delete();
+
+            DB::table('group_topic')
+            ->where('topic_id', $data['id_topic'])
+            ->whereNotIn('status', [1])
+            ->delete();
+        }
+        elseif($data['submitRespond']==2){
+        	$hasil="ditolak";
+    	}else {    		
+        	$hasil="dibatalkan";
+            DB::table('topics')
+            ->where('id', $data['id_topic'])
+            ->update(['is_taken' => 0]);
+
+    	}
+
+        Session::flash("flash_notification", [
+             "level"=>"success",
+             "message"=>"Permintaan topik sudah ".$hasil
+         ]);
+
+         return redirect('/koordinator/topics/'. $data['period']); //->route('users.index');
+    }
+
 }

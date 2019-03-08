@@ -23,6 +23,36 @@
     </div>
   </div>
 
+  <!--Modal Bulk-->
+  <div class="modal fade" id="myModalAccept" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Setujui Pengajuan?</h4>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="/koordinator/topics/peminatRespond"> {{ csrf_field() }}
+          <input type=hidden name=period id="period" value="{{ $id }}">
+          <input type=hidden name=idtopic id="idTopic" value="m">
+          <input type=hidden name=id_topic id="id_topic" value="m">
+          Catatan: <br>
+          <textarea rows=5 class="form-control" name=note></textarea><br>
+      <div align=right>
+          <button type="submit" name="submitRespond" value="1" class="btn btn-success">Setujui</button>
+          <button type="submit" name="submitRespond" value="2"  class="btn btn-danger">Tolak</button>
+          <button type="submit" name="submitRespond" value="0"  class="btn btn-warning">Batalkan Pengajuan</button>
+          </div>
+          </form>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <!---->
+
 	<div class="row">
 		<div class="col-md-12">
 			<ul class="breadcrumb">
@@ -37,7 +67,8 @@
 				<div class="panel-body">
           <ul class="nav nav-tabs">
             <li><a href="/koordinator/topics">Daftar Topik</a></li>
-            <li class="active"><a href="#">Status Topik</a></li>
+            <li class="active"><a href="#">Statistik Topik</a></li>
+            <li><a href="/koordinator/topics/create">Statistik Topik</a></li>
           </ul>
           <br>
           @isset($period)
@@ -88,13 +119,13 @@
       ajax: '',
       columns: [
       { data: 'title', name: 'title' },
-      { data: 'dosen1Name', name: 'dosen1Name' , searchable: true},
-      { data: 'dosen2Name', name: 'dosen2Name' , searchable: true},
-      { data: 'student1Name', name: 'student1Name' , searchable: true},
-      { data: 'student2Name', name: 'student2Name' , searchable: true},
+      { data: 'dosen1Name', name: 'dosen1.name' , searchable: true},
+      { data: 'dosen2Name', name: 'dosen2.name' , searchable: true},
+      { data: 'student1Name', name: 'student1.name' , searchable: true},
+      { data: 'student2Name', name: 'student2.name' , searchable: true},
       { data: 'is_taken', name: 'is_taken', sortable: true, searchable: false,render: function(data,type,full) {
-        if(data == '1') return '<span class="label label-success">Di Setujui</span>';
-        else if(full.student1Name != '' && full.student1Name != null) return '<span class="label label-warning">Belum Di Setujui</span>';
+        if(data == '1') return '<span class="label label-success">Di Setujui</span> <button onclick="prepare('+full.gtopicid+','+full.id+')" data-toggle="modal" data-target="#myModalAccept" class="btn btn-xs btn-warning">Ubah</button>';
+        else if(full.student1Name != '' && full.student1Name != null) return '<span class="label label-warning">Belum Di Setujui</span> <button onclick="prepare('+full.gtopicid+','+full.id+')" data-toggle="modal" data-target="#myModalAccept" class="btn btn-xs btn-primary">Setujui</button>';
         else return '<span class="label label-danger">Tidak Di Ambil</span>';
       }},
     ]});
@@ -103,5 +134,12 @@
     function changeStatus(id) {
       window.location = "{{ url('koordinator/topics') }}" +'/'+id;
     }
+
+  function prepare(idTopic, id){
+    //alert('preparing....');
+    document.getElementById('idTopic').value=idTopic ; 
+    document.getElementById('id_topic').value=id ; 
+  }
+
   </script>
 @endsection

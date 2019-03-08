@@ -46,6 +46,7 @@
 				<ul class="nav nav-tabs">
 				  <li class="active"><a href="#">Daftar Topik</a></li>
 				  <li><a href="/koordinator/topics/{{ $last_period }}">Status Topik</a></li>
+		          <li><a href="/koordinator/topics/create">Statistik Topik</a></li>
 				</ul>
 
 				<br>
