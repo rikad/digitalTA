@@ -42,7 +42,7 @@
 				<div class="panel-body">
 
 					@isset($period)
-					  <select onchange="changeStatus(this.value)" class="form-control">
+					  <select id="periodSelector" onchange="changeStatus(this.value)" class="form-control">
 					  @foreach($period as $v)
 					  	@if(isset($_GET['id']))
 					    <option value="{{ $v->id }}" @if($_GET['id'] == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
@@ -111,7 +111,7 @@
             output += '<a href="{{ url("/dosen/topics/peminat/") }}/'+data+'"><button class="btn btn-primary btn-xs">Setujui</button></a> ';
         } 
 
-		return output + '<button class="btn btn-primary btn-xs" onclick="rikad.edit(this,'+data+')"><span class="glyphicon glyphicon-pencil"></span></button> <button class="btn btn-danger btn-xs" onclick="rikad.delete('+data+')"> <span class="glyphicon glyphicon-remove"></span></button>';      	
+		return output + '<button class="btn btn-primary btn-xs" onclick="rikad.edit(this,'+data+')"><span class="glyphicon glyphicon-pencil"></span></button> <button class="btn btn-danger btn-xs" onclick="rikad.delete('+data+')"> <span class="glyphicon glyphicon-remove"></span></button>';
       }},
     ]});
 
@@ -201,6 +201,7 @@
 			$('#myModal').modal();
 			var form = '<form method="POST" action="/dosen/topics"> {{ csrf_field() }} ';
 			form += '<input type="hidden" value="'+id+'" name="id">';
+			form += '<input type="hidden" name="period_id" value="' + document.getElementById("periodSelector").value +'">';
 			var i=0;
 			for(var input in this.inputName) {
 				form += this.inputName[input].title + '<br>'
