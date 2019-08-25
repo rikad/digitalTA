@@ -110,8 +110,6 @@ class TopicsController extends Controller
 
         $data = $request->except(['_token']);
         $topic = Topic::select('topics.*')->find($data['id']);
-        
-        //return json_encode($data);
 
         // //check if data exists update else create
          if($topic){
@@ -140,7 +138,7 @@ class TopicsController extends Controller
                  return redirect('/koordinator/topics');//->route('users.index');
              }
 
-            $data['period_id']=1;
+            $data['period_id']=$data['period_id'];
             $data['is_taken']=0;
              
 
@@ -149,7 +147,7 @@ class TopicsController extends Controller
 
         Session::flash("flash_notification", [
              "level"=>"success",
-             "message"=>"Users Information Updated"
+             "message"=>"Topics Information Updated"
          ]);
 
          return redirect('/koordinator/topics');//->route('users.index');

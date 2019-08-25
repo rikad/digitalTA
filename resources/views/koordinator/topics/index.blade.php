@@ -52,7 +52,7 @@
 				<br>
 				@isset($period)
 				<h5>Pilih Periode :</h5>
-				  <select onchange="changeStatus(this.value)" class="form-control">
+				  <select onchange="changeStatus(this.value)" class="form-control" id="period_id">
 				  @foreach($period as $v)
 				  	@if(isset($_GET['id']))
 				    <option value="{{ $v->id }}" @if($_GET['id'] == $v->id) selected="selected" @endif>{{ $v->year }} Semester {{ $v->semester }}</option>
@@ -210,6 +210,7 @@
 			$('#myModal').modal();
 			var form = '<form method="POST" action="/koordinator/topics"> {{ csrf_field() }} ';
 			form += '<input type="hidden" value="'+id+'" name="id">';
+			form += '<input type="hidden" value="'+document.getElementById('period_id').value+'" name="period_id">';
 			var i=0;
 			for(var input in this.inputName) {
 				form += this.inputName[input].title + '<br>'
