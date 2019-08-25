@@ -137,7 +137,7 @@ class TopicssController extends Controller
 
         Session::flash("flash_notification", [
              "level"=>"success",
-             "message"=>"Users Information Updated"
+             "message"=>"Topics Information Updated"
          ]);
 
          return redirect('/dosen/topics');//->route('users.index');
@@ -209,6 +209,7 @@ class TopicssController extends Controller
                     ->where('id',$request->route('id'))
                     ->get();
 
+
             return Datatables::of($data)
                     ->addColumn('status2',function($data) { 
                         if($data->status==0){return 'Mengajukan';}
@@ -223,14 +224,20 @@ class TopicssController extends Controller
                     })->make(true);
         }
 
+        $topic = Topic::find($request->route('id'));
+        $diampu = Topic::where('is_taken',1)->where('dosen1_id',Auth::id())->where('period_id',$topic->period_id)->count();
+
         $html = $htmlBuilder
           ->addColumn(['data' => 'title', 'name'=>'topics.title', 'title'=>'Judul'])
           ->addColumn(['data' => 'student1', 'name'=>'student1', 'title'=>'Student 1'])
           ->addColumn(['data' => 'student2', 'name'=>'student2', 'title'=>'Student 2'])
-          ->addColumn(['data' => 'status2', 'name'=>'status2', 'title'=>'Status'])
-          ->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'Action', 'orderable'=>false, 'searchable'=>false]);
+          ->addColumn(['data' => 'status2', 'name'=>'status2', 'title'=>'Status']);
+        
+        if($diampu < 4) {
+            $html->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'Action', 'orderable'=>false, 'searchable'=>false]);
+        }
 
-        return view('dosen.topics.interest')->with(compact('html'));
+        return view('dosen.topics.interest')->with(compact('html'))->with(compact('diampu'));
     }
 
     public function peminatRespond(Request $request){

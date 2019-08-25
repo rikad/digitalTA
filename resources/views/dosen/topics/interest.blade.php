@@ -62,8 +62,15 @@
                 <div class="alert alert-info">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <b>TIPS:</b> Pada halaman ini, dosen dapat menyetujui pengajuan tugas akhir dari para mahasiswa
-                </div>
-            
+				</div>
+
+				@if($diampu >= 4)			
+                <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <b>Info:</b> Anda sudah mengampu 4 grup.
+				</div>
+				@endif
+				
 
 			<div class="panel panel-default">
 				<div class="panel-heading">

@@ -54,9 +54,11 @@ class TopicsController extends Controller
         $period = DB::table('student_period')->where('student_id',Auth::id())->first();
 
         if ($request->ajax()) {
-            $data = Topic::selectRaw('topics.id,topics.title,topics.description,topics.is_taken, topics.dosen1_id, topics.bobot, topics.waktu, topics.dana,
-                (select count(*) from group_topic where group_topic.topic_id = topics.id) as peminat')
-                ->where('period_id',$period->period_id);
+
+            $data = Topic::selectRaw('topics.*,
+                (select count(*) from group_topic WHERE group_topic.topic_id = topics.id) as peminat,
+                (select count(*) from topics as t WHERE t.is_taken = 1 AND t.dosen1_id = topics.dosen1_id AND t.period_id = '.$period->period_id.') as diampu')
+            ->where('period_id',$period->period_id);
 
             return Datatables::of($data)->make(true);
         }
