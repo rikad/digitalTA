@@ -94,23 +94,10 @@
         }
 
     </style>
-    <link rel="stylesheet" type="text/css" href="print.min.css">
+    <link rel="stylesheet" type="text/css" href="/ekuivalensi/print.min.css">
 </head>
 
 <body>
-    <header>
-        <div class="inputData">
-            <h1>Konversi Kurikulum 2019</h1>
-            <p>Silahkan masukan data anda</p>
-            <p style="text-align: center">
-                <input type="number" id="nim" placeholder="Nim"/>
-                <!-- <input type="text" id="nama" placeholder="Nama"/> -->
-                <input type="text" id="dosen" placeholder="Dosen Wali"/>
-                <br>
-                <button id="down" onclick="getInfo()">Lanjutkan</button>
-            </p>
-        </div>
-    </header>
   	<div class="main">
         <button type="button" style="width:80px; padding:10px" onclick="printJS({ printable: 'main', type: 'html', targetStyles: ['*'] })">Print</button>
   	<div id="main">        
@@ -152,31 +139,16 @@
     </div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="print.min.js"></script>
+<script src="/ekuivalensi/print.min.js"></script>
 <script type="text/javascript">
     var nim = '';
     var dosen = '';
 
-    window.onbeforeunload = function () {
-        window.scrollTo(0, 0);
-    }
-
-        $(document).ready( function () {
-        $('#down').on('click',function () {
-            $("html").scrollTop(0);
-            console.log("Clicked!");
-            $('html, body').animate({
-            scrollTop: $(".main").offset().top
-        }, 1000);
-        });
-
-    });
-
     var xhttp = new XMLHttpRequest();
     
     function getInfo() {
-        nim = document.getElementById('nim').value;
-        dosen = document.getElementById('dosen').value;
+        nim = '{{ Auth::user()->no_induk }}';
+        dosen = '...............';
 
         genTabel();
     }
@@ -191,7 +163,7 @@
             }
         };
 
-        xhttp.open("GET", "api.php?nim="+ nim, true);
+        xhttp.open("GET", "/ekuivalensi/api.php?nim="+ nim, true);
         xhttp.send();
     }
 
@@ -376,6 +348,8 @@
             document.getElementById("down").click();
         }
     });
+
+    getInfo();
 
 </script>
 

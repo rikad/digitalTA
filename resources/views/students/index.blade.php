@@ -71,58 +71,84 @@
       </div>
       <!-- End panel groups -->
 
+      <!-- Panel -->
+      <div class="panel panel-primary">
+          <div class="panel-heading"><h2 class="panel-title"><span class="glyphicon glyphicon-th-large"></span>&nbsp;&nbsp;&nbsp; Menu</h2></div>
+          <!-- Content -->
+          <div class="panel-body panel-big-icon">
+  
+          <!-- Row 1 -->
+          <div class="row">
+  
+            <div class="col-md-3">
+              <div class="panel panel-default" url="/student/groups">
+                <div class="panel-heading">Kelompok Tugas Akhir</div>
+                <div class="panel-body">
+                  <span class="glyphicon glyphicon-user"></span>
+                  <span class="glyphicon glyphicon-user"></span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="panel panel-default" url="/student/topics">
+                <div class="panel-heading">Topik Tugas Akhir</div>
+                <div class="panel-body">
+                  <span class="glyphicon glyphicon-file"></span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="panel panel-default" url="/student/bimbinganTA">
+                <div class="panel-heading">Bimbingan Tugas Akhir</div>
+                <div class="panel-body">
+                  <span class="glyphicon glyphicon-book"></span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="panel panel-default" url="/student/proposals">
+                <div class="panel-heading">Proposal Tugas Akhir</div>
+                <div class="panel-body">
+                  <span class="glyphicon glyphicon-save-file"></span>
+                </div>
+              </div>
+            </div>
+  
+          </div>
+          <!-- end Row 1 -->
+  
+          </div>
+          <!-- End Content -->
+  
+        </div>
+        <!-- End panel -->
 
       <!-- Panel -->
       <div class="panel panel-primary">
-        <div class="panel-heading"><h2 class="panel-title"><span class="glyphicon glyphicon-th-large"></span>&nbsp;&nbsp;&nbsp; Menu</h2></div>
-        <!-- Content -->
-        <div class="panel-body panel-big-icon">
-
-        <!-- Row 1 -->
-        <div class="row">
-
-          <div class="col-md-3">
-            <div class="panel panel-default" url="/student/groups">
-              <div class="panel-heading">Kelompok Tugas Akhir</div>
-              <div class="panel-body">
-                <span class="glyphicon glyphicon-user"></span>
-                <span class="glyphicon glyphicon-user"></span>
+          <div class="panel-heading"><h2 class="panel-title"><span class="glyphicon glyphicon-th-large"></span>&nbsp;&nbsp;&nbsp; Lainnya</h2></div>
+          <!-- Content -->
+          <div class="panel-body panel-big-icon">
+  
+          <!-- Row 1 -->
+          <div class="row">
+  
+            <div class="col-md-3">
+              <div class="panel panel-default" url="/ekivalensi">
+                <div class="panel-heading">Ekuivalensi</div>
+                <div class="panel-body">
+                  <span class="glyphicon glyphicon-file"></span>
+                </div>
               </div>
             </div>
+  
           </div>
-          <div class="col-md-3">
-            <div class="panel panel-default" url="/student/topics">
-              <div class="panel-heading">Topik Tugas Akhir</div>
-              <div class="panel-body">
-                <span class="glyphicon glyphicon-file"></span>
-              </div>
-            </div>
+          <!-- end Row 1 -->
+  
           </div>
-          <div class="col-md-3">
-            <div class="panel panel-default" url="/student/bimbinganTA">
-              <div class="panel-heading">Bimbingan Tugas Akhir</div>
-              <div class="panel-body">
-                <span class="glyphicon glyphicon-book"></span>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="panel panel-default" url="/student/proposals">
-              <div class="panel-heading">Proposal Tugas Akhir</div>
-              <div class="panel-body">
-                <span class="glyphicon glyphicon-save-file"></span>
-              </div>
-            </div>
-          </div>
-
+          <!-- End Content -->
+  
         </div>
-        <!-- end Row 1 -->
-
-        </div>
-        <!-- End Content -->
-
-      </div>
-      <!-- End panel -->
+        <!-- End panel -->
 
   <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">

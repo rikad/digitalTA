@@ -195,6 +195,8 @@ class TranscriptsController extends Controller
         $endResult['finalExamination'] = [];
 
         $final_exam=explode(";", $transcriptInfo->final_exam);
+        return $final_exam;
+
         for ($i=0; $i<count($final_exam); $i+=2) {
             $tmp[0]=$i/2+1;
             $tmp[1]=$final_exam[$i];

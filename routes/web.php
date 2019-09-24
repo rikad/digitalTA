@@ -19,6 +19,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/ekivalensi', function () {
+	if (!Auth::guest()) {
+		return view('ekuivalensi');
+	}
+
+	return view('welcome');
+});
+
 Auth::routes();
 
 Route::get('/dashboard', 'HomeController@index');
