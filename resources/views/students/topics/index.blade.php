@@ -248,7 +248,7 @@
       }},
       { data: 'peminat', name: 'peminat', title: 'Peminat', searchable: false },
       { data: 'is_taken', name: 'is_taken', sortable: false, searchable: false,render: function(data,type,full) {
-		if(full.diampu >= 3) {
+		if(full.peminat >= 3) {
 			return '<button class="btn btn-warning btn-xs disabled">Dosen hanya mengampu 4</button>';
 		}
 		return data == 0 ? '<button class="btn btn-primary btn-xs" onclick="rikad.pilihTopik('+full.id+')">Pilih</button>' : '<button class="btn btn-info btn-xs disabled">Telah Di Ambil</button>'      	
