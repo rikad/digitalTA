@@ -149,9 +149,26 @@ class TopicssController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        //
+        if ($request->ajax()) {
+            $data = Topic::select('topics.*','dosen1.name AS dosen1Name','dosen2.name AS dosen2Name','student1.name AS student1Name','student2.name AS student2Name','group_topic.id as gtopicid')
+                    ->leftJoin('group_topic','group_topic.topic_id','topics.id')
+                    ->leftJoin('groups','group_topic.group_id','groups.id')
+                    ->leftJoin('users AS dosen1','dosen1.id','topics.dosen1_id')
+                    ->leftJoin('users AS dosen2','dosen2.id','topics.dosen2_id')
+                    ->leftJoin('users AS student1','groups.student1_id','student1.id')
+                    ->leftJoin('users AS student2','groups.student2_id','student2.id')
+                    ->where('topics.period_id',$id);
+
+
+            return Datatables::of($data)->make(true);
+
+        }
+
+        $period = Period::all();
+
+        return view('dosen.topics.status')->with(compact('period'))->with(compact('id'));
     }
 
     /**

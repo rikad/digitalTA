@@ -41,6 +41,12 @@
 				</div>
 				<div class="panel-body">
 
+					<ul class="nav nav-tabs">
+					  <li class="active"><a href="#">Topik Saya</a></li>
+					  <li><a href="/dosen/topics/{{ $last_period }}">Semua Topik</a></li>
+					</ul>
+					<br>
+
 					@isset($period)
 					  <select id="periodSelector" onchange="changeStatus(this.value)" class="form-control">
 					  @foreach($period as $v)
