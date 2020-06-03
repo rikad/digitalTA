@@ -115,7 +115,10 @@
 					<h2 class="panel-title">Courses Management</h2>
 				</div>
 				<div class="panel-body">
-				<div align="right"><button id="editBtn" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#equiModal">Register Equivalencies</button></div><br>
+ 				    <div align="right">
+                                        <a href="/tu/courses/lookup"><button class="btn btn-primary btn-sm">Lookup</button></a>
+                                        <button id="editBtn" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#equiModal">Register Equivalencies</button>
+                                    </div><br>
 					{!! $html->table(['class'=>'table-striped']) !!}
 				</div>
 			</div>

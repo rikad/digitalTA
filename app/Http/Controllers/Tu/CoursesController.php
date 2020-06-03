@@ -325,4 +325,43 @@ class CoursesController extends Controller
 
         return $data;
     }
+
+    //untuk mengisi course data kurikulum baru dengan kurikulum lama
+    public function lookup(Request $request){
+
+        $courses = Course::where('rex','-')->get();
+
+        foreach($courses as $v) {
+           $same = Course::where('code',$v->code)->where('rex','!=','-')->first();
+           
+           if($same) {
+               $course = Course::find($v->id);
+               $course->title_en = $same->title_en;
+
+               if($course->rex == '-') {
+                   $course->rex = $same->rex;
+               }
+
+               if($same->mbs != '0') {
+                   $course->mbs = $course->sch;
+               }
+               if($same->et != '0') {
+                   $course->et = $course->sch;
+               }
+               if($same->ge != '0') {
+                   $course->ge = $course->sch;
+               }
+
+               $course->save();
+           }
+        }
+
+        Session::flash("flash_notification", [
+            "level"=>"success",
+            "message"=>"Data berhasil di lookup"
+        ]);
+
+        return redirect('tu/courses');
+    }
+
 }

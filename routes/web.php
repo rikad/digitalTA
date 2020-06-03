@@ -89,6 +89,8 @@ Route::group(['prefix'=>'tu', 'middleware'=>['auth', 'role:administration']], fu
 
 	Route::get('transcripts/detailHistoris', 'Tu\TranscriptsController@detailHistoris');
 	Route::get('transcripts/detail', 'Tu\TranscriptsController@detail');
+	Route::get('courses/lookup', 'Tu\CoursesController@lookup');
+
 	Route::post('transcripts/register', 'Tu\TranscriptsController@register');
 	Route::post('courses/registerEquivalencies', 'Tu\CoursesController@registerEquivalencies');
 	Route::resource('transcripts', 'Tu\TranscriptsController');

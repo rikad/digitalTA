@@ -508,7 +508,7 @@ class TranscriptsController extends Controller
             //Cari ID advisor dari inisial (username)
             $advisor_id = User::select(['users.*'])->where('username', strtolower($params[2]))->first();
             //Update info nip dan nama (plus gelar) kalau kolom nip masih kosong
-            if($advisor_id->no_induk=="" || $advisor_id->no_induk==null){
+            if($advisor_id && ($advisor_id->no_induk=="" || $advisor_id->no_induk==null) ){
                 DB::table('users')
                 ->where('id', $advisor_id->id)
                 ->update(['no_induk' => $params[3], 'name' => $params[4]]);
@@ -528,7 +528,7 @@ class TranscriptsController extends Controller
             	$transcriptInfo->save();
             } else {
 	            $info['student_id']=$userID;
-	            $info['advisor_id']=$advisor_id->id;
+	            $info['advisor_id']=$advisor_id ? $advisor_id->id : null;
 	            $info['yudisium_date']=$params[6];
 	            $info['graduation_date']=$params[7];
 	            $info['final_exam']= join(";", $tmp_final_exam);
