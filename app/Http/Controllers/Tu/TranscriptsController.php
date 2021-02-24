@@ -385,97 +385,109 @@ class TranscriptsController extends Controller
     {
         $data = $request->except(['_token','password']);
 
-        $list = preg_split('/\r\n|[\r\n]/', $data['grade']);
+        $list = $data['data'];
 
-        for ($x = 0; $x < count($list); $x++) {
-        	$params = preg_split('/;|[;]/', $list[$x]);
-        	if(count($params)!=10){
-                Session::flash("flash_notification", [
-                "level"=>"danger",
-                "message"=>"Data file bukan CSV. Pastikan pemisah kolom menggunakan tanda <b>;</b> dan terdapat 10 kolom data. <br><b>Contoh:</b>&nbsp;&nbsp;&nbsp;1;2011;1;1;2;FI1101;Elementary Physics IA;4;B;X"
-                ]);
-
-                return redirect('tu/transcripts');        
-            }
+        if(count($list[0]) != 11) {
+            return [
+                "status"=>"error",
+                "message"=>"Kolom Kurikulum Kosong tambahkan kolom kurikulum di kolom 'K'"
+            ];
         }
 
-        for ($x = 0; $x < count($list); $x++) {
-            //$params = preg_split('/\t|[\t]/', $list[$x]);
-            $params = preg_split('/;|[;]/', $list[$x]);
+        DB::beginTransaction();
 
+        try {
+        
+            for ($x = 0; $x < count($list); $x++) {
 
-            $courseID = 0;
-            $curriculumID = 0;
+                $params = $list[$x];
 
-            $kurikulum_title=2008+(floor(($params[1]-2008)/5))*5;
+                $courseID = 0;
+                $curriculumID = 0;
 
-            $curriculum = Curriculum::select(['pc_curricula.*'])->where('title', $kurikulum_title)->first();
-                if ($kurikulum_title<2000||$kurikulum_title>2100) {
-                        Session::flash("flash_notification", [
-                            "level"=>"danger",
+                //$kurikulum_title=2008+(floor(($params[1]-2008)/5))*5; //old way per 5 tahun (tidak bisa di pakai karena kurikulum 2013 berlaku 6 tahun)
+                $kurikulum_title=$params[10];
+
+                if ($kurikulum_title == null) {
+
+                    DB::rollback();
+                    return [
+                        "status"=>"error",
+                        "message"=>"Kolom Kurikulum Kosong tambahkan kolom kurikulum di kolom 'K'"
+                    ];
+                }
+                
+                $curriculum = Curriculum::select(['pc_curricula.*'])->where('title', $kurikulum_title)->first();
+                    if ($kurikulum_title<2000||$kurikulum_title>2100) {
+                        DB::rollback();
+                        return [
+                            "status"=>"error",
                             "message"=>"Gagal : Tahun Masukan Tidak Valid: '".$kurikulum_title."'".count($kurikulum_title)
-                        ]);
-                    return back();
-                }
-                elseif($curriculum==null) {
-                    $newCurriculum['title']=$params[4];
-                    $curriculumNew = Curriculum::create($newCurriculum); 
+                        ];
+                    }
+                    elseif($curriculum==null) {
+                        $newCurriculum['title']=$params[4];
+                        $curriculumNew = Curriculum::create($newCurriculum); 
 
-                    $curriculumID=$curriculumNew->id;
+                        $curriculumID=$curriculumNew->id;
+                    }else{
+                        $curriculumID=$curriculum->id;
+                    }
+
+                $course = Course::select(['pc_courses.id'])
+                        ->join('pc_curricula','pc_courses.curriculum_id','pc_curricula.id')
+                        ->where('pc_courses.code',$params[5])
+                        ->where('pc_courses.curriculum_id',$curriculumID)
+                        ->first();
+
+                if($course==null){
+                    $newCourse['code']=$params[5];
+                    $newCourse['title']=$params[6];
+                    $newCourse['title_en']='-';
+                    $newCourse['semester']=$params[3];
+                    $newCourse['sch']=$params[7];
+                    $newCourse['curriculum_id']=$curriculumID;
+                    $newCourse['rex']="-";
+                    $newCourse['mbs']=0;
+                    $newCourse['et']=0;
+                    $newCourse['ge']=0;
+                    $newCourse['no']=$params[4];
+
+                    $courseNew = Course::create($newCourse); 
+                    $courseID=$courseNew->id;
+                
                 }else{
-                    $curriculumID=$curriculum->id;
+                    if($course->no==null||$course->no==0){
+                        $course->no=$params[4];
+                        if($course->semester!=$params[3]&&$params[3]<=8){$course->semester=$params[3];}
+                        $course->save();
+                    }
+                    $courseID=$course->id;
                 }
 
-            $course = Course::select(['pc_courses.id'])
-                    ->join('pc_curricula','pc_courses.curriculum_id','pc_curricula.id')
-                    ->where('pc_courses.code',$params[5])
-                    ->where('pc_courses.curriculum_id',$curriculumID)
-                    ->first();
-
-            if($course==null){
-                $newCourse['code']=$params[5];
-                $newCourse['title']=$params[6];
-                $newCourse['title_en']='-';
-                $newCourse['semester']=$params[3];
-                $newCourse['sch']=$params[7];
-                $newCourse['curriculum_id']=$curriculumID;
-                $newCourse['rex']="-";
-                $newCourse['mbs']=0;
-                $newCourse['et']=0;
-                $newCourse['ge']=0;
-                $newCourse['no']=$params[4];
-
-                $courseNew = Course::create($newCourse); 
-                $courseID=$courseNew->id;
-            
-            }else{
-                if($course->no==null||$course->no==0){
-                    $course->no=$params[4];
-                    if($course->semester!=$params[3]&&$params[3]<=8){$course->semester=$params[3];}
-                    $course->save();
-                }
-                $courseID=$course->id;
+                $tmp[$x]['student_id']=$data['id'];
+                $tmp[$x]['course_id']=$courseID;
+                $tmp[$x]['year_taken']=$params[1];
+                $tmp[$x]['smt_taken']=$params[2];
+                $tmp[$x]['grade_uni']=$params[8];
+                $tmp[$x]['grade_ps']=$params[8];
+                if(!isset($params[9])||$params[9]==""){
+                $tmp[$x]['is_transcripted']=0;    
+                }else{$tmp[$x]['is_transcripted']=1;}
+                
+                $transcript = Transcript::create($tmp[$x]);
             }
 
-            $tmp[$x]['student_id']=$data['id'];
-            $tmp[$x]['course_id']=$courseID;
-            $tmp[$x]['year_taken']=$params[1];
-            $tmp[$x]['smt_taken']=$params[2];
-            $tmp[$x]['grade_uni']=$params[8];
-            $tmp[$x]['grade_ps']=$params[8];
-            if(!isset($params[9])||$params[9]==""){
-            $tmp[$x]['is_transcripted']=0;    
-            }else{$tmp[$x]['is_transcripted']=1;}
-            
-            $transcript = Transcript::create($tmp[$x]);
-        } 
+            DB::commit();
+        
+        } catch (\Exception $e) {
+            DB::rollback();
+        }
 
-        Session::flash("flash_notification", [
-            "level"=>"success",
+        return [
+            "status"=>"ok",
             "message"=>"Data transkrip berhasil diupload. Lihat hasil dengan menekan tombol disamping <a href='/tu/transcripts/detail?id=".$data['id']."' class='btn btn-primary btn-xs'><span class='glyphicon glyphicon-eye-open'></span></a>"
-        ]);
-
-        return redirect('tu/transcripts');        
+        ];
     }
 
     public function register(Request $request)
