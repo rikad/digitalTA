@@ -133,7 +133,7 @@
 		$.ajax({
 	            url: '/tu/transcripts',
 	            type: 'POST',
-	            data: { 'id': id, '_token': window.Laravel.csrfToken, 'data': excel.options.data },
+	            data: { 'id': id, '_token': window.Laravel.csrfToken, 'data': JSON.stringify(excel.options.data) },
 	            dataType: 'json',
 	            error: function(e) {
 					alert('Error: ', e)

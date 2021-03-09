@@ -385,19 +385,13 @@ class TranscriptsController extends Controller
     {
         $data = $request->except(['_token','password']);
 
-        $list = $data['data'];
-
-        if(count($list[0]) != 11) {
-            return [
-                "status"=>"error",
-                "message"=>"Kolom Kurikulum Kosong tambahkan kolom kurikulum di kolom 'K'"
-            ];
-        }
-
-        DB::beginTransaction();
-
-        try {
         
+        DB::beginTransaction();
+        
+        try {
+
+            $list = json_decode($data['data']);
+
             for ($x = 0; $x < count($list); $x++) {
 
                 $params = $list[$x];
@@ -405,6 +399,14 @@ class TranscriptsController extends Controller
                 $courseID = 0;
                 $curriculumID = 0;
 
+                //check kolom
+                if(count($list[$x]) != 11) {
+                    return [
+                        "status"=>"error",
+                        "message"=>"Kolom tidak valid di baris $x : " . json_encode($list[$x])
+                    ];
+                }
+        
                 //$kurikulum_title=2008+(floor(($params[1]-2008)/5))*5; //old way per 5 tahun (tidak bisa di pakai karena kurikulum 2013 berlaku 6 tahun)
                 $kurikulum_title=$params[10];
 
@@ -481,6 +483,12 @@ class TranscriptsController extends Controller
             DB::commit();
         
         } catch (\Exception $e) {
+
+            return [
+                "status" => "error",
+                "message" => $e->getMessage()
+            ];
+
             DB::rollback();
         }
 
